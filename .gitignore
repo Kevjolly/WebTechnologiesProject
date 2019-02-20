@@ -35,3 +35,4 @@ Thumbs.db
 
 # node ignore
 node_modules
+*.code-workspace
