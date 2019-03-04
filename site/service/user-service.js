@@ -1,21 +1,16 @@
 const userDao = require('../dao/user-dao')
 
 class UserService {
-    signup() {
-        console.log('user service signup');
-        userDao.save();
+    async signup(user) {
+        await userDao.save(user)
     }
 
-    signout() {
-
+    async getProfile(id) {
+        return userDao.getUser(id)
     }
 
-    signin() {
-
-    }
-
-    getProfile() {
-
+    async search(keyword, page, count) {
+        return await userDao.search(keyword, page, count)
     }
 }
 
