@@ -9,6 +9,7 @@
   "author": "Kevin Jolly & Ren Jiang",
   "license": "ISC",
   "dependencies": {
+    "amazon-cognito-identity-js": "^3.0.7",
     "body-parser": "^1.18.3",
     "elasticsearch": "^15.4.1",
     "express": "^4.16.4"
