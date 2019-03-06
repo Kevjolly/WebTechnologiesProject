@@ -1,34 +1,37 @@
 var express = require('express')
-var router = express.Router()
+const { decorateRouter } = require('@awaitjs/express');
+
+var router = decorateRouter(express.Router())
 
 const userService = require('../service/user-service')
 
-router.post('/signup', async function (req, res, next) {
+router.postAsync('/signup', async function (req, res, next) {
     console.log('req body', req.body)
 
     try {
         await userService.signup(req.body);
-        res.send('{"code":200}')
+        res.send('{"msg":"signup successfully"}')
     } catch (e) {
-        console.log('signup exception', e)
+        next(err)
+    }
+})
+
+router.getAsync('/profile', async function (req, res) {
+    try {
+        const result = await userService.getProfile(req.query.id);
+        res.send('profile')
+    } catch (e) {
         next(e)
     }
 })
 
-router.get('/profile', function (req, res) {
-    userService.getProfile(req.query.id).then(() => {
-        res.send('profile')
-    }).catch(err => {
-        next(err)
-    });
-})
-
-router.get('/search', function (req, res) {
-    userService.search(req.query.keyword, req.query.page, req.query.count).then(() => {
-        res.send('profile')
-    }).catch(err => {
-        next(err)
-    });
+router.postAsync('/search', async function (req, res) {
+    try {
+        const result = await userService.search(req.query.keyword);
+        res.send('search')
+    } catch (e) {
+        next(e)
+    }
 })
 
 module.exports = router

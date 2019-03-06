@@ -5,6 +5,20 @@ var poolData = {
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 var cognitoUser = userPool.getCurrentUser();
+var authToken;
+
+if (cognitoUser) {
+    cognitoUser.getSession(function sessionCallback(err, session) {
+        if (err) {
+            console.log(err);
+        } else if (!session.isValid()) {
+            console.log('session invalid');
+        } else {
+            authToken = session.getIdToken().getJwtToken();
+            console.log('auth token', authToken);
+        }
+    });
+}
 
 /**
  * 
@@ -43,6 +57,16 @@ function signup(email, password, nickname, successCallback, failureCallback) {
                     failureCallback(err);
                 } else {
                     cognitoUser = result.user;
+                    cognitoUser.getSession(function sessionCallback(err, session) {
+                        if (err) {
+                            console.log(err);
+                        } else if (!session.isValid()) {
+                            console.log('session invalid');
+                        } else {
+                            authToken = session.getIdToken().getJwtToken();
+                            console.log('auth token', authToken);
+                        }
+                    });
                     successCallback();
                 }
             });
@@ -63,8 +87,6 @@ function signup(email, password, nickname, successCallback, failureCallback) {
  * @param {function} callbackFunc takes two parameters (err, result)
  */
 function verify(email, code, callbackFunc) {
-    console.log('verify', email, code);
-
     var cognitoUser = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
         Pool: userPool

@@ -9,8 +9,10 @@
   "author": "Kevin Jolly & Ren Jiang",
   "license": "ISC",
   "dependencies": {
+    "@awaitjs/express": "^0.3.0",
     "body-parser": "^1.18.3",
     "elasticsearch": "^15.4.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "node-jose": "^1.1.2"
   }
 }
