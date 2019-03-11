@@ -45,6 +45,25 @@ class UserDao {
 
         console.log('token update result', response)
     }
+
+    async getProjectUsers(projectId, fields) {
+        const res = await client.search({
+            index: 'user',
+            type: 'user',
+            body: {
+                query: {
+                    term: {
+                        project: projectId
+                    }
+                },
+            },
+            _source: fields
+        })
+
+        console.log('get project users response', res)
+
+        return res.hits.hits
+    }
 }
 
 module.exports = exports = new UserDao();

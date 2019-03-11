@@ -7,7 +7,7 @@ const msgService = require('../service/msg-service')
 
 router.postAsync('/single', async function (req, res, next) {
     try {
-        msgService.sendSingle(req.body)
+        await msgService.sendSingle(req.body)
         res.send('{"msg":"single message sent successfully"}')
     } catch (err) {
         next(err)
@@ -16,8 +16,9 @@ router.postAsync('/single', async function (req, res, next) {
 
 router.postAsync('/group', async function (req, res, next) {
     try {
-        res.send('{"msg":"signup successfully"}')
-    } catch (e) {
+        await msgService.sendGroup(body)
+        res.send('{"msg":"group message sent successfully"}')
+    } catch (err) {
         next(err)
     }
 })
