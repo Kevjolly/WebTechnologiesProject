@@ -17,15 +17,16 @@ app.get('/', function (req, res) {
 });
 
 // routers
-var userRouter = require('./router/user-router');
-
-app.use('/user', userRouter);
+app.use('/user', require('./router/user-router'));
+app.use('/msg', require('./router/msg-router'));
 
 // general error handler
 app.use(function (err, req, res, next) {
 	if (err) {
 		console.log('internal server error', err.stack);
-		res.status(500).send(err.message);
+		res.status(500).send(JSON.stringify({
+			msg: err.message
+		}));
 	} else {
 		next()
 	}

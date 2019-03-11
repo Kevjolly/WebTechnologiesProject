@@ -14,14 +14,17 @@ class UserDao {
         console.log('user dao save response', response)
     }
 
-    async getUser(id) {
+    async getUser(email, fields) {
         const response = await client.get({
             index: 'user',
             type: 'user',
-            id: id
+            id: email,
+            _source: fields
         })
 
         console.log('user dao get user', response)
+
+        return response._source
     }
 
     async search(query, page, count) {

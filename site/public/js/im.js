@@ -81,3 +81,5 @@ function isTokenSentToServer() {
 function setTokenSentToServer(sent) {
     window.localStorage.setItem('sentToServer', sent ? '1' : '0');
 }
+
+// TODO store local messages IndexDB
