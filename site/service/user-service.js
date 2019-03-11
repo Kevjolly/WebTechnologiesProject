@@ -12,6 +12,10 @@ class UserService {
     async search(keyword, page, count) {
         return await userDao.search(keyword, page, count)
     }
+
+    async updateToken(email, token) {
+        await userDao.updateToken(email, token)
+    }
 }
 
 module.exports = exports = new UserService();

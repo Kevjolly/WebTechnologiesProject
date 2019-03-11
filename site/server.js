@@ -33,7 +33,7 @@ app.use(function (err, req, res, next) {
 
 // not found handler
 app.use(function (req, res, next) {
-	console.log('not found');
+	console.log(req.path, 'not found');
 	res.status(404).send('404 not found');
 });
 

@@ -15,7 +15,7 @@ class UserDao {
     }
 
     async getUser(id) {
-        const response = client.get({
+        const response = await client.get({
             index: 'user',
             type: 'user',
             id: id
@@ -26,6 +26,21 @@ class UserDao {
 
     async search(query, page, count) {
         // TODO
+    }
+
+    async updateToken(email, token) {
+        const response = await client.update({
+            index: 'user',
+            type: 'user',
+            id: email,
+            body: {
+                doc: {
+                    token: token
+                }
+            }
+        })
+
+        console.log('token update result', response)
     }
 }
 

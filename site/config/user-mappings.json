@@ -40,6 +40,9 @@
                 "nickname": {
                     "type": "text",
                     "analyzer": "ngram_analyzer"
+                },
+                "token": {
+                    "type": "keyword"
                 }
             }
         }
