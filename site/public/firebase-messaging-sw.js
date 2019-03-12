@@ -61,7 +61,6 @@ self.addEventListener('notificationclick', function (event) {
       const url = new URL(client.url);
 
       if (url.pathname == actionUrl.pathname) {
-        // Excellent, let's use it!
         client.focus();
         targetClient = client;
         break;
@@ -74,11 +73,10 @@ self.addEventListener('notificationclick', function (event) {
       targetClient = await clients.openWindow(notification.click_action);
     }
 
-    // Message the client:
-    targetClient.postMessage("New chat messages!");
+    targetClient.postMessage(event.notification.data);
   }());
 
-  console.log('notification clicked', event.notification);
+  console.log('notification clicked', event);
 
   event.notification.close();
 });

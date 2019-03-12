@@ -71,7 +71,13 @@ messaging.onTokenRefresh(function () {
 
 messaging.onMessage(function (payload) {
     console.log('Message received. ', payload);
-    // ...
+});
+
+navigator.serviceWorker.addEventListener("message", function (event) {
+    if ("firebase-messaging-msg-type" in event.data) {
+        return;
+    }
+    console.log('listener message received', event);
 });
 
 function isTokenSentToServer() {
