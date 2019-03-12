@@ -30,6 +30,9 @@
                 "created": {
                     "type": "long"
                 },
+                "creator": {
+                    "type": "keyword"
+                },
                 "desc": {
                     "type": "text",
                     "analyzer": "english_analyzer"

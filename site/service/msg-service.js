@@ -13,7 +13,7 @@ class MsgService {
             var notification = {
                 'title': 'Teamup',
                 'body': user.nickname + ' sent you a message',
-                'click_action': 'http://localhost:8080', // TODO action
+                'click_action': body.link,
                 'icon': ''
             };
 
@@ -24,9 +24,11 @@ class MsgService {
                     'Content-Type': 'application/json'
                 },
                 'body': JSON.stringify({
-                    'notification': notification,
                     'to': user.token,
-                    'data': body.msg
+                    'data': {
+                        'msg': body,
+                        'notification': notification
+                    }
                 })
             })
 
@@ -50,7 +52,7 @@ class MsgService {
         var notification = {
             'title': 'Teamup',
             'body': user.nickname + ' sent a message to project ' + project.name,
-            'click_action': 'http://localhost:8080', // TODO action
+            'click_action': body.link,
             'icon': ''
         };
 
@@ -62,9 +64,11 @@ class MsgService {
                     'Content-Type': 'application/json'
                 },
                 'body': JSON.stringify({
-                    'notification': notification,
                     'registration_ids': tokens,
-                    'data': body.msg
+                    'data': {
+                        'msg': body,
+                        'notification': notification
+                    }
                 })
             })
 
