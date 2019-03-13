@@ -4,11 +4,10 @@ var poolData = {
 };
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-var cognitoUser = userPool.getCurrentUser();
 var authToken;
 
-if (cognitoUser) {
-    cognitoUser.getSession(function sessionCallback(err, session) {
+if (userPool.getCurrentUser()) {
+    userPool.getCurrentUser().getSession(function sessionCallback(err, session) {
         if (err) {
             console.log(err);
         } else if (!session.isValid()) {
@@ -54,26 +53,21 @@ function signup(email, password, nickname, successCallback, failureCallback) {
             userPool.signUp(email, password, [attributeEmail], null, function (err, result) {
                 if (err) {
                     console.log('cognito error');
-                    failureCallback(err);
+                    if (failureCallback) {
+                        failureCallback(err);
+                    }
                 } else {
-                    cognitoUser = result.user;
-                    cognitoUser.getSession(function sessionCallback(err, session) {
-                        if (err) {
-                            console.log(err);
-                        } else if (!session.isValid()) {
-                            console.log('session invalid');
-                        } else {
-                            authToken = session.getIdToken().getJwtToken();
-                            console.log('auth token', authToken);
-                        }
-                    });
-                    successCallback();
+                    if (successCallback) {
+                        successCallback();
+                    }
                 }
             });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log('es error', jqXHR, textStatus, errorThrown);
-            failureCallback(errorThrown);
+            if (failureCallback) {
+                failureCallback(errorThrown);
+            }
         },
         contentType: 'application/json',
         dataType: 'json'
@@ -87,12 +81,12 @@ function signup(email, password, nickname, successCallback, failureCallback) {
  * @param {function} callbackFunc takes two parameters (err, result)
  */
 function verify(email, code, callbackFunc) {
-    var cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+    var user = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
         Pool: userPool
     });
 
-    cognitoUser.confirmRegistration(code, true, callbackFunc);
+    user.confirmRegistration(code, true, callbackFunc);
 }
 
 /**
@@ -109,17 +103,43 @@ function signin(email, password, successCallback, failureCallback) {
         Password: password
     });
 
-    var cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+    var user = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
         Pool: userPool
     });
 
-    cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: successCallback,
+    user.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            authToken = result.idToken.jwtToken;
+            console.log('signin successfully', result.idToken.jwtToken, user);
+
+            var dbName = 'teamup' + user.username.split('-').join('');
+
+            console.log('create database ', dbName);
+
+            alasql('CREATE INDEXEDDB DATABASE IF NOT EXISTS ' + dbName, function () {
+                alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
+                    alasql('USE ' + dbName, function () {
+                        alasql('CREATE TABLE IF NOT EXISTS single_messages (id BIGINT NOT NULL PRIMARY KEY, from_user string, to_user string, data string)', function () {
+                            console.log('single message table created');
+                        });
+
+                        alasql('CREATE TABLE IF NOT EXISTS project_messages (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)', function () {
+                            console.log('project message table created');
+                        })
+                    });
+                });
+            });
+
+            if (successCallback) {
+                successCallback(result);
+            }
+        },
         onFailure: failureCallback
     });
 }
 
 function signout() {
-    cognitoUser.signOut();
+    authToken = '';
+    userPool.getCurrentUser().signOut();
 }

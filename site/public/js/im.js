@@ -16,8 +16,6 @@ messaging.usePublicVapidKey('BIKbBZTDdnGeU_VsRqH0lMtuk5jr5HjW1h6OfiCULuyHN1oZmck
 
 messaging.requestPermission().then(function () {
     console.log('Notification permission granted.');
-    // TODO(developer): Retrieve an Instance ID token for use with FCM.
-    // ...
 }).catch(function (err) {
     console.log('Unable to get permission to notify.', err);
 });
@@ -69,16 +67,51 @@ messaging.onTokenRefresh(function () {
     getToken();
 });
 
-messaging.onMessage(function (payload) {
-    console.log('Message received. ', payload);
-});
+function handleMessage(data, callback) {
+    var msg = JSON.parse(data.msg);
 
-navigator.serviceWorker.addEventListener("message", function (event) {
-    if ("firebase-messaging-msg-type" in event.data) {
-        return;
+    console.log('Message received', msg.id, data.msg);
+
+    var dbName = 'teamup' + userPool.getCurrentUser().username.split('-').join('');
+
+    console.log('dbname', dbName);
+
+    if ('to' in msg) {
+        alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
+            var stmt = alasql.compile('insert into ' + dbName + '.single_messages (id, from_user, to_user, data) values (?, ?, ?, ?)');
+            stmt([msg.id, msg.from, msg.to, data.msg], function () {
+                console.log('insert single message successfully');
+            });
+        });
+    } else if ('project' in msg) {
+        alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
+            var stmt = alasql.compile('insert into ' + dbName + '.project_messages (id, from_user, project, data) values (?, ?, ?, ?)');
+            stmt([msg.id, msg.from, msg.group, data.msg], function () {
+                console.log('insert project message successfully');
+            });
+        });
     }
-    console.log('listener message received', event);
-});
+
+    callback(msg);
+}
+
+/**
+ * client should call this function to set an event listener
+ * @param {function} callback take one parameter, msg which is an object
+ */
+function onMessageReceived(callback) {
+    messaging.onMessage(function (payload) {
+        handleMessage(payload.data, callback);
+    });
+
+    navigator.serviceWorker.addEventListener("message", function (event) {
+        if ("firebase-messaging-msg-type" in event.data) {
+            return;
+        }
+
+        handleMessage(event.data, callback);
+    });
+}
 
 function isTokenSentToServer() {
     return window.localStorage.getItem('sentToServer') === '1';
@@ -88,4 +121,44 @@ function setTokenSentToServer(sent) {
     window.localStorage.setItem('sentToServer', sent ? '1' : '0');
 }
 
-// TODO store local messages IndexDB
+/**
+ * 
+ * @param {string} peerEmail 
+ * @param {long} maxId 
+ * @param {int} count 
+ * @param {function} callback takes one parameter, messages array
+ */
+function loadSingleMessages(peerEmail, maxId, count, callback) {
+    var dbName = 'teamup' + userPool.getCurrentUser().username.split('-').join('');
+    alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
+        alasql('select data from ' + dbName + '.single_messages where (from_user="' + peerEmail + '" or to_user="' + peerEmail + '") and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+            var messages = new Array();
+            result.forEach(row => {
+                messages.push(JSON.parse(row.data));
+            })
+
+            callback(messages);
+        });
+    });
+}
+
+/**
+ * 
+ * @param {long} projectId 
+ * @param {long} maxId 
+ * @param {int} count 
+ * @param {function} callback takes one parameter, messages array
+ */
+function loadGroupMessages(projectId, maxId, count, callback) {
+    var dbName = 'teamup' + userPool.getCurrentUser().username.split('-').join('');
+    alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
+        alasql('select data from ' + dbName + '.project_messages where project=' + projectId + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+            var messages = new Array();
+            result.forEach(row => {
+                messages.push(JSON.parse(row.data));
+            })
+
+            callback(messages);
+        });
+    });
+}

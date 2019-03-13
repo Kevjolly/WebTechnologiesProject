@@ -6,15 +6,17 @@ const serverKey = 'AAAAgYfJ0Wg:APA91bFWmAJSk79StVf9ofPijbVCgc7ft78csLIFrb_dIRaOn
 
 class MsgService {
     async sendSingle(body) {
-        const to = body.to
-        const user = await userDao.getUser(to, ['token', 'nickname'])
+        const email = body.to
+        const user = await userDao.getUser(email, ['token', 'nickname'])
+
+        body.id = new Date().getTime();
 
         try {
             var notification = {
                 'title': 'Teamup',
                 'body': user.nickname + ' sent you a message',
                 'click_action': body.link,
-                'icon': ''
+                'icon': '' // TODO add icon
             };
 
             const res = await fetch('https://fcm.googleapis.com/fcm/send', {
@@ -38,7 +40,7 @@ class MsgService {
         }
     }
 
-    async sendGroup(body) {
+    async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['token'])
 
@@ -46,6 +48,8 @@ class MsgService {
         users.forEach(function (user) {
             tokens.push(user.token);
         });
+
+        body.id = new Date().getTime();
 
         const project = await projectDao.getProject(projectId)
 
