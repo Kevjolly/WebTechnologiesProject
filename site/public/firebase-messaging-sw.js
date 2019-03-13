@@ -3,6 +3,44 @@
 // If you do not serve/host your project using Firebase Hosting see https://firebase.google.com/docs/web/setup
 importScripts('https://www.gstatic.com/firebasejs/5.8.6/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/5.8.6/firebase-messaging.js');
+importScripts('https://cdn.jsdelivr.net/alasql/0.2/alasql.min.js');
+
+function handleMessage(data) {
+  var msg = JSON.parse(data.msg);
+
+  alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+    alasql('select username from teamup.current_user', function (result) {
+      console.log('Message received', msg.id, data.msg);
+
+      var username;
+      result.forEach(row => {
+        username = row.username;
+      });
+
+      if (!username) {
+        return;
+      }
+
+      var suffix = username.split('-').join('');
+
+      if ('to' in msg) {
+        alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+          var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, from_user, to_user, data) values (?, ?, ?, ?)');
+          stmt([msg.id, msg.from, msg.to, data.msg], function () {
+            console.log('insert single message successfully');
+          });
+        });
+      } else if ('project' in msg) {
+        alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+          var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
+          stmt([msg.id, msg.from, msg.group, data.msg], function () {
+            console.log('insert project message successfully');
+          });
+        });
+      }
+    });
+  });
+}
 
 var config = {
   apiKey: "AIzaSyCccdgckISI0fQ-5BYg2-GFir6J6ccaokk",
@@ -75,6 +113,8 @@ self.addEventListener('notificationclick', function (event) {
 
     targetClient.postMessage(event.notification.data);
   }());
+
+  handleMessage(event.notification.data);
 
   console.log('notification clicked', event);
 

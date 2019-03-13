@@ -113,20 +113,25 @@ function signin(email, password, successCallback, failureCallback) {
             authToken = result.idToken.jwtToken;
             console.log('signin successfully', result.idToken.jwtToken, user);
 
-            var dbName = 'teamup' + user.username.split('-').join('');
+            var suffix = user.username.split('-').join('');
 
-            console.log('create database ', dbName);
+            console.log('create database teamup');
 
-            alasql('CREATE INDEXEDDB DATABASE IF NOT EXISTS ' + dbName, function () {
-                alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
-                    alasql('USE ' + dbName, function () {
-                        alasql('CREATE TABLE IF NOT EXISTS single_messages (id BIGINT NOT NULL PRIMARY KEY, from_user string, to_user string, data string)', function () {
-                            console.log('single message table created');
+            alasql('CREATE INDEXEDDB DATABASE IF NOT EXISTS teamup', function () {
+                alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+                    alasql('CREATE TABLE IF NOT EXISTS teamup.current_user (username string PRIMARY KEY)', () => {
+                        console.log('current_user table created');
+                        var stmt = alasql.compile('insert into teamup.current_user (username) values (?)');
+                        stmt([user.username], function () {
+                            console.log('current user inserted');
+                            alasql('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, from_user string, to_user string, data string)', function () {
+                                console.log('single message table created');
+                            });
+
+                            alasql('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)', function () {
+                                console.log('project message table created');
+                            })
                         });
-
-                        alasql('CREATE TABLE IF NOT EXISTS project_messages (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)', function () {
-                            console.log('project message table created');
-                        })
                     });
                 });
             });
@@ -141,5 +146,9 @@ function signin(email, password, successCallback, failureCallback) {
 
 function signout() {
     authToken = '';
-    userPool.getCurrentUser().signOut();
+    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+        alasql('delete from teamup.current_user where username="' + userPool.getCurrentUser().username + '"');
+        console.log('current user deleted');
+        userPool.getCurrentUser().signOut();
+    });
 }

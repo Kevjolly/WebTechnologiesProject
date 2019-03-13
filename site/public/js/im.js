@@ -10,8 +10,7 @@ var config = {
 firebase.initializeApp(config);
 
 var messaging = firebase.messaging();
-// Initialize Firebase
-// const messaging = firebase.messaging();
+
 messaging.usePublicVapidKey('BIKbBZTDdnGeU_VsRqH0lMtuk5jr5HjW1h6OfiCULuyHN1oZmck9iG4MQ2FRrsAcmGouAkF0mGYcdTeJiOr2kNk');
 
 messaging.requestPermission().then(function () {
@@ -72,20 +71,18 @@ function handleMessage(data, callback) {
 
     console.log('Message received', msg.id, data.msg);
 
-    var dbName = 'teamup' + userPool.getCurrentUser().username.split('-').join('');
-
-    console.log('dbname', dbName);
+    var suffix = userPool.getCurrentUser().username.split('-').join('');
 
     if ('to' in msg) {
-        alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
-            var stmt = alasql.compile('insert into ' + dbName + '.single_messages (id, from_user, to_user, data) values (?, ?, ?, ?)');
+        alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, from_user, to_user, data) values (?, ?, ?, ?)');
             stmt([msg.id, msg.from, msg.to, data.msg], function () {
                 console.log('insert single message successfully');
             });
         });
     } else if ('project' in msg) {
-        alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
-            var stmt = alasql.compile('insert into ' + dbName + '.project_messages (id, from_user, project, data) values (?, ?, ?, ?)');
+        alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+            var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
             stmt([msg.id, msg.from, msg.group, data.msg], function () {
                 console.log('insert project message successfully');
             });
@@ -109,7 +106,8 @@ function onMessageReceived(callback) {
             return;
         }
 
-        handleMessage(event.data, callback);
+        var msg = JSON.parse(event.data.msg);
+        callback(msg);
     });
 }
 
@@ -129,9 +127,9 @@ function setTokenSentToServer(sent) {
  * @param {function} callback takes one parameter, messages array
  */
 function loadSingleMessages(peerEmail, maxId, count, callback) {
-    var dbName = 'teamup' + userPool.getCurrentUser().username.split('-').join('');
-    alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
-        alasql('select data from ' + dbName + '.single_messages where (from_user="' + peerEmail + '" or to_user="' + peerEmail + '") and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+    var suffix = userPool.getCurrentUser().username.split('-').join('');
+    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+        alasql('select data from teamup.single_messages_' + suffix + ' where (from_user="' + peerEmail + '" or to_user="' + peerEmail + '") and id<' + maxId + ' order by id desc limit ' + count, function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -150,9 +148,9 @@ function loadSingleMessages(peerEmail, maxId, count, callback) {
  * @param {function} callback takes one parameter, messages array
  */
 function loadGroupMessages(projectId, maxId, count, callback) {
-    var dbName = 'teamup' + userPool.getCurrentUser().username.split('-').join('');
-    alasql('ATTACH INDEXEDDB DATABASE ' + dbName, function () {
-        alasql('select data from ' + dbName + '.project_messages where project=' + projectId + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+    var suffix = userPool.getCurrentUser().username.split('-').join('');
+    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+        alasql('select data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -161,4 +159,8 @@ function loadGroupMessages(projectId, maxId, count, callback) {
             callback(messages);
         });
     });
+}
+
+function loadOfflineMessages() {
+
 }
