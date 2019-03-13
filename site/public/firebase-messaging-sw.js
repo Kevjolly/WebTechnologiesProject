@@ -110,8 +110,6 @@ self.addEventListener('notificationclick', function (event) {
     if (!targetClient) {
       targetClient = await clients.openWindow(notification.click_action);
     }
-
-    targetClient.postMessage(event.notification.data);
   }());
 
   handleMessage(event.notification.data);

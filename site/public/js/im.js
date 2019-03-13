@@ -74,6 +74,8 @@ function handleMessage(data, callback) {
     var suffix = userPool.getCurrentUser().username.split('-').join('');
 
     if ('to' in msg) {
+        window.localStorage.setItem('teamup_single_max_id_' + suffix, msg.id);
+
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
             var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, from_user, to_user, data) values (?, ?, ?, ?)');
             stmt([msg.id, msg.from, msg.to, data.msg], function () {
@@ -81,6 +83,8 @@ function handleMessage(data, callback) {
             });
         });
     } else if ('project' in msg) {
+        window.localStorage.setItem('teamup_project_max_id_' + suffix, msg.id);
+
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
             var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
             stmt([msg.id, msg.from, msg.group, data.msg], function () {
@@ -100,15 +104,6 @@ function onMessageReceived(callback) {
     messaging.onMessage(function (payload) {
         handleMessage(payload.data, callback);
     });
-
-    navigator.serviceWorker.addEventListener("message", function (event) {
-        if ("firebase-messaging-msg-type" in event.data) {
-            return;
-        }
-
-        var msg = JSON.parse(event.data.msg);
-        callback(msg);
-    });
 }
 
 function isTokenSentToServer() {
@@ -126,7 +121,7 @@ function setTokenSentToServer(sent) {
  * @param {int} count 
  * @param {function} callback takes one parameter, messages array
  */
-function loadSingleMessages(peerEmail, maxId, count, callback) {
+function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
         alasql('select data from teamup.single_messages_' + suffix + ' where (from_user="' + peerEmail + '" or to_user="' + peerEmail + '") and id<' + maxId + ' order by id desc limit ' + count, function (result) {
@@ -147,7 +142,7 @@ function loadSingleMessages(peerEmail, maxId, count, callback) {
  * @param {int} count 
  * @param {function} callback takes one parameter, messages array
  */
-function loadGroupMessages(projectId, maxId, count, callback) {
+function loadGroupHistoryMessages(projectId, maxId, count, callback) {
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
         alasql('select data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
@@ -161,6 +156,38 @@ function loadGroupMessages(projectId, maxId, count, callback) {
     });
 }
 
-function loadOfflineMessages() {
+function loadOfflineMessages(callback) {
+    var suffix = userPool.getCurrentUser().username.split('-').join('');
 
+    var singleMaxId = window.localStorage.getItem('teamup_single_max_id_' + suffix);
+    var projectMaxId = window.localStorage.getItem('teamup_project_max_id_' + suffix);
+
+    var offlineMessages = {
+        single: {},
+        project: {}
+    };
+
+    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+        alasql('select data from teamup.project_messages_' + suffix + ' where id>' + projectMaxId + ' order by id desc', function (projectResult) {
+            projectResult.forEach(row => {
+                var message = JSON.parse(row.data);
+                if (!(message.project in offlineMessages.project)) {
+                    offlineMessages.project[message.project] = new Array();
+                }
+                offlineMessages.project[message.project].push(message);
+            });
+
+            alasql('select data from teamup.single_messages_' + suffix + ' where id>' + singleMaxId + ' order by id desc', function (singleResult) {
+                singleResult.forEach(row => {
+                    var message = JSON.parse(row.data);
+                    if (!(message.from in offlineMessages.single)) {
+                        offlineMessages.single[message.from] = new Array();
+                    }
+                    offlineMessages.single[message.from].push(message);
+                });
+
+                callback(offlineMessages);
+            });
+        });
+    });
 }

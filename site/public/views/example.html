@@ -63,6 +63,8 @@
     <button id="signoutBtn">sign out</button>
     <br>
     <button id="loadBtn">load message</button>
+    <br>
+    <button id="offlineBtn">offline message</button>
 
     <footer>
     </footer>
@@ -104,6 +106,12 @@
         $('#loadBtn').click(function () {
             loadSingleMessages('brucejeaung@gmail.com', 1552498382374, 10, function (res) {
                 console.log('load result', res);
+            });
+        })
+
+        $('#offlineBtn').click(function () {
+            loadOfflineMessages(function (res) {
+                console.log('offline load result', res);
             });
         })
     </script>
