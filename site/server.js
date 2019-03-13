@@ -17,15 +17,16 @@ app.get('/', function (req, res) {
 });
 
 // routers
-var userRouter = require('./router/user-router');
-
-app.use('/user', userRouter);
+app.use('/user', require('./router/user-router'));
+app.use('/msg', require('./router/msg-router'));
 
 // general error handler
 app.use(function (err, req, res, next) {
 	if (err) {
 		console.log('internal server error', err.stack);
-		res.status(500).send(err.message);
+		res.status(500).send(JSON.stringify({
+			msg: err.message
+		}));
 	} else {
 		next()
 	}
@@ -33,7 +34,7 @@ app.use(function (err, req, res, next) {
 
 // not found handler
 app.use(function (req, res, next) {
-	console.log('not found');
+	console.log(req.path, 'not found');
 	res.status(404).send('404 not found');
 });
 

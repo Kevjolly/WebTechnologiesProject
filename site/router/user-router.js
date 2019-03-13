@@ -34,4 +34,13 @@ router.postAsync('/search', async function (req, res) {
     }
 })
 
+router.postAsync('/setToken', async function (req, res) {
+    try {
+        await userService.updateToken(req.email, req.body.token);
+        res.send('{"msg":"token uploaded successfully"}')
+    } catch (e) {
+        next(e)
+    }
+})
+
 module.exports = router

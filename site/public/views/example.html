@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Homepage Implementation Procedure</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <!-- Special tag for Microsoft -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Description -->
+    <meta name="description" content="Home page of the coursework for the Web Technologies course">
+    <!-- How the layout and content adapts to the mobile viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <!-- <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico' /> -->
+
+    <!-- Stylesheets -->
+
+    <!-- Javascript -->
+
+    <script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
+    <script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="../js/auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-messaging.js"></script>
+    <script type="text/javascript" src="../js/im.js"></script>
+    <script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
+    <script>
+        onMessageReceived(function (data) {
+            console.log('aaa received', data);
+        });
+    </script>
+</head>
+
+<body>
+    <header>
+    </header>
+
+    <div id="content">
+        <input id="email" placeholder="email">
+        <input id="pass" placeholder="password">
+        <input id="nickname" placeholder="nickname">
+        <button id="regBtn">register</button>
+    </div>
+
+    <div id="verify">
+        <input id="vemail" placeholder="email">
+        <input id="code" placeholder="code">
+        <button id="verifyBtn">verify</button>
+    </div>
+
+    <div id="signin">
+        <input id="semail" placeholder="email">
+        <input id="password" placeholder="password">
+        <button id="signinBtn">signin</button>
+    </div>
+    <br>
+    <button id="msgBtn">send message</button>
+    <br>
+    <button id="signoutBtn">sign out</button>
+    <br>
+    <button id="loadBtn">load message</button>
+
+    <footer>
+    </footer>
+    <script>
+        $('#signoutBtn').click(function () {
+            signout();
+        });
+
+        $('#msgBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    to: 'brucejeaung@gmail.com'
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("message sent successfully", data);
+                    setTokenSentToServer(true);
+                },
+                error: function (err) {
+                    setTokenSentToServer(false);
+                    console.log("failed to send the message", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/msg/single'
+            });
+        });
+
+        $('#signinBtn').click(function () {
+            console.log('click');
+            signin($('#semail').val(), $('#password').val());
+
+        });
+
+        $('#loadBtn').click(function () {
+            loadSingleMessages('brucejeaung@gmail.com', 1552498382374, 10, function (res) {
+                console.log('load result', res);
+            });
+        })
+    </script>
+</body>
+
+</html>

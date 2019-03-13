@@ -25,27 +25,25 @@
         }
     },
     "mappings": {
-        "user": {
+        "project": {
             "properties": {
                 "created": {
                     "type": "long"
                 },
-                "email": {
+                "creator": {
                     "type": "keyword"
+                },
+                "desc": {
+                    "type": "text",
+                    "analyzer": "english_analyzer"
                 },
                 "skills": {
                     "type": "text",
                     "analyzer": "ngram_analyzer"
                 },
-                "nickname": {
+                "name": {
                     "type": "text",
                     "analyzer": "ngram_analyzer"
-                },
-                "token": {
-                    "type": "keyword"
-                },
-                "projects": {
-                    "type": "long"
                 }
             }
         }
