@@ -124,7 +124,7 @@ class UserDao {
             body: {
                 query: {
                     term: {
-                        project: projectId
+                        projects: parseInt(projectId)
                     }
                 },
             },
@@ -133,7 +133,13 @@ class UserDao {
 
         console.log('get project users response', res)
 
-        return res.hits.hits
+        var result = new Array()
+
+        res.hits.hits.forEach(hit => {
+            result.push(hit._source)
+        })
+
+        return result
     }
 
     async joinProject(email, projectId) {

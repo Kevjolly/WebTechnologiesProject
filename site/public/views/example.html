@@ -94,10 +94,8 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log("message sent successfully", data);
-                    setTokenSentToServer(true);
                 },
                 error: function (err) {
-                    setTokenSentToServer(false);
                     console.log("failed to send the message", err);
                 },
                 processData: false,
@@ -137,10 +135,8 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log("project created successfully", data);
-                    setTokenSentToServer(true);
                 },
                 error: function (err) {
-                    setTokenSentToServer(false);
                     console.log("failed to create the project", err);
                 },
                 processData: false,
@@ -150,7 +146,19 @@
         });
 
         $('#getProjectBtn').click(function () {
-
+            $.ajax({
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('project profile', data);
+                },
+                error: function (err) {
+                    console.log('get project profile failed', err)
+                },
+                processData: false,
+                type: 'GET',
+                url: '/project/profile?id=1552566271897'
+            });
         });
 
         $('#joinProjectBtn').click(function () {
@@ -165,10 +173,8 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log("project joined successfully", data);
-                    setTokenSentToServer(true);
                 },
                 error: function (err) {
-                    setTokenSentToServer(false);
                     console.log("failed to join the project", err);
                 },
                 processData: false,
