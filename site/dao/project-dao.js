@@ -37,10 +37,14 @@ class ProjectDao {
                             {
                                 match: {
                                     name: query
-                                },
+                                }
+                            },
+                            {
                                 match: {
                                     skills: query
-                                },
+                                }
+                            },
+                            {
                                 match: {
                                     desc: query
                                 }

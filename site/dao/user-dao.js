@@ -142,8 +142,13 @@ class UserDao {
             type: 'user',
             id: email,
             body: {
-                script: 'ctx._source.projects += project',
-                params: { project: projectId }
+                script: {
+                    source: 'if (!ctx._source.projects.contains(params.project)) {ctx._source.projects.add(params.project);}',
+                    lang: 'painless',
+                    params: {
+                        project: projectId
+                    }
+                }
             }
         });
 
@@ -156,8 +161,13 @@ class UserDao {
             type: 'user',
             id: email,
             body: {
-                script: 'ctx._source.projects -= project',
-                params: { project: projectId }
+                script: {
+                    source: 'ctx._source.projects.remove(ctx._source.projects.indexOf(params.project))',
+                    lang: 'painless',
+                    params: {
+                        project: projectId
+                    }
+                }
             }
         });
 

@@ -57,6 +57,10 @@
     <br>
     <button id="getProjectBtn">get project</button>
     <br>
+    <button id="joinProjectBtn">join project</button>
+    <br>
+    <button id="quitProjectBtn">quit project</button>
+    <br>
     <button id="msgBtn">send message</button>
     <br>
     <button id="loadBtn">load message</button>
@@ -117,7 +121,85 @@
             loadOfflineMessages(function (res) {
                 console.log('offline load result', res);
             });
-        })
+        });
+
+        $('#createProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    desc: 'we are building a website to help people team up',
+                    skills: ['nodejs', 'html'],
+                    name: 'web tech project'
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("project created successfully", data);
+                    setTokenSentToServer(true);
+                },
+                error: function (err) {
+                    setTokenSentToServer(false);
+                    console.log("failed to create the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/project/create'
+            });
+        });
+
+        $('#getProjectBtn').click(function () {
+
+        });
+
+        $('#joinProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    projectId: 1552566271897
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("project joined successfully", data);
+                    setTokenSentToServer(true);
+                },
+                error: function (err) {
+                    setTokenSentToServer(false);
+                    console.log("failed to join the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/project/join'
+            });
+        });
+
+        $('#quitProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    projectId: 1552566271897
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("project quitted successfully", data);
+                    setTokenSentToServer(true);
+                },
+                error: function (err) {
+                    setTokenSentToServer(false);
+                    console.log("failed to quit the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/project/quit'
+            });
+        });
     </script>
 </body>
 

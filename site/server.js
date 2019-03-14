@@ -24,7 +24,7 @@ app.use('/project', require('./router/project-router'));
 // general error handler
 app.use(function (err, req, res, next) {
 	if (err) {
-		console.log('internal server error', err.stack);
+		console.log('internal server error', err);
 		res.status(500).send(JSON.stringify({
 			code: 500,
 			msg: err.message

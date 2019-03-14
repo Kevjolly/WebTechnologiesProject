@@ -31,7 +31,8 @@ function signup(email, password, nickname, successCallback, failureCallback) {
     const user = {
         email: email,
         nickname: nickname,
-        verified: false
+        verified: false,
+        projects: []
     }
 
     console.log(JSON.stringify(user));

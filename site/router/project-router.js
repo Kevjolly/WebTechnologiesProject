@@ -25,7 +25,7 @@ router.postAsync('/create', async function (req, res, next) {
 
 router.postAsync('/join', async function (req, res, next) {
     try {
-        projectService.join(req.email, req.body.projectId)
+        await projectService.join(req.email, req.body.projectId)
         res.send(JSON.stringify({
             code: 0,
             data: {
@@ -38,7 +38,7 @@ router.postAsync('/join', async function (req, res, next) {
 
 router.postAsync('/quit', async function (req, res, next) {
     try {
-        projectService.quit(req.email, req.body.projectId)
+        await projectService.quit(req.email, req.body.projectId)
         res.send(JSON.stringify({
             code: 0,
             data: {
