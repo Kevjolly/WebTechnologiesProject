@@ -13,13 +13,6 @@
     <!-- How the layout and content adapts to the mobile viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Favicon -->
-    <!-- <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico' /> -->
-
-    <!-- Stylesheets -->
-
-    <!-- Javascript -->
-
     <script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
     <script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
@@ -58,9 +51,13 @@
         <button id="signinBtn">signin</button>
     </div>
     <br>
-    <button id="msgBtn">send message</button>
-    <br>
     <button id="signoutBtn">sign out</button>
+    <br>
+    <button id="createProjectBtn">create project</button>
+    <br>
+    <button id="getProjectBtn">get project</button>
+    <br>
+    <button id="msgBtn">send message</button>
     <br>
     <button id="loadBtn">load message</button>
     <br>
@@ -69,6 +66,14 @@
     <footer>
     </footer>
     <script>
+        $('#regBtn').click(function () {
+            signup($('#email').val(), $('#pass').val(), $('#nickname').val());
+        });
+
+        $('#verifyBtn').click(function () {
+            verify($('#vemail').val(), $('#code').val());
+        });
+
         $('#signoutBtn').click(function () {
             signout();
         });
@@ -100,11 +105,10 @@
         $('#signinBtn').click(function () {
             console.log('click');
             signin($('#semail').val(), $('#password').val());
-
         });
 
         $('#loadBtn').click(function () {
-            loadSingleMessages('brucejeaung@gmail.com', 1552498382374, 10, function (res) {
+            loadSingleHistoryMessages('brucejeaung@gmail.com', new Date().getTime(), 10, function (res) {
                 console.log('load result', res);
             });
         })

@@ -6,38 +6,92 @@ var router = decorateRouter(express.Router())
 const userService = require('../service/user-service')
 
 router.postAsync('/signup', async function (req, res, next) {
-    console.log('req body', req.body)
+    console.log('sign up req body', req.body)
 
     try {
         await userService.signup(req.body);
-        res.send('{"msg":"signup successfully"}')
+        res.send(JSON.stringify({
+            code: 0,
+            msg: 'signup successfully',
+            data: {
+            }
+        }))
     } catch (e) {
-        next(err)
+        next(e)
     }
 })
 
-router.getAsync('/profile', async function (req, res) {
+router.getAsync('/profile', async function (req, res, next) {
     try {
         const result = await userService.getProfile(req.query.id);
-        res.send('profile')
+        res.send(JSON.stringify({
+            code: 0,
+            data: {
+                user: result
+            }
+        }))
     } catch (e) {
         next(e)
     }
 })
 
-router.postAsync('/search', async function (req, res) {
+router.getAsync('/search', async function (req, res, next) {
     try {
-        const result = await userService.search(req.query.keyword);
-        res.send('search')
+        if (!('page' in req.query)) {
+            req.query.page = 1
+        }
+        if (!('count' in req.query)) {
+            req.query.count = 10
+        }
+        const result = await userService.search(req.query);
+        res.send(JSON.stringify({
+            code: 0,
+            data: {
+                result: result
+            }
+        }))
     } catch (e) {
         next(e)
     }
 })
 
-router.postAsync('/setToken', async function (req, res) {
+router.postAsync('/bindToken', async function (req, res, next) {
     try {
         await userService.updateToken(req.email, req.body.token);
-        res.send('{"msg":"token uploaded successfully"}')
+        res.send(JSON.stringify({
+            code: 0,
+            msg: 'token uploaded successfully',
+            data: {
+            }
+        }))
+    } catch (e) {
+        next(e)
+    }
+})
+
+router.postAsync('/unbindToken', async function (req, res, next) {
+    try {
+        await userService.unbindToken(req.email);
+        res.send(JSON.stringify({
+            code: 0,
+            msg: 'token unbinded successfully',
+            data: {
+            }
+        }))
+    } catch (e) {
+        next(e)
+    }
+})
+
+router.postAsync('/verify', async function (req, res, next) {
+    try {
+        await userService.setVerified(req.body.email);
+        res.send(JSON.stringify({
+            code: 0,
+            msg: 'token uploaded successfully',
+            data: {
+            }
+        }))
     } catch (e) {
         next(e)
     }
