@@ -5,14 +5,69 @@ var router = decorateRouter(express.Router())
 
 const projectService = require('../service/project-service')
 
-router.getAsync('/profile', async function (req, res, next) {
+router.postAsync('/create', async function (req, res, next) {
     try {
-        const project = await projectService.getProject(req.query.id)
+        var projectId = new Date().getTime()
+        req.body.id = projectId
+        req.body.creator = req.email
+
+        await projectService.create(req.body)
         res.send(JSON.stringify({
             code: 0,
             data: {
-                project: project
+                projectId: projectId
             }
+        }))
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.postAsync('/join', async function (req, res, next) {
+    try {
+        await projectService.join(req.email, req.body.projectId)
+        res.send(JSON.stringify({
+            code: 0,
+            data: {
+            }
+        }))
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.postAsync('/quit', async function (req, res, next) {
+    try {
+        await projectService.quit(req.email, req.body.projectId)
+        res.send(JSON.stringify({
+            code: 0,
+            data: {
+            }
+        }))
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.postAsync('/agree', async function (req, res, next) {
+    try {
+        projectService.agree(req.body.applicant, req.body.projectId)
+        res.send(JSON.stringify({
+            code: 0,
+            data: {
+            }
+        }))
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.getAsync('/profile', async function (req, res, next) {
+    try {
+        const result = await projectService.getProject(req.query.id)
+        res.send(JSON.stringify({
+            code: 0,
+            data: result
         }))
     } catch (err) {
         next(err)
@@ -21,7 +76,13 @@ router.getAsync('/profile', async function (req, res, next) {
 
 router.getAsync('/search', async function (req, res, next) {
     try {
-        const projects = await projectService.search(req.query.keyword)
+        if (!('page' in req.query)) {
+            req.query.page = 1
+        }
+        if (!('count' in req.query)) {
+            req.query.count = 10
+        }
+        const projects = await projectService.search(req.query)
         res.send(JSON.stringify({
             code: 0,
             data: {

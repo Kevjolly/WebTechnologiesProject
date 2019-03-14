@@ -9,6 +9,10 @@ class MsgService {
         const email = body.to
         const user = await userDao.getUser(email, ['token', 'nickname'])
 
+        if (user.token == '' || !user || !(user.token)) {
+            return
+        }
+
         body.id = new Date().getTime();
 
         try {

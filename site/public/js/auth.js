@@ -31,7 +31,8 @@ function signup(email, password, nickname, successCallback, failureCallback) {
     const user = {
         email: email,
         nickname: nickname,
-        password: password
+        verified: false,
+        projects: []
     }
 
     console.log(JSON.stringify(user));
@@ -52,11 +53,12 @@ function signup(email, password, nickname, successCallback, failureCallback) {
 
             userPool.signUp(email, password, [attributeEmail], null, function (err, result) {
                 if (err) {
-                    console.log('cognito error');
+                    console.log('cognito error', err);
                     if (failureCallback) {
                         failureCallback(err);
                     }
                 } else {
+                    console.log('sign up cognito result', result)
                     if (successCallback) {
                         successCallback();
                     }
@@ -78,15 +80,44 @@ function signup(email, password, nickname, successCallback, failureCallback) {
  * 
  * @param {string} email 
  * @param {string} code 
- * @param {function} callbackFunc takes two parameters (err, result)
+ * @param {function} successCallback takes one parameter result
+ * @param {function} failureCallback taske one parameter err
  */
-function verify(email, code, callbackFunc) {
+function verify(email, code, successCallback, failureCallback) {
     var user = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
         Pool: userPool
     });
 
-    user.confirmRegistration(code, true, callbackFunc);
+    user.confirmRegistration(code, true, function (err, result) {
+        if (!err) {
+            $.ajax({
+                type: "POST",
+                url: '/user/verify',
+                data: JSON.stringify({
+                    email: email
+                }),
+                success: function (data) {
+                    console.log('set user verified successfully', data);
+                    if (successCallback) {
+                        successCallback(result);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('es verify error', jqXHR, textStatus, errorThrown);
+                    if (failureCallback) {
+                        failureCallback(errorThrown);
+                    }
+                },
+                contentType: 'application/json',
+                dataType: 'json'
+            });
+        } else {
+            if (failureCallback) {
+                failureCallback(errorThrown);
+            }
+        }
+    });
 }
 
 /**
@@ -111,7 +142,11 @@ function signin(email, password, successCallback, failureCallback) {
     user.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
             authToken = result.idToken.jwtToken;
-            console.log('signin successfully', result.idToken.jwtToken, user);
+            console.log('signin cognito successfully', result.idToken.jwtToken, user);
+
+            // bind token
+            var token = window.localStorage.getItem('teamupToken');
+            sendTokenToServer(token);
 
             var suffix = user.username.split('-').join('');
 
@@ -145,10 +180,59 @@ function signin(email, password, successCallback, failureCallback) {
 }
 
 function signout() {
-    authToken = '';
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
         alasql('delete from teamup.current_user where username="' + userPool.getCurrentUser().username + '"');
         console.log('current user deleted');
-        userPool.getCurrentUser().signOut();
+        $.ajax({
+            contentType: 'application/json',
+            headers: {
+                Authorization: authToken
+            },
+            dataType: 'json',
+            success: function (data) {
+                setTokenSentToServer(false);
+                userPool.getCurrentUser().signOut();
+                authToken = '';
+                console.log("signed out successfully", data);
+            },
+            error: function (err) {
+                console.log("failed to unbind token", err);
+            },
+            processData: false,
+            type: 'POST',
+            url: '/user/unbindToken'
+        });
+    });
+}
+
+function isTokenSentToServer() {
+    return window.localStorage.getItem('sentToServer') === '1';
+}
+
+function setTokenSentToServer(sent) {
+    window.localStorage.setItem('sentToServer', sent ? '1' : '0');
+}
+
+function sendTokenToServer(token) {
+    $.ajax({
+        contentType: 'application/json',
+        headers: {
+            Authorization: authToken
+        },
+        data: JSON.stringify({
+            token: token
+        }),
+        dataType: 'json',
+        success: function (data) {
+            console.log("token uploaded successfully", data);
+            setTokenSentToServer(true);
+        },
+        error: function (err) {
+            setTokenSentToServer(false);
+            console.log("failed to upload token", err);
+        },
+        processData: false,
+        type: 'POST',
+        url: '/user/bindToken'
     });
 }

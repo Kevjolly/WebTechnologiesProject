@@ -24,29 +24,12 @@ function getToken() {
         if (token) {
             console.log('token retrieved', token);
 
-            if (!isTokenSentToServer()) {
+            // store token locally
+            window.localStorage.setItem('teamupToken', token);
+
+            if (!isTokenSentToServer() && authToken) {
                 console.log('sending token to server');
-                $.ajax({
-                    contentType: 'application/json',
-                    headers: {
-                        Authorization: authToken
-                    },
-                    data: JSON.stringify({
-                        token: token
-                    }),
-                    dataType: 'json',
-                    success: function (data) {
-                        console.log("token uploaded successfully", data);
-                        setTokenSentToServer(true);
-                    },
-                    error: function (err) {
-                        setTokenSentToServer(false);
-                        console.log("failed to upload token", err);
-                    },
-                    processData: false,
-                    type: 'POST',
-                    url: '/user/setToken'
-                });
+                sendTokenToServer(token)
             }
         } else {
             setTokenSentToServer(false);
@@ -106,14 +89,6 @@ function onMessageReceived(callback) {
     });
 }
 
-function isTokenSentToServer() {
-    return window.localStorage.getItem('sentToServer') === '1';
-}
-
-function setTokenSentToServer(sent) {
-    window.localStorage.setItem('sentToServer', sent ? '1' : '0');
-}
-
 /**
  * 
  * @param {string} peerEmail 
@@ -122,6 +97,11 @@ function setTokenSentToServer(sent) {
  * @param {function} callback takes one parameter, messages array
  */
 function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
+    if (!(userPool.getCurrentUser())) {
+        callback([]);
+        return;
+    }
+
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
         alasql('select data from teamup.single_messages_' + suffix + ' where (from_user="' + peerEmail + '" or to_user="' + peerEmail + '") and id<' + maxId + ' order by id desc limit ' + count, function (result) {
@@ -143,6 +123,11 @@ function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
  * @param {function} callback takes one parameter, messages array
  */
 function loadGroupHistoryMessages(projectId, maxId, count, callback) {
+    if (!(userPool.getCurrentUser())) {
+        callback([]);
+        return;
+    }
+
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
         alasql('select data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
@@ -157,6 +142,12 @@ function loadGroupHistoryMessages(projectId, maxId, count, callback) {
 }
 
 function loadOfflineMessages(callback) {
+    // console.log(userPool.getCurrentUser());
+    if (!(userPool.getCurrentUser())) {
+        callback([]);
+        return
+    }
+
     var suffix = userPool.getCurrentUser().username.split('-').join('');
 
     var singleMaxId = window.localStorage.getItem('teamup_single_max_id_' + suffix);

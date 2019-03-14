@@ -9,12 +9,20 @@ class UserService {
         return userDao.getUser(id)
     }
 
-    async search(keyword, page, count) {
-        return await userDao.search(keyword, page, count)
+    async search(query) {
+        return await userDao.search(query.keyword, query.page, query.count)
     }
 
     async updateToken(email, token) {
         await userDao.updateToken(email, token)
+    }
+
+    async unbindToken(email) {
+        await userDao.unbindToken(email)
+    }
+
+    async setVerified(email) {
+        await userDao.setVerified(email)
     }
 }
 

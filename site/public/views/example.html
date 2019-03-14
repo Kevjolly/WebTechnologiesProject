@@ -13,13 +13,6 @@
     <!-- How the layout and content adapts to the mobile viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Favicon -->
-    <!-- <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico' /> -->
-
-    <!-- Stylesheets -->
-
-    <!-- Javascript -->
-
     <script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
     <script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
@@ -58,9 +51,17 @@
         <button id="signinBtn">signin</button>
     </div>
     <br>
-    <button id="msgBtn">send message</button>
-    <br>
     <button id="signoutBtn">sign out</button>
+    <br>
+    <button id="createProjectBtn">create project</button>
+    <br>
+    <button id="getProjectBtn">get project</button>
+    <br>
+    <button id="joinProjectBtn">join project</button>
+    <br>
+    <button id="quitProjectBtn">quit project</button>
+    <br>
+    <button id="msgBtn">send message</button>
     <br>
     <button id="loadBtn">load message</button>
     <br>
@@ -69,6 +70,14 @@
     <footer>
     </footer>
     <script>
+        $('#regBtn').click(function () {
+            signup($('#email').val(), $('#pass').val(), $('#nickname').val());
+        });
+
+        $('#verifyBtn').click(function () {
+            verify($('#vemail').val(), $('#code').val());
+        });
+
         $('#signoutBtn').click(function () {
             signout();
         });
@@ -85,10 +94,8 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log("message sent successfully", data);
-                    setTokenSentToServer(true);
                 },
                 error: function (err) {
-                    setTokenSentToServer(false);
                     console.log("failed to send the message", err);
                 },
                 processData: false,
@@ -100,11 +107,10 @@
         $('#signinBtn').click(function () {
             console.log('click');
             signin($('#semail').val(), $('#password').val());
-
         });
 
         $('#loadBtn').click(function () {
-            loadSingleMessages('brucejeaung@gmail.com', 1552498382374, 10, function (res) {
+            loadSingleHistoryMessages('brucejeaung@gmail.com', new Date().getTime(), 10, function (res) {
                 console.log('load result', res);
             });
         })
@@ -113,7 +119,93 @@
             loadOfflineMessages(function (res) {
                 console.log('offline load result', res);
             });
-        })
+        });
+
+        $('#createProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    desc: 'we are building a website to help people team up',
+                    skills: ['nodejs', 'html'],
+                    name: 'web tech project'
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("project created successfully", data);
+                },
+                error: function (err) {
+                    console.log("failed to create the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/project/create'
+            });
+        });
+
+        $('#getProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('project profile', data);
+                },
+                error: function (err) {
+                    console.log('get project profile failed', err)
+                },
+                processData: false,
+                type: 'GET',
+                url: '/project/profile?id=1552566271897'
+            });
+        });
+
+        $('#joinProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    projectId: 1552566271897
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("project joined successfully", data);
+                },
+                error: function (err) {
+                    console.log("failed to join the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/project/join'
+            });
+        });
+
+        $('#quitProjectBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    projectId: 1552566271897
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("project quitted successfully", data);
+                    setTokenSentToServer(true);
+                },
+                error: function (err) {
+                    setTokenSentToServer(false);
+                    console.log("failed to quit the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/project/quit'
+            });
+        });
     </script>
 </body>
 
