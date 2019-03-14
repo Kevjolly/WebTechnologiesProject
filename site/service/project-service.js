@@ -5,7 +5,10 @@ class ProjectService {
     async create(project) {
         var projectId = new Date().getTime()
         project.id = projectId
+
         await projectDao.save(project)
+
+        await userDao.joinProject(project.creator, projectId)
     }
 
     async getProject(id) {

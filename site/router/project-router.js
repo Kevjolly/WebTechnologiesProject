@@ -49,7 +49,7 @@ router.postAsync('/quit', async function (req, res, next) {
     }
 })
 
-router.postAsync('/agree', async function (req, res, next) {
+router.postAsync('/approve', async function (req, res, next) {
     try {
         projectService.agree(req.body.applicant, req.body.projectId)
         res.send(JSON.stringify({

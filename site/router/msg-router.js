@@ -18,7 +18,7 @@ router.postAsync('/single', async function (req, res, next) {
 router.postAsync('/project', async function (req, res, next) {
     try {
         req.body.from = req.email
-        await msgService.sendProject(body)
+        await msgService.sendProject(req.body)
         res.send('{"msg":"group message sent successfully"}')
     } catch (err) {
         next(err)

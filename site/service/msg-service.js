@@ -59,7 +59,7 @@ class MsgService {
 
         var notification = {
             'title': 'Teamup',
-            'body': user.nickname + ' sent a message to project ' + project.name,
+            'body': 'new message from project ' + project.name,
             'click_action': body.link,
             'icon': ''
         };

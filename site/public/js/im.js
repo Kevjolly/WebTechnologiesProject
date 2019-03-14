@@ -122,7 +122,7 @@ function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
  * @param {int} count 
  * @param {function} callback takes one parameter, messages array
  */
-function loadGroupHistoryMessages(projectId, maxId, count, callback) {
+function loadProjectHistoryMessages(projectId, maxId, count, callback) {
     if (!(userPool.getCurrentUser())) {
         callback([]);
         return;
