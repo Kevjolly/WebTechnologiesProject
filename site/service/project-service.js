@@ -11,6 +11,10 @@ class ProjectService {
         await userDao.joinProject(project.creator, projectId)
     }
 
+    async update(projectId, project) {
+        await projectDao.update(projectId, project)
+    }
+
     async getProject(id) {
         const users = await userDao.getProjectUsers(id)
         const project = await projectDao.getProject(id)

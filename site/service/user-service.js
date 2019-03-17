@@ -5,6 +5,10 @@ class UserService {
         await userDao.save(user)
     }
 
+    async editProfile(email, profile) {
+        await userDao.update(email, profile)
+    }
+
     async getProfile(id) {
         return userDao.getUser(id)
     }

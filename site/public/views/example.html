@@ -38,6 +38,8 @@
         <input id="nickname" placeholder="nickname">
         <button id="regBtn">register</button>
     </div>
+    <br>
+    <button id="editProfileBtn">edit profile</button>
 
     <div id="verify">
         <input id="vemail" placeholder="email">
@@ -195,15 +197,36 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log("project quitted successfully", data);
-                    setTokenSentToServer(true);
                 },
                 error: function (err) {
-                    setTokenSentToServer(false);
                     console.log("failed to quit the project", err);
                 },
                 processData: false,
                 type: 'POST',
                 url: '/project/quit'
+            });
+        });
+
+        $('#editProfileBtn').click(function () {
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    skills: ["Golang"],
+                    nickname: "jeaung"
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("profile editted successfully", data);
+                },
+                error: function (err) {
+                    console.log("failed to quit the project", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/user/editProfile'
             });
         });
     </script>

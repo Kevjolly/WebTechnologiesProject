@@ -21,6 +21,20 @@ router.postAsync('/signup', async function (req, res, next) {
     }
 })
 
+router.postAsync('/editProfile', async function (req, res, next) {
+    try {
+        await userService.editProfile(req.email, req.body);
+        res.send(JSON.stringify({
+            code: 0,
+            msg: 'profile edited',
+            data: {
+            }
+        }))
+    } catch (e) {
+        next(e)
+    }
+})
+
 router.getAsync('/profile', async function (req, res, next) {
     try {
         const result = await userService.getProfile(req.query.id);

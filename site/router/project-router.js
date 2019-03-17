@@ -23,6 +23,20 @@ router.postAsync('/create', async function (req, res, next) {
     }
 })
 
+router.postAsync('/edit', async function (req, res, next) {
+    try {
+        await projectService.update(req.body.projectId, req.body);
+        res.send(JSON.stringify({
+            code: 0,
+            msg: 'project edited',
+            data: {
+            }
+        }))
+    } catch (e) {
+        next(e)
+    }
+})
+
 router.postAsync('/join', async function (req, res, next) {
     try {
         await projectService.join(req.email, req.body.projectId)

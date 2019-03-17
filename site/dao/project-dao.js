@@ -14,6 +14,38 @@ class ProjectDao {
         console.log('project dao save response', response)
     }
 
+    async update(projectId, project) {
+        var script = "";
+
+        for (const key in profile) {
+            if (script.length != 0) {
+                script += ' ';
+            }
+
+            var val = profile[key];
+            if (Array.isArray(val)) {
+                script += 'if (ctx._source.' + key + ' == null) {ctx._source.' + key + ' = new ArrayList()} for (v in params.' + key + ') {if (!ctx._source.' + key + '.contains(v)) {ctx._source.' + key + '.add(v)}}'
+            } else {
+                script += 'ctx._source.' + key + '=params.' + key;
+            }
+        }
+
+        const response = await client.update({
+            index: 'project',
+            type: 'project',
+            id: projectId,
+            body: {
+                script: {
+                    source: script,
+                    lang: 'painless',
+                    params: project
+                }
+            }
+        });
+
+        console.log('edit project response', response)
+    }
+
     async getProject(projectId, fields) {
         const response = await client.get({
             index: 'project',
