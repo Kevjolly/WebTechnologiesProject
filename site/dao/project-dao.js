@@ -17,12 +17,12 @@ class ProjectDao {
     async update(projectId, project) {
         var script = "";
 
-        for (const key in profile) {
+        for (const key in project) {
             if (script.length != 0) {
                 script += ' ';
             }
 
-            var val = profile[key];
+            var val = project[key];
             if (Array.isArray(val)) {
                 script += 'if (ctx._source.' + key + ' == null) {ctx._source.' + key + ' = new ArrayList()} for (v in params.' + key + ') {if (!ctx._source.' + key + '.contains(v)) {ctx._source.' + key + '.add(v)}}'
             } else {
