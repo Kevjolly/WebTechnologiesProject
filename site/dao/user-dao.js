@@ -16,31 +16,12 @@ class UserDao {
     }
 
     async update(email, profile) {
-        var script = "";
-
-        for (const key in profile) {
-            if (script.length != 0) {
-                script += ' ';
-            }
-
-            var val = profile[key];
-            if (Array.isArray(val)) {
-                script += 'if (ctx._source.' + key + ' == null) {ctx._source.' + key + ' = new ArrayList()} for (v in params.' + key + ') {if (!ctx._source.' + key + '.contains(v)) {ctx._source.' + key + '.add(v)}}'
-            } else {
-                script += 'ctx._source.' + key + '=params.' + key;
-            }
-        }
-
         const response = await client.update({
             index: 'user',
             type: 'user',
             id: email,
             body: {
-                script: {
-                    source: script,
-                    lang: 'painless',
-                    params: profile
-                }
+                doc: profile
             }
         });
 
