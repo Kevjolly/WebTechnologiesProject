@@ -47,15 +47,17 @@
 		<br>
 		<li>C/B for CSS: Basic CSS has been done. The most noteworthy is the CSS about the background image and the box "Get Started" on the Home page.</li>
 		<br>
-		<li>C/B for JS: Basic JS coding was done. For instance, work has been done to ensure that information in the navbar is coherent with the side navbar when the window is resizd (especially the search box). We can stress the work on boxes for sign in, sign up and email verification as well as checking that the inputs (password, mail) are correct. <a href="https://jquery.com/">jQuery</a> was used to simplify JS coding. <a href="http://alasql.org/">Alasql</a> was used for the front-end storing of chat messages.</li>
+		<li>A for JS: Basic JS coding was done. For instance, work has been done to ensure that information in the navbar is coherent with the side navbar when the window is resizd (especially the search box). We can stress the work on boxes for sign in, sign up and email verification as well as checking that the inputs (password, mail) are correct. <a href="https://jquery.com/">jQuery</a> was used to simplify JS coding. <a href="http://alasql.org/">Alasql</a> was used for the front-end storing of chat messages. <a href="https://firebase.google.com/docs/reference/js/">Firebase messaging sdk</a> is used to implement instant messaging and notification.
+			<br>Client-side Javascript code is well encapsulated as SDKs such as instance messaging and user authentication. Also, advanced features like IndexedDB and service workers are used in the implemetation of instant messaging.
+		</li>
 		<br>
 		<li>X for PNG: Nothing has been done yet in this area. We want to add the choice for a user to add images to projects or to their profile which would give us the opportunity to work on the PNG part.</li>
 		<br>
 		<li>X for SVG: Nothing has been done yet in this area.</li>
 		<br>
-		<li>X for Server</li>
+		<li>B/A for Server: Clearly structured code. Json Web Token (user session) validation. Using Firebase Cloud Messaging to implement instant messaging and notification. Plan to do cloud hosting and probably auto-testing using Selenium.</li>
 		<br>
-		<li>X for Database</li>
+		<li>A for Database: Instead of tranditional SQL databases, Elasticsearch is chosen for this project. The reason is for the project to work properly, search engine is a vital functionality. Thus, Elasticsearch is used for both indexing documents and data storage. In order to meet different search requirements, different indexing strategies are required for different entities and different properties. Database related code is organised into a separate module using singleton pattern to better manage connections.</li>
 		<br>
 		<li>X for Dynamic pages</li>
 		<br>
