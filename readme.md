@@ -11,10 +11,13 @@ v11.9.0
 npm -v
 6.5.0
 
+elasticsearch
+version 6-6-1
+
 ## Setup
 ### setup Elasticsearch
-1. Download and unzip Elasticsearch
-https://www.elastic.co/downloads/elasticsearch
+1. Download and unzip Elasticsearch (VERSION 6.6.1!)
+https://www.elastic.co/cn/downloads/past-releases/elasticsearch-6-6-1
 2. Run bin/elasticsearch (or bin\elasticsearch.bat on Windows)
 
 ### start server

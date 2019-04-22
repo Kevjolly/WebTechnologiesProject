@@ -16,6 +16,16 @@ app.get('/', function (req, res) {
 	res.sendFile('public/views/index.html', { root: __dirname });
 });
 
+app.get('/example', function (req, res) {
+	res.sendFile('public/views/example.html', { root: __dirname });
+});
+
+// Search
+app.get('/search', function(req, res) {
+	var search_content = req.query.search_content
+	res.sendFile('public/views/search.html', {root: __dirname });	
+});	
+
 // routers
 app.use('/user', require('./router/user-router'));
 app.use('/msg', require('./router/msg-router'));
