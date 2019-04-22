@@ -1,6 +1,7 @@
 {
     "settings": {
         "number_of_shards": 1,
+        "max_ngram_diff": 10,
         "analysis": {
             "tokenizer": {
                 "ngram_tokenizer": {
