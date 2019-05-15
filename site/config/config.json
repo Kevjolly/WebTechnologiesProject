@@ -1,0 +1,8 @@
+{
+    "development": {
+        "es-endpoint": "localhost:9200"
+    },
+    "production": {
+        "es-endpoint": "https://vpc-teamup-ynxh5rbjfehckd5iph4uwznmaa.eu-west-2.es.amazonaws.com"
+    }
+}
