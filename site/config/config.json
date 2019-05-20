@@ -1,6 +1,6 @@
 {
     "development": {
-        "es-endpoint": "localhost:9200"
+        "es-endpoint": "https://teamup:TeamUp2019!kevinREN~@localhost:9200"
     },
     "production": {
         "es-endpoint": "https://vpc-teamup-ynxh5rbjfehckd5iph4uwznmaa.eu-west-2.es.amazonaws.com"
