@@ -19,6 +19,27 @@ if (userPool.getCurrentUser()) {
     });
 }
 
+var cognitoUser = userPool.getCurrentUser();
+
+$(document).ready(function(){
+    if (cognitoUser){
+        console.log('user', cognitoUser);
+        $(".signedout").hide();
+        $(".signedin").show();
+        $("#get-started-choice, .get-started").hide();
+        $(".get-started-logged-in").show();
+    } else {
+        $(".signedout").show();
+        $(".signedin").hide();
+        $(".get-started").show();
+        $(".get-started-logged-in").hide();
+        $("#get-started-choice").hide();
+        console.log('no user connected')
+    }
+});
+
+var errorMessage;
+
 /**
  * 
  * @param {string} email 
@@ -62,6 +83,9 @@ function signup(email, password, nickname, successCallback, failureCallback) {
                     if (successCallback) {
                         successCallback();
                     }
+                    M.toast({html: 'Signed up!'});
+                    $('#modal-signup').modal('close');
+                    $('#modal-verify').modal('open');
                 }
             });
         },
@@ -70,6 +94,8 @@ function signup(email, password, nickname, successCallback, failureCallback) {
             if (failureCallback) {
                 failureCallback(errorThrown);
             }
+            M.toast({html: 'Failed!'});
+            M.toast({html: errorThrown.message});
         },
         contentType: 'application/json',
         dataType: 'json'
@@ -91,6 +117,7 @@ function verify(email, code, successCallback, failureCallback) {
 
     user.confirmRegistration(code, true, function (err, result) {
         if (!err) {
+            console.log("hehe");
             $.ajax({
                 type: "POST",
                 url: '/user/verify',
@@ -98,16 +125,22 @@ function verify(email, code, successCallback, failureCallback) {
                     email: email
                 }),
                 success: function (data) {
+                    console.log("hehe3");
                     console.log('set user verified successfully', data);
                     if (successCallback) {
                         successCallback(result);
                     }
+                    M.toast({html: 'Account is verified!'});
+                    $('#modal-verify').modal('close');
+                    $('#modal-login').modal('open');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log('es verify error', jqXHR, textStatus, errorThrown);
                     if (failureCallback) {
                         failureCallback(errorThrown);
                     }
+                    M.toast({html: 'Account was not verified!'});
+                    M.toast({html: errorThrown.message});
                 },
                 contentType: 'application/json',
                 dataType: 'json'
@@ -116,6 +149,8 @@ function verify(email, code, successCallback, failureCallback) {
             if (failureCallback) {
                 failureCallback(errorThrown);
             }
+            M.toast({html: 'Account was not verified!'});
+            M.toast({html: err.message});
         }
     });
 }
@@ -174,8 +209,25 @@ function signin(email, password, successCallback, failureCallback) {
             if (successCallback) {
                 successCallback(result);
             }
+            M.toast({html: 'Signed in!'});
+            $('#modal-login').modal('close');
+            $('#get-started-choice').hide();
+            location.reload();
         },
-        onFailure: failureCallback
+        //onFailure: failureCallback
+        onFailure: function (err){
+            console.log("Authenticate user failure");
+            console.log(err);
+            if (err.code === "UserNotConfirmedException"){
+                M.toast({html: 'Failed!'});
+                M.toast({html: 'Your account is not verified.'});
+                $('#modal-login').modal('close');
+                $('#modal-verify').modal('open');
+            } else {
+                M.toast({html: 'Failed!'});
+                M.toast({html: err.message});
+            }
+        }     
     });
 }
 
@@ -194,9 +246,13 @@ function signout() {
                 userPool.getCurrentUser().signOut();
                 authToken = '';
                 console.log("signed out successfully", data);
+                $('#modal-logout').modal('close');
+                M.toast({html: 'Signed out!'});
+                location.reload();
             },
             error: function (err) {
                 console.log("failed to unbind token", err);
+                M.toast({html: 'Signed out failed!'});
             },
             processData: false,
             type: 'POST',

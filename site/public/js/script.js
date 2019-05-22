@@ -1,7 +1,5 @@
 /** JavaScript page for the Web Tech Project **/
-
 $(document).ready(function(){
-
 	/* Navbar */
 	// Side nav for smaller sized screens
 	$('.sidenav').sidenav();
@@ -93,17 +91,21 @@ $(document).ready(function(){
 	// SignUp
 	$('#signupBtn').click(function () {
 		if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test($("#signup-confirm-password").val())){
+			$("#helper-text-password1").hide();
 			if (/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($("#signup-email").val())){
 				if ($("#signup-confirm-password").val() === $("#signup-password").val()){
 					$("#helper-text-password2").hide();
 					signup($('#signup-email').val(), $('#signup-password').val(), $('#signup-username').val());
-					M.toast({html: 'Signed up!'});
-					$('#modal-signup').modal('close');
-					$('#modal-verify').modal('open');
 				} else {
 					$("#helper-text-password2").show();
+					M.toast({html: 'Enter the same passwords.'})
 				}
+			} else {
+				M.toast({html: 'Enter a valid email.'})
 			}
+		} else {
+			$("#helper-text-password1").show();
+			M.toast({html: 'Enter a valid password.'})
 		}
 	});
 
@@ -119,24 +121,29 @@ $(document).ready(function(){
 
 	// Verify
 	$('#verifyBtn').click(function () {
-		verify($('#verify-email').val(), $('#verify-code').val());
-		M.toast({html: 'Account is verified!'});
-		$('#modal-verify').modal('close');
-		$('#modal-login').modal('open');
+		if (/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($("#verify-email").val())){
+			if($("#verify-code").val()!=""){
+				verify($('#verify-email').val(), $('#verify-code').val());
+			} else {
+				M.toast({html: 'Enter the code.'})
+			}		
+		} else {
+			M.toast({html: 'Enter a valid email.'})
+		}
 	});
 
 	// SignOut
 	$('#signoutBtn').click(function () {
 		signout();
-		M.toast({html: 'Signed out!'});
 	});
 
 	// SignIn
 	$('#signinBtn').click(function () {
-		signin($('#login-email').val(), $('#login-password').val());
-		M.toast({html: 'Signed in!'});
-		$('#modal-login').modal('close');
-		$('#get-started-choice').hide();
+		if (/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($("#login-email").val())){
+			signin($('#login-email').val(), $('#login-password').val());
+		} else {
+			M.toast({html: 'Enter a valid email.'})
+		}
 	});
 
 

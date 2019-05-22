@@ -41,6 +41,7 @@
 		<nav>
 			<div class="nav-wrapper blue darken-4">
 				<div id="nav-left-content">
+					<!-- <a href="#!" class="brand-logo" onclick="navigation('home')">TeamUP&uarr;</a> -->
 					<a href="#!" class="brand-logo" onclick="navigation('home')"><img src="img/logo.png"></a>
 					<a href="#" data-target="smaller-size-browser" class="sidenav-trigger">
 						<i class="material-icons">menu</i>
@@ -49,15 +50,15 @@
 
 				<ul class="right hide-on-med-and-down">
 					<li class="active navbar-home"><a href="#" class="waves-effect nav-link" onclick="navigation('home')"><i class="material-icons">home</i><span id="nav-home">Home</span></a></li>
-					<li><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i><span>Create a project</span></a></li>
-					<li><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li>
-					<li><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
-					<li><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li>
-					<li><a href="#" class="waves-effect nav-link"><i class="material-icons">info</i><span>About</span></a></li>
-					<li><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i><span>Sign Up</span></a></li>
-					<li><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i><span>Login</span></a></li>
-					<li><a href="#" class="waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Account</span></a></li>
-					<li><a href="#" class="waves-effect nav-link"><i class="material-icons">power_settings_new</i><span>Logout</span></a></li>
+					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i><span>Create a project</span></a></li>
+					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li>
+					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
+					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li>
+					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
+					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
+					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i><span>Sign Up</span></a></li>
+					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i><span>Sign In</span></a></li>					
+					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-logout"><i class="material-icons">power_settings_new</i><span>Sign Out</span></a></li>
 				</ul>
 
 				<form class="hide-on-med-and-down" id="search-bar">
@@ -67,15 +68,6 @@
 						<i class="material-icons search-close">close</i>
 					</div>
 				</form>
-<!-- 				<form class="hide-on-med-and-down" id="search-bar">
-					<div class="input-field">
-						<div class="chips">
-							<input class="search-input white-text custom-class" id="search" type="search" name="search" placeholder="Search" required>
-							<label class="label-icon" for="search"><i class="search-icons material-icons">search</i></label>
-							<i class="material-icons search-close">close</i>
-						</div>
-					</div>
-				</form>		 -->		
 			</div>
 		</nav>
 
@@ -90,15 +82,15 @@
 					</div>
 				</form>
 			</li>
-			<li><a href="#" class="waves-effect modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i>Create a project</a></li>
-			<li><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li>
-			<li><a href="#" class="waves-effect"><i class="material-icons">message</i><span>Messages</span></a></li>
-			<li><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li>
-			<li><a href="#" class="waves-effect"><i class="material-icons">info</i>About</a></li>
-			<li><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
-			<li><a href="#" class="waves-effect modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i>Login</a></li>
-			<li><a href="#" class="waves-effect"><i class="material-icons">account_circle</i>My Account</a></li>
-			<li><a href="#" class="waves-effect"><i class="material-icons">power_settings_new</i>Logout</a></li>
+			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i>Create a project</a></li>
+			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li>
+			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">message</i><span>Messages</span></a></li>
+			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li>
+			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
+			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
+			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i>Sign In</a></li>
+			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">account_circle</i>My Profile</a></li>
+			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-logout"><i class="material-icons">power_settings_new</i>Sign Out</a></li>
 		</ul>		
 	</header>
 
@@ -118,17 +110,25 @@
 		<div id="get-started-choice" class="get-started row white-text z-depth-5">
 			<h5>Login or Sign Up to create an account</h5>
 			<div class="col s4 offset-s2">
-				<button class="btn waves-effect modal-trigger" data-target="modal-login">LOGIN</button>
+				<button class="btn waves-effect modal-trigger" data-target="modal-login">Sign In</button>
 			</div>
 			<div class="col s4">
 				<button class="btn waves-effect modal-trigger" data-target="modal-signup">SIGN UP</button>
 			</div>
 		</div>
+		<div class="get-started-logged-in white-text z-depth-5 hide-on-med-and-down">
+			<h5>Now that you are logged in, you can start creating projects. You can also research projects or users by using the search bar.</h5>
+			<button class="btn waves-effect modal-trigger" data-target="modal-project"">CREATE A PROJECT</button>
+		</div>
+		<div class="get-started-logged-in white-text z-depth-5 hide-on-large-only">
+			<h6>Now that you are logged in, you can start creating projects. You can also research projects or users by using the search bar.</h6>
+			<button class="btn waves-effect modal-trigger" data-target="modal-project"">CREATE A PROJECT</button>
+		</div>
 
 		<div id="modal-login" class="modal modal-fixed-footer">
 			<div class="modal-content">
 				<i class="material-icons modal-close right">close</i>
-				<h4>Login</h4>
+				<h4>Sign In</h4>
 				<form>
 					<div class="row">
 						<div class="input-field col s12 m6 l6">
@@ -146,7 +146,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button class="btn waves-effect waves-light" id="signinBtn" type="submit" name="action">CONFIRM LOGIN
+				<button class="btn waves-effect waves-light" id="signinBtn" type="submit" name="action">Sign In
 					<i class="material-icons right">send</i>
 				</button>
 			</div>
@@ -261,7 +261,34 @@
 					<i class="material-icons right">send</i>
 				</button>
 			</div>
-		</div>				
+		</div>
+
+		<div id="modal-logout" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Confirm you want to sign out</h4>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="signoutBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>						
+		<div id="modal-about" class="modal bottom-sheet">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<div class="row">
+					<div class="col s9">
+						<h4>About <span class="brand-logo">TeamUP&uarr;</span></h4>
+						This site was created in the context of a project in the web technologies course. This is a not-for-profit website where people can meet and communicate. We, the creators of this site hope you enjoy your stay here. &#128513; &#128513;
+					</div>
+					<div class="col s3 brand-logo-about">
+						<img src="img/logo.png">
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</main>
 
 	<footer class="page-footer blue darken-3">

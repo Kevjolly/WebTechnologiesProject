@@ -34,7 +34,7 @@ main {
 	-webkit-filter: blur(3px);
 }
 
-.get-started {
+.get-started, .get-started-logged-in{
 	background-color: rgba(0,0,0, 0.4);
 	border: 2px solid #135aaa;
 	border-radius: 5px;
@@ -58,6 +58,10 @@ main {
 
 .brand-logo img {
     height: 64px;
+}
+
+.brand-logo-about img {
+    height: 100px;
 }
 
 nav ul .waves-effect i {
@@ -86,6 +90,10 @@ nav ul .waves-effect span {
 #search-sidenav{
 	margin-left: 50px;
 	max-width: 200px;
+}
+
+.signedin{
+	display: none;
 }
 
 .search-input:focus{
@@ -141,6 +149,14 @@ nav ul .waves-effect span {
 #helper-text-password1, #helper-text-password2{
 	display: none;
 	color: red;
+}
+
+/* Sign Out */
+#modal-logout{
+	margin-right: 2%;
+    margin-top: 2%;
+    height: 25% !important;
+    width: 50% !important;
 }
 
 /* Project details */
