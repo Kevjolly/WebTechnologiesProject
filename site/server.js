@@ -26,6 +26,44 @@ app.get('/search', function(req, res) {
 	res.sendFile('public/views/search.html', {root: __dirname });	
 });	
 
+app.get('/project', function(req, res) {
+	var search_content = req.query.search_content
+	res.sendFile('public/views/project.html', {root: __dirname });	
+});	
+
+// File uploads to the uploads directory
+app.post('/addprojectimage', function(req, res){
+	// Create an incoming form object
+	var form = new formidable.IncomingForm();
+
+	// Store all uploads in the /uploads directory
+	form.uploadDir = __dirname + "public/img/project_images/"
+
+	// Every time a file has been uploaded successfully,
+	// Rename it to it's orignal name
+	form.on('file', function(field, file) {
+		fs.rename(file.path, path.join(form.uploadDir, file.name), function(err){
+			if (err){
+				console.log("The server failed to rename the uploaded file to its true name "+file.name+". Error: "+err);
+				throw err;
+			}
+		});			
+	});
+
+	// Log any errors that occur
+	form.on('error', function(err) {
+		console.log("An error has occured when the server tried to upload the file given by the user. Error: "+ err);
+	});
+
+	// Once the file was uploaded, send a response to the client
+	form.on('end', function() {
+		res.sendStatus(200);
+	});
+
+	// Parse the incoming request containing the form data
+	form.parse(req);
+});	
+
 // routers
 app.use('/user', require('./router/user-router'));
 app.use('/msg', require('./router/msg-router'));

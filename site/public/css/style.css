@@ -56,6 +56,10 @@ main {
 	font-family: 'Sofia';
 }
 
+.brand-logo img {
+    height: 64px;
+}
+
 nav ul .waves-effect i {
 	display: inline-flex;
 	vertical-align: middle;
@@ -137,4 +141,48 @@ nav ul .waves-effect span {
 #helper-text-password1, #helper-text-password2{
 	display: none;
 	color: red;
+}
+
+/* Project details */
+#main-project{
+	min-height: 450px !important;
+}
+
+.project-container{
+	background-color: rgba(0,0,0, 0.4);
+	border: 2px solid #135aaa;
+	border-radius: 5px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+	width: 80%;
+	padding: 20px;
+	text-align: center;	
+}
+
+.project-text{
+	text-align: justify;
+	max-height: 300px;
+	overflow: auto;
+}
+
+.project-text-title{
+	font-weight: bold;
+}
+
+/* Project image */
+.project-image-large{
+	max-width: 100%;
+	/*border-radius: */
+	max-height: 300px;
+	/*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+}
+
+.project-image-med-and-down{
+	max-width: 100%;
+	/*border-radius: */
+	max-height: 200px;
+	/*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
 }

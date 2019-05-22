@@ -97,6 +97,7 @@ $(document).ready(function(){
 				if ($("#signup-confirm-password").val() === $("#signup-password").val()){
 					$("#helper-text-password2").hide();
 					signup($('#signup-email').val(), $('#signup-password').val(), $('#signup-username').val());
+					M.toast({html: 'Signed up!'});
 					$('#modal-signup').modal('close');
 					$('#modal-verify').modal('open');
 				} else {
@@ -119,6 +120,7 @@ $(document).ready(function(){
 	// Verify
 	$('#verifyBtn').click(function () {
 		verify($('#verify-email').val(), $('#verify-code').val());
+		M.toast({html: 'Account is verified!'});
 		$('#modal-verify').modal('close');
 		$('#modal-login').modal('open');
 	});
@@ -126,14 +128,102 @@ $(document).ready(function(){
 	// SignOut
 	$('#signoutBtn').click(function () {
 		signout();
+		M.toast({html: 'Signed out!'});
 	});
 
 	// SignIn
 	$('#signinBtn').click(function () {
 		signin($('#login-email').val(), $('#login-password').val());
+		M.toast({html: 'Signed in!'});
 		$('#modal-login').modal('close');
 		$('#get-started-choice').hide();
 	});
+
+
+	// Create a project
+	// List of skills
+	$('.chips-initial').chips({
+	    data: [{
+      		tag: 'Teamwork',
+    	}, {
+     		tag: 'Communication',
+    	}, {
+     		tag: 'Organisation',
+    	}],
+		placeholder: 'Enter skills',
+		secondaryPlaceholder: '+ add skills',
+	});
+
+	// Send project details then get id of created project and save image
+    $('#createProjectBtn').click(function () {
+    	var chipInstance = M.Chips.getInstance($("#project-skills"));
+    	var dataNotSorted = chipInstance.chipsData
+    	var dataSorted = [];
+    	var crtData;
+    	for (var k=0; k<dataNotSorted.length; k++){
+    		crtData = dataNotSorted[k]
+    		dataSorted.push(crtData["tag"]);
+    	}
+    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val()};
+    	console.log(dataToSend);
+        $.ajax({
+            contentType: 'application/json',
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify(dataToSend),
+            dataType: 'json',
+            success: function (data) {
+                console.log("project created successfully", data);
+                M.toast({html: 'Project created!'});
+            	var dataR = data["data"];
+            	var projectID = dataR["projectId"];
+
+			    var dataToGive = new FormData();
+			    var firstFile = $('#project-file')[0].files[0];
+				var filename = firstFile.name;
+				var extension = (filename.lastIndexOf(".") - 1 >>> 0) + 2;
+			    dataToGive.append(String(projectID)+extension, firstFile);
+
+				// We check if the extension of the file given in input is correct
+				// if ((filename2.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)) !== "png"){
+			    $.ajax({
+			        url: '/addprojectimage',
+			        data: dataToGive,
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        method: 'POST',
+			        type: 'POST', // For jQuery < 1.9
+			        success: function(data){
+			            console.log(data);
+			            $('#modal-project').modal('close');
+			            M.toast({html: 'Image saved for project!'});
+			        },
+			        error: function (err) {
+	                	console.log("failed to create the project", err);
+						M.toast({html: 'Error when saving the image!'});
+            		}
+			    });
+            },
+            error: function (err) {
+                console.log("failed to create the project", err);
+				M.toast({html: 'Error when creating the project!'});
+            },
+            processData: false,
+            type: 'POST',
+            url: '/project/create'
+        });
+    });
+
+	$(window).resize(function() {
+		if ($("#project-container-med").is(':visible')){
+			$("#main-project").attr('style', 'min-height: 750px !important');
+		} else {
+			$("#main-project").attr('style', 'min-height: 450px !important');
+		}
+	});    
+
 });
 
 function navigation(page){
