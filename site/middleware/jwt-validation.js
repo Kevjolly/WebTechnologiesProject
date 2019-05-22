@@ -10,7 +10,7 @@ var whiteList = {
     '/user/verify': true
 }
 
-var appClientId = '336ukl8f0sa1ko3k2bhe30ooeu'
+var appClientId = '7mjqob9h58ic27tn5kf23uhe1n'
 
 module.exports = exports = wrap(async function (req, res, next) {
     const token = req.headers['authorization'];
