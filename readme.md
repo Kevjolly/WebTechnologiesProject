@@ -1,4 +1,4 @@
-# Project: Teamup
+# Project: TeamUP
 
 ## Project Group:
 - Kévin Jolly, Candidate N° 97249
@@ -14,25 +14,28 @@ npm -v
 elasticsearch
 version 6-6-1
 
-## Setup
+## Environment Setup
 ### setup Elasticsearch
-1. Download and unzip Elasticsearch (VERSION 6.6.1!)
-https://www.elastic.co/cn/downloads/past-releases/elasticsearch-6-6-1
+1. Unzip Elasticsearch bundle
 2. Run bin/elasticsearch (or bin\elasticsearch.bat on Windows)
 
 ### start server
 ```
-node .
+node site
 ```
 
-### Access appliaction
-http://localhost:8080
+### Access application
+http://localhost:8081
+
+## Cloud Hosted Version
+http://teamup-env.qck29pusvr.eu-west-2.elasticbeanstalk.com/
 
 
-## API documentation 
+## Development Documentation
+### API documentation 
 https://documenter.getpostman.com/view/6943885/S17m1XEG
 
-## SDK documentation
+### SDK documentation
 
 See site/public/views/example.html
 
@@ -49,7 +52,7 @@ should include following scripts in every web page:
 <script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
 ```
 
-### Auth SDK
+#### Auth SDK
 
 Defined in auth.js
 
@@ -77,7 +80,7 @@ function signout()
 
     * access the *authToken* variable directly
 
-### IM SDK
+#### IM SDK
 
 Defined in im.js. Note: be sure to grant push notification permission. IM functions of Teamup relies on it.
 
