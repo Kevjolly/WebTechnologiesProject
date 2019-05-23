@@ -8,7 +8,7 @@ class ProjectService {
 
         await projectDao.save(project)
 
-        await userDao.joinProject(project.creator, projectId)
+        await userDao.joinProject(project.creator, project.id)
     }
 
     async update(projectId, project) {
