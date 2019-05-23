@@ -79,11 +79,12 @@ router.postAsync('/approve', async function (req, res, next) {
 router.get('/profile', async function (req, res, next) {
     try {
         const result = await projectService.getProject(req.query.id)
-        res.render('project.html', result.project)
-        // res.send(JSON.stringify({
-        //     code: 0,
-        //     data: result
-        // }))
+        // res.render('project.html', result.project)
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
+            code: 0,
+            data: result
+        }))
     } catch (err) {
         next(err)
     }
