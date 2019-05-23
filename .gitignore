@@ -37,3 +37,6 @@ Thumbs.db
 node_modules
 *.code-workspace
 .vscode
+
+project_images
+user_images
