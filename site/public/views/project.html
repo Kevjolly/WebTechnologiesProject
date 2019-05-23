@@ -13,19 +13,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- Favicon -->
-	<link rel='shortcut icon' type='image/x-icon' href='img/favicon.png' />
+	<link rel='shortcut icon' type='image/x-icon' href='../img/favicon.png' />
 
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	<link href='https://fonts.googleapis.com/css?family=Sofia' rel='stylesheet'>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
+	<link href="../css/style.css" rel="stylesheet">
 
 	<!-- Javascript -->
 	<script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
+	<script type="text/javascript" src="../js/script.js"></script>
 
 	<script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
 	<script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
@@ -43,7 +43,7 @@
 			<div class="nav-wrapper blue darken-4">
 				<div id="nav-left-content">
 					<!-- <a href="#!" class="brand-logo" onclick="navigation('home')">TeamUP&uarr;</a> -->
-					<a href="#!" class="brand-logo" onclick="navigation('home')"><img src="img/logo.png"></a>
+					<a href="#!" class="brand-logo" onclick="navigation('home')"><img src="../img/logo.png"></a>
 					<a href="#" data-target="smaller-size-browser" class="sidenav-trigger">
 						<i class="material-icons">menu</i>
 					</a>
@@ -98,45 +98,93 @@
 		<div id="background-image"></div>
       	<div class="project-container grey lighten-3 hide-on-med-and-down">
 		    <div class="row">
-			    <div class="col s12"><h4>{{data.project.name}}</h4><hr/></div>
+			    <div class="col s12"><h4>{{project.name}}</h4><hr/></div>
 			    <div class="col s6">
 			    	<!-- DEFAULT IMAGE TAKEN FROM https://unsplash.com/search/photos/folder?modal=%7B%22tag%22%3A%22CreditBadge%22%2C%22value%22%3A%7B%22userId%22%3A%22bS6B33a94h0%22%7D%7D FREE OF USE WITHOUT ANY CREDITS REQUIRED https://unsplash.com/license -->
+			    	<button class="btn waves-effect btn-apply"><i class="material-icons left">add</i>Apply for project</button>
 			    	<div>
-			    		<img class="project-image-large" src="../project_images/_default_project_image.jpg" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
+			    		<img class="project-image-large" src="../project_images/{{{project.image}}}" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
 			    	</div>
-			    	<button class="btn waves-effect"><i class="material-icons left">add</i>Apply for project</button>
 			    </div>
 			    <div class="col s6 project-text">
+		    	 	<!-- <div class="row"> -->
+	    	 		<div class="project-text-title"><h5>Creator</h5></div>
+					<ul class="collection">
+						<li class="collection-item avatar">
+						<img class="circle" src="../project_images/{{{creator.image}}}" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
+						<!-- <img src="images/yuna.jpg" alt="" class="circle"> -->
+						<span class="title">{{creator.nickname}}</span>
+<!-- 						<p>First Line <br>
+						 Second Line
+						</p> -->
+						<a href="#!" class="secondary-content"><i class="material-icons">link</i><span>Go to user profile</span></a>
+						</li>
+					</ul>
 				    <div class="project-text-title"><h5>Description</h5></div>
-					<div>{{data.project.desc}}</div>
+					<div>{{project.desc}}</div>
 					<div class="project-text-title"><h5>List of skills</h5></div>
 					<div>
-						{{#data.project.skills}}
 						<ul class="collection">
+						{{#project.skills}}
 							<li class="collection-item grey lighten-4">{{.}}</li>
+						{{/project.skills}}
 						</ul>
-						{{/data.project.skills}}
 					</div>
+
+					<ul class="collection">
+					<li class="collection-item avatar">
+					<img src="images/yuna.jpg" alt="" class="circle">
+					<span class="title">Title</span>
+					<p>First Line <br>
+					 Second Line
+					</p>
+					<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+					</li>
+					<li class="collection-item avatar">
+					<i class="material-icons circle">folder</i>
+					<span class="title">Title</span>
+					<p>First Line <br>
+					 Second Line
+					</p>
+					<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+					</li>
+					<li class="collection-item avatar">
+					<i class="material-icons circle green">insert_chart</i>
+					<span class="title">Title</span>
+					<p>First Line <br>
+					 Second Line
+					</p>
+					<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+					</li>
+					<li class="collection-item avatar">
+					<i class="material-icons circle red">play_arrow</i>
+					<span class="title">Title</span>
+					<p>First Line <br>
+					 Second Line
+					</p>
+					<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+					</li>
+					</ul>					
 				</div>
 	    	</div>
       	</div>
 
       	<div id="project-container-med" class="project-container grey lighten-3 hide-on-large-only">
 		    <div class="row">
-			    <div class="col s12"><h5>{{data.project.name}}</h5><hr/></div>
+			    <div class="col s12"><h5>{{project.name}}</h5><hr/></div>
 			    <div class="col s12">
-			    	<img class="project-image-med-and-down" src="../project_images/_default_project_image.jpg" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
+			    	<img class="project-image-med-and-down" src="../project_images/{{{project.image}}}" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
 			    </div>
 			    <div class="col s12 project-text">
 				    <div class="project-text-title"><h6>Description</h6></div>
-					<div>{{data.project.desc}}</div>
+					<div>{{project.desc}}</div>
 					<div class="project-text-title"><h6>List of skills</h6></div>
 					<div>
-						{{#data.project.skills}}
 						<ul class="collection">
+						{{#project.skills}}
 							<li class="collection-item grey lighten-4">{{.}}</li>
+						{{/project.skills}}
 						</ul>
-						{{/data.project.skills}}
 					</div>
 				</div>
 				<div class="col s12"><hr/></div>
@@ -377,7 +425,7 @@
 						This site was created in the context of a project in the web technologies course. This is a not-for-profit website where people can meet and communicate. We, the creators of this site hope you enjoy your stay here. &#128513; &#128513;
 					</div>
 					<div class="col s3 brand-logo-about">
-						<img src="img/logo.png">
+						<img src="../img/logo.png">
 					</div>
 				</div>
 			</div>

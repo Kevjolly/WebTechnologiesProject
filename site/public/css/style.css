@@ -223,3 +223,13 @@ nav ul .waves-effect span {
 	max-height: 200px;
 	/*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
 }
+
+.image-user{
+	border-radius: 50%;
+	width: 50px !important;
+	height: 50px !important;
+}
+
+.btn-apply{
+	margin: 20px;
+}
