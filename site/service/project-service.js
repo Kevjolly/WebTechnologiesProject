@@ -3,8 +3,6 @@ const userDao = require('../dao/user-dao')
 
 class ProjectService {
     async create(project) {
-        var projectId = new Date().getTime()
-        project.id = projectId
         project.users = new Array();
         project.users.push(project.creator);
 
