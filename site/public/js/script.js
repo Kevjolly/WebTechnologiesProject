@@ -241,7 +241,9 @@ $(document).ready(function(){
 				    	}
 				    	if (dataSorted.length !== 0){
 
-					    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val()};
+					    	var currentTimeStamp = Date.now();
+					    	var filenameToSend = String(currentTimeStamp)+"."+extensionStr;
+					    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val(), image: filenameToSend};
 					    	console.log(dataToSend);
 					        $.ajax({
 					            contentType: 'application/json',
@@ -259,7 +261,6 @@ $(document).ready(function(){
 					            	if (fileToSend){
 									    var dataToGive = new FormData();
 									    var firstFile = $('#project-file')[0].files[0];
-										var filenameToSend = String(projectID)+"."+extensionStr
 										console.log(filenameToSend);
 									    dataToGive.append('file', firstFile, filenameToSend);
 									    $.ajax({

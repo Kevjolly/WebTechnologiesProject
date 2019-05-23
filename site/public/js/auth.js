@@ -65,32 +65,32 @@ function signup(email, password, nickname, skills, extensionStr, fileToSend, suc
 
     console.log(JSON.stringify(user));
 
-    // $.ajax({
-    //     type: "POST",
-    //     url: '/user/signup',
-    //     data: JSON.stringify(user),
-    //     success: function (data) {
-    //         console.log('index user successfully', data);
+    $.ajax({
+        type: "POST",
+        url: '/user/signup',
+        data: JSON.stringify(user),
+        success: function (data) {
+            console.log('index user successfully', data);
 
-    //         var dataEmail = {
-    //             Name: 'email',
-    //             Value: email,
-    //         };
+            var dataEmail = {
+                Name: 'email',
+                Value: email,
+            };
 
-    //         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+            var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-    //         userPool.signUp(email, password, [attributeEmail], null, function (err, result) {
-    //             if (err) {
-    //                 console.log('cognito error', err);
-    //                 if (failureCallback) {
-    //                     failureCallback(err);
-    //                 }
-    //             } else {
-    //                 console.log('sign up cognito result', result)
-    //                 if (successCallback) {
-    //                     successCallback();
-    //                 }
-    //                 M.toast({html: 'Signed up!'});
+            userPool.signUp(email, password, [attributeEmail], null, function (err, result) {
+                if (err) {
+                    console.log('cognito error', err);
+                    if (failureCallback) {
+                        failureCallback(err);
+                    }
+                } else {
+                    console.log('sign up cognito result', result)
+                    if (successCallback) {
+                        successCallback();
+                    }
+                    M.toast({html: 'Signed up!'});
 
                     if (fileToSend){
                         var dataToGive = new FormData();
@@ -122,20 +122,20 @@ function signup(email, password, nickname, skills, extensionStr, fileToSend, suc
                             }
                         });
                     }
-                // }
-    //         });
-    //     },
-    //     error: function (jqXHR, textStatus, errorThrown) {
-    //         console.log('es error', jqXHR, textStatus, errorThrown);
-    //         if (failureCallback) {
-    //             failureCallback(errorThrown);
-    //         }
-    //         M.toast({html: 'Failed!'});
-    //         M.toast({html: errorThrown.message});
-    //     },
-    //     contentType: 'application/json',
-    //     dataType: 'json'
-    // });
+                }
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('es error', jqXHR, textStatus, errorThrown);
+            if (failureCallback) {
+                failureCallback(errorThrown);
+            }
+            M.toast({html: 'Failed!'});
+            M.toast({html: errorThrown.message});
+        },
+        contentType: 'application/json',
+        dataType: 'json'
+    });
 }
 
 /**
