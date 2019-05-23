@@ -46,59 +46,96 @@ $(document).ready(function(){
  * @param {function} successCallback takes no parameter
  * @param {function} failureCallback takes one parameter (err)
  */
-function signup(email, password, nickname, skills, successCallback, failureCallback) {
+function signup(email, password, nickname, skills, extensionStr, fileToSend, successCallback, failureCallback) {
+    var filenameToSend = "";
+    if (extensionStr !== ""){
+        filenameToSend = email+"."+extensionStr;
+    } else {
+        filenameToSend = "_default_user_image.png"
+    } 
+
     const user = {
         email: email,
         nickname: nickname,
         verified: false,
         projects: [],
-        skills: skills
+        skills: skills,
+        image: filenameToSend
     }
 
     console.log(JSON.stringify(user));
 
-    $.ajax({
-        type: "POST",
-        url: '/user/signup',
-        data: JSON.stringify(user),
-        success: function (data) {
-            console.log('index user successfully', data);
+    // $.ajax({
+    //     type: "POST",
+    //     url: '/user/signup',
+    //     data: JSON.stringify(user),
+    //     success: function (data) {
+    //         console.log('index user successfully', data);
 
-            var dataEmail = {
-                Name: 'email',
-                Value: email,
-            };
+    //         var dataEmail = {
+    //             Name: 'email',
+    //             Value: email,
+    //         };
 
-            var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+    //         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-            userPool.signUp(email, password, [attributeEmail], null, function (err, result) {
-                if (err) {
-                    console.log('cognito error', err);
-                    if (failureCallback) {
-                        failureCallback(err);
+    //         userPool.signUp(email, password, [attributeEmail], null, function (err, result) {
+    //             if (err) {
+    //                 console.log('cognito error', err);
+    //                 if (failureCallback) {
+    //                     failureCallback(err);
+    //                 }
+    //             } else {
+    //                 console.log('sign up cognito result', result)
+    //                 if (successCallback) {
+    //                     successCallback();
+    //                 }
+    //                 M.toast({html: 'Signed up!'});
+
+                    if (fileToSend){
+                        var dataToGive = new FormData();
+                        var firstFile = $('#signup-file')[0].files[0];
+                        console.log(filenameToSend);
+                        dataToGive.append('file', firstFile, filenameToSend);
+                        $.ajax({
+                            contentType: 'application/json',
+                            // headers: {
+                            //     Authorization: authToken
+                            // },
+                            url: '/adduserimage',
+                            data: dataToGive,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            method: 'POST',
+                            type: 'POST', // For jQuery < 1.9
+                            success: function(data){
+                                console.log(data);
+                                M.toast({html: 'User profile image saved.'});
+                                $('#modal-signup').modal('close');
+                                $('#modal-verify').modal('open');
+                                
+                            },
+                            error: function (err) {
+                                console.log("failed to save the image ", err);
+                                M.toast({html: 'Error when saving the image!'});
+                            }
+                        });
                     }
-                } else {
-                    console.log('sign up cognito result', result)
-                    if (successCallback) {
-                        successCallback();
-                    }
-                    M.toast({html: 'Signed up!'});
-                    $('#modal-signup').modal('close');
-                    $('#modal-verify').modal('open');
-                }
-            });
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log('es error', jqXHR, textStatus, errorThrown);
-            if (failureCallback) {
-                failureCallback(errorThrown);
-            }
-            M.toast({html: 'Failed!'});
-            M.toast({html: errorThrown.message});
-        },
-        contentType: 'application/json',
-        dataType: 'json'
-    });
+                // }
+    //         });
+    //     },
+    //     error: function (jqXHR, textStatus, errorThrown) {
+    //         console.log('es error', jqXHR, textStatus, errorThrown);
+    //         if (failureCallback) {
+    //             failureCallback(errorThrown);
+    //         }
+    //         M.toast({html: 'Failed!'});
+    //         M.toast({html: errorThrown.message});
+    //     },
+    //     contentType: 'application/json',
+    //     dataType: 'json'
+    // });
 }
 
 /**
