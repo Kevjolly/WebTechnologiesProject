@@ -257,7 +257,6 @@ $(document).ready(function(){
 					            	var projectID = dataR["projectId"];
 
 					            	if (fileToSend){
-
 									    var dataToGive = new FormData();
 									    var firstFile = $('#project-file')[0].files[0];
 										var filenameToSend = String(projectID)+"."+extensionStr
