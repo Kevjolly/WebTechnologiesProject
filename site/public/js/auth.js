@@ -38,8 +38,6 @@ $(document).ready(function(){
     }
 });
 
-var errorMessage;
-
 /**
  * 
  * @param {string} email 

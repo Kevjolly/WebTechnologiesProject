@@ -19,6 +19,23 @@ main {
 	position: relative;
 }
 
+/* Footer */
+.page-footer{
+	padding-top: 5px !important;
+}
+
+#footer-row{
+	margin-bottom: 3px !important;
+}
+
+#github-link{
+	vertical-align: 8px;
+}
+
+.footer-h6{
+	line-height: unset !important;
+}
+
 #background-image {
 	/* IMAGE TAKEN FROM https://unsplash.com/photos/JWiMShWiF14 FREE OF USE WITHOUT ANY CREDITS REQUIRED https://unsplash.com/license */
 	background-image: url(../img/jeff-sheldon-3231-unsplash.jpg);

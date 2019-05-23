@@ -163,64 +163,109 @@ $(document).ready(function(){
 
 	// Send project details then get id of created project and save image
     $('#createProjectBtn').click(function () {
-    	var chipInstance = M.Chips.getInstance($("#project-skills"));
-    	var dataNotSorted = chipInstance.chipsData
-    	var dataSorted = [];
-    	var crtData;
-    	for (var k=0; k<dataNotSorted.length; k++){
-    		crtData = dataNotSorted[k]
-    		dataSorted.push(crtData["tag"]);
-    	}
-    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val()};
-    	console.log(dataToSend);
-        $.ajax({
-            contentType: 'application/json',
-            headers: {
-                Authorization: authToken
-            },
-            data: JSON.stringify(dataToSend),
-            dataType: 'json',
-            success: function (data) {
-                console.log("project created successfully", data);
-                M.toast({html: 'Project created!'});
-            	var dataR = data["data"];
-            	var projectID = dataR["projectId"];
-
-			    var dataToGive = new FormData();
-			    var firstFile = $('#project-file')[0].files[0];
-				var filename = firstFile.name;
-				var extension = (filename.lastIndexOf(".") - 1 >>> 0) + 2;
-			    dataToGive.append(String(projectID)+extension, firstFile);
-
+    	if (cognitoUser){	
+	    	var fileToSend = false;
+	    	var proceed = true;
+			if( document.getElementById("project-file").files.length != 0 ){
+				fileToSend = true;
 				// We check if the extension of the file given in input is correct
-				// if ((filename2.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2)) !== "png"){
-			    $.ajax({
-			        url: '/addprojectimage',
-			        data: dataToGive,
-			        cache: false,
-			        contentType: false,
-			        processData: false,
-			        method: 'POST',
-			        type: 'POST', // For jQuery < 1.9
-			        success: function(data){
-			            console.log(data);
-			            $('#modal-project').modal('close');
-			            M.toast({html: 'Image saved for project!'});
-			        },
-			        error: function (err) {
-	                	console.log("failed to create the project", err);
-						M.toast({html: 'Error when saving the image!'});
-            		}
-			    });
-            },
-            error: function (err) {
-                console.log("failed to create the project", err);
-				M.toast({html: 'Error when creating the project!'});
-            },
-            processData: false,
-            type: 'POST',
-            url: '/project/create'
-        });
+				var extensionStr = $('#project-file')[0].files[0].name.slice(($('#project-file')[0].files[0].name.lastIndexOf(".") - 1 >>> 0) + 2);
+				console.log(extensionStr);
+				if (['png', 'jpeg', 'gif', "bmp", "jpg", "tiff"].indexOf(extensionStr) >= 0){
+					console.log("Image Format is ok");
+					var size = $('#project-file')[0].files[0].size;
+					var sizeMax = (1 * 1024) -1;
+					//Size max of 1MB
+					if (size <= sizeMax){
+						// Size inferior
+					} else {
+						proceed = false;
+						M.toast({html: 'Image size must be inferior to 1 MB.'});
+					}
+				} else {
+					proceed = false;
+					M.toast({html: 'Images given must be of one the following formats: png, jpeg, gif, bmp, tiff.'});
+				}
+			}
+
+			if (proceed){
+				if ($("#project-name").val()!==""){
+					if ($("#project-description").val()!==""){
+				    	var chipInstance = M.Chips.getInstance($("#project-skills"));
+				    	var dataNotSorted = chipInstance.chipsData
+				    	var dataSorted = [];
+				    	var crtData;
+				    	for (var k=0; k<dataNotSorted.length; k++){
+				    		crtData = dataNotSorted[k]
+				    		dataSorted.push(crtData["tag"]);
+				    	}
+				    	if (dataSorted.length !== 0){
+
+					    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val()};
+					    	console.log(dataToSend);
+					        // $.ajax({
+					        //     contentType: 'application/json',
+					        //     headers: {
+					        //         Authorization: authToken
+					        //     },
+					        //     data: JSON.stringify(dataToSend),
+					        //     dataType: 'json',
+					        //     success: function (data) {
+					             //    console.log("project created successfully", data);
+					             //    M.toast({html: 'Project created!'});
+					            	// var dataR = data["data"];
+					            	// var projectID = dataR["projectId"];
+					            	var projectID = 1558561656791;
+
+					            	if (fileToSend){
+
+									    var dataToGive = new FormData();
+									    var firstFile = $('#project-file')[0].files[0];
+										var filename = firstFile.name;
+										var extension = (filename.lastIndexOf(".") - 1 >>> 0) + 2;
+									    dataToGive.append(String(projectID)+extension, firstFile);
+									    $.ajax({
+									        url: '/addprojectimage',
+									        data: dataToGive,
+									        cache: false,
+									        contentType: false,
+									        processData: false,
+									        method: 'POST',
+									        type: 'POST', // For jQuery < 1.9
+									        success: function(data){
+									            console.log(data);
+									            $('#modal-project').modal('close');
+									            M.toast({html: 'Image saved for project!'});
+									        },
+									        error: function (err) {
+							                	console.log("failed to save the image ", err);
+												M.toast({html: 'Error when saving the image!'});
+						            		}
+								    	});
+									}
+					    //         },
+					    //         error: function (err) {
+					    //             console.log("failed to create the project", err);
+									// M.toast({html: 'Error when creating the project!'});
+					    //         },
+					    //         processData: false,
+					    //         type: 'POST',
+					    //         url: '/project/create'
+					    //     });
+						} else {
+							M.toast({html: 'You must give at least one skill to the project.'});
+						}
+					} else {
+						M.toast({html: 'You must give a description to the project.'});
+					}
+				} else {
+					M.toast({html: 'You must give a title to the project.'});
+				}
+			}
+		} else {
+			M.toast({html: 'You must be logged in to create a project.'});
+			$('#modal-login').modal('open');
+		}
     });
 
 	$(window).resize(function() {

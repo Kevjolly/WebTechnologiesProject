@@ -66,6 +66,7 @@ app.post('/addprojectimage', function(req, res){
 
 	// Parse the incoming request containing the form data
 	form.parse(req);
+	res.sendStatus(200);
 });	
 
 // routers
