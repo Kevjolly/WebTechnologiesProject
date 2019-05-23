@@ -4,6 +4,7 @@ const { decorateRouter } = require('@awaitjs/express');
 var router = decorateRouter(express.Router())
 
 const userService = require('../service/user-service')
+const projectService = require('../service/project-service')
 
 router.postAsync('/signup', async function (req, res, next) {
     console.log('sign up req body', req.body)
@@ -37,11 +38,26 @@ router.postAsync('/editProfile', async function (req, res, next) {
 
 router.getAsync('/profile', async function (req, res, next) {
     try {
-        const result = await userService.getProfile(req.query.id);
+        var userId;
+
+        if (req.query.id) {
+            userId = req.query.id
+        } else if(req.email) {
+            userId = req.email
+        } else {
+            next()
+            return
+        }
+
+        const user = await userService.getProfile(userId);
+        const projects = await projectService.getProjects(user.projects);
+
+        res.setHeader('Content-Type', 'application/json')
         res.send(JSON.stringify({
             code: 0,
             data: {
-                user: result
+                user: user,
+                projects: projects
             }
         }))
     } catch (e) {

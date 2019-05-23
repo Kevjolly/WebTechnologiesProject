@@ -163,19 +163,29 @@ function loadOfflineMessages(callback) {
             projectResult.forEach(row => {
                 var message = JSON.parse(row.data);
                 if (!(message.project in offlineMessages.project)) {
-                    offlineMessages.project[message.project] = new Array();
+                    offlineMessages.project[message.project] = new Object();
+                    offlineMessages.project[message.project].messages = new Array();
                 }
-                offlineMessages.project[message.project].push(message);
+                offlineMessages.project[message.project].messages.push(message);
             });
+
+            for (var project in offlineMessages.project) {
+                offlineMessages.project[project].last_timestamp = offlineMessages.project[project].messages[0];
+            }
 
             alasql('select data from teamup.single_messages_' + suffix + ' where id>' + singleMaxId + ' order by id desc', function (singleResult) {
                 singleResult.forEach(row => {
                     var message = JSON.parse(row.data);
                     if (!(message.from in offlineMessages.single)) {
-                        offlineMessages.single[message.from] = new Array();
+                        offlineMessages.single[message.from] = new Object();
+                        offlineMessages.single[message.from].messages = new Array();
                     }
-                    offlineMessages.single[message.from].push(message);
+                    offlineMessages.single[message.from].messages.push(message);
                 });
+
+                for (var peer in offlineMessages.single) {
+                    offlineMessages.single[peer].last_timestamp = offlineMessages.single[peer].messages[0];
+                }
 
                 callback(offlineMessages);
             });

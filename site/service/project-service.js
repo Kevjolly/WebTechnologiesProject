@@ -5,6 +5,8 @@ class ProjectService {
     async create(project) {
         var projectId = new Date().getTime()
         project.id = projectId
+        project.users = new Array();
+        project.users.push(project.creator);
 
         await projectDao.save(project)
 
@@ -19,10 +21,23 @@ class ProjectService {
         const users = await userDao.getProjectUsers(id)
         const project = await projectDao.getProject(id)
 
+        var creator;
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].email == project.creator) {
+                creator = users[i];
+                break;
+            }
+        }
+
         return {
             project: project,
-            users: users
+            users: users,
+            creator: creator
         }
+    }
+
+    async getProjects(projects) {
+        return await projectDao.getProjects(projects);
     }
 
     async search(query) {

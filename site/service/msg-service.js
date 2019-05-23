@@ -17,10 +17,10 @@ class MsgService {
 
         try {
             var notification = {
-                'title': 'Teamup',
+                'title': 'TeamUP',
                 'body': user.nickname + ' sent you a message',
-                'click_action': body.link,
-                'icon': '' // TODO add icon
+                'click_action': 'http://localhost:8081',
+                'icon': 'http://localhost:8081/img/favicon.png'
             };
 
             const res = await fetch('https://fcm.googleapis.com/fcm/send', {
@@ -53,15 +53,16 @@ class MsgService {
             tokens.push(user.token);
         });
 
-        body.id = new Date().getTime();
-
         const project = await projectDao.getProject(projectId)
 
+        body.id = new Date().getTime();
+        body.projectName = project.name;
+
         var notification = {
-            'title': 'Teamup',
+            'title': 'TeamUP',
             'body': 'new message from project ' + project.name,
-            'click_action': body.link,
-            'icon': ''
+            'click_action': 'http://localhost:8081',
+            'icon': 'http://localhost:8081/img/favicon.png'
         };
 
         try {

@@ -40,6 +40,29 @@ class ProjectDao {
         return response._source
     }
 
+    async getProjects(projects) {
+        const response = await client.search({
+            index: 'project',
+            body: {
+                query: {
+                    terms: {
+                        id: projects
+                    }
+                }
+            }
+        })
+
+        var result = new Array()
+
+        response.hits.hits.forEach(hit => {
+            result.push(hit._source)
+        })
+
+        console.log('project dao get projects', result)
+
+        return result
+    }
+
     async search(query, page, count) {
         const response = await client.search({
             index: 'project',
