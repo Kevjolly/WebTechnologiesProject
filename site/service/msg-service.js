@@ -19,8 +19,8 @@ class MsgService {
             var notification = {
                 'title': 'TeamUP',
                 'body': user.nickname + ' sent you a message',
-                'click_action': body.link,
-                'icon': '' // TODO add icon
+                'click_action': 'http://localhost:8081',
+                'icon': 'http://localhost:8081/img/favicon.png'
             };
 
             const res = await fetch('https://fcm.googleapis.com/fcm/send', {
@@ -61,8 +61,8 @@ class MsgService {
         var notification = {
             'title': 'TeamUP',
             'body': 'new message from project ' + project.name,
-            'click_action': body.link,
-            'icon': ''
+            'click_action': 'http://localhost:8081',
+            'icon': 'http://localhost:8081/img/favicon.png'
         };
 
         try {
