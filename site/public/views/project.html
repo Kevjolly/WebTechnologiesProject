@@ -98,24 +98,24 @@
 		<div id="background-image"></div>
       	<div class="project-container grey lighten-3 hide-on-med-and-down">
 		    <div class="row">
-			    <div class="col s12"><h4>{{name}}</h4><hr/></div>
+			    <div class="col s12"><h4>{{data.project.name}}</h4><hr/></div>
 			    <div class="col s6">
 			    	<!-- DEFAULT IMAGE TAKEN FROM https://unsplash.com/search/photos/folder?modal=%7B%22tag%22%3A%22CreditBadge%22%2C%22value%22%3A%7B%22userId%22%3A%22bS6B33a94h0%22%7D%7D FREE OF USE WITHOUT ANY CREDITS REQUIRED https://unsplash.com/license -->
 			    	<div>
-			    		<img class="project-image-large" src="../img/stil-734856-unsplash.jpg" onerror="this.src='../img/stil-734856-unsplash.jpg';" alt="Image is missing">
+			    		<img class="project-image-large" src="../project_images/_default_project_image.jpg" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
 			    	</div>
 			    	<button class="btn waves-effect"><i class="material-icons left">add</i>Apply for project</button>
 			    </div>
 			    <div class="col s6 project-text">
 				    <div class="project-text-title"><h5>Description</h5></div>
-					<div>{{desc}}</div>
+					<div>{{data.project.desc}}</div>
 					<div class="project-text-title"><h5>List of skills</h5></div>
 					<div>
-						{{#skills}}
+						{{#data.project.skills}}
 						<ul class="collection">
 							<li class="collection-item grey lighten-4">{{.}}</li>
 						</ul>
-						{{/skills}}
+						{{/data.project.skills}}
 					</div>
 				</div>
 	    	</div>
@@ -123,20 +123,20 @@
 
       	<div id="project-container-med" class="project-container grey lighten-3 hide-on-large-only">
 		    <div class="row">
-			    <div class="col s12"><h5>{{name}}</h5><hr/></div>
+			    <div class="col s12"><h5>{{data.project.name}}</h5><hr/></div>
 			    <div class="col s12">
-			    	<img class="project-image-med-and-down" src="../img/{{id}}.jpg" onerror="this.src='../img/stil-734856-unsplash.jpg';" alt="Image is missing">
+			    	<img class="project-image-med-and-down" src="../project_images/_default_project_image.jpg" onerror="this.src='../project_images/_default_project_image.jpg';" alt="Image is missing">
 			    </div>
 			    <div class="col s12 project-text">
 				    <div class="project-text-title"><h6>Description</h6></div>
-					<div>{{desc}}</div>
+					<div>{{data.project.desc}}</div>
 					<div class="project-text-title"><h6>List of skills</h6></div>
 					<div>
-						{{#skills}}
+						{{#data.project.skills}}
 						<ul class="collection">
 							<li class="collection-item grey lighten-4">{{.}}</li>
 						</ul>
-						{{/skills}}
+						{{/data.project.skills}}
 					</div>
 				</div>
 				<div class="col s12"><hr/></div>
@@ -259,7 +259,25 @@
 						</div>
 						<span id="helper-text-password1">The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit number and one special character</span>
 						<span id="helper-text-password2">The passwords must be the same</span>
-					</div>				
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<h6>Add your skills:</h6>
+							<div id="signup-skills" class="chips chips-initial"></div>
+						</div>
+					</div>
+					<form action="#">
+						<h6>You can optionally add an image to your profile.</h6>
+						<div class="file-field input-field">
+							<div class="btn">
+								<span>File</span>
+								<input id="signup-file" type="file">
+							</div>
+							<div class="file-path-wrapper">
+								<input class="file-path validate" type="text">
+							</div>
+						</div>
+					</form>									
 				</form>
 			</div>
 			<div class="modal-footer">

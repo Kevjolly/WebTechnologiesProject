@@ -46,13 +46,21 @@ $(document).ready(function(){
  * @param {function} successCallback takes no parameter
  * @param {function} failureCallback takes one parameter (err)
  */
-function signup(email, password, nickname, skills, successCallback, failureCallback) {
+function signup(email, password, nickname, skills, extensionStr, fileToSend, successCallback, failureCallback) {
+    var filenameToSend = "";
+    if (extensionStr !== ""){
+        filenameToSend = email+"."+extensionStr;
+    } else {
+        filenameToSend = "_default_user_image.png"
+    } 
+
     const user = {
         email: email,
         nickname: nickname,
         verified: false,
         projects: [],
-        skills: skills
+        skills: skills,
+        image: filenameToSend
     }
 
     console.log(JSON.stringify(user));
@@ -83,8 +91,37 @@ function signup(email, password, nickname, skills, successCallback, failureCallb
                         successCallback();
                     }
                     M.toast({html: 'Signed up!'});
-                    $('#modal-signup').modal('close');
-                    $('#modal-verify').modal('open');
+
+                    if (fileToSend){
+                        var dataToGive = new FormData();
+                        var firstFile = $('#signup-file')[0].files[0];
+                        console.log(filenameToSend);
+                        dataToGive.append('file', firstFile, filenameToSend);
+                        $.ajax({
+                            contentType: 'application/json',
+                            // headers: {
+                            //     Authorization: authToken
+                            // },
+                            url: '/adduserimage',
+                            data: dataToGive,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            method: 'POST',
+                            type: 'POST', // For jQuery < 1.9
+                            success: function(data){
+                                console.log(data);
+                                M.toast({html: 'User profile image saved.'});
+                                $('#modal-signup').modal('close');
+                                $('#modal-verify').modal('open');
+                                
+                            },
+                            error: function (err) {
+                                console.log("failed to save the image ", err);
+                                M.toast({html: 'Error when saving the image!'});
+                            }
+                        });
+                    }
                 }
             });
         },
