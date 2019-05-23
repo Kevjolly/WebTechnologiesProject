@@ -166,6 +166,7 @@ $(document).ready(function(){
     	if (cognitoUser){	
 	    	var fileToSend = false;
 	    	var proceed = true;
+	    	var extensionStr = "";
 			if( document.getElementById("project-file").files.length != 0 ){
 				fileToSend = true;
 				// We check if the extension of the file given in input is correct
@@ -174,13 +175,13 @@ $(document).ready(function(){
 				if (['png', 'jpeg', 'gif', "bmp", "jpg", "tiff"].indexOf(extensionStr) >= 0){
 					console.log("Image Format is ok");
 					var size = $('#project-file')[0].files[0].size;
-					var sizeMax = (1 * 1024) -1;
+					var sizeMax = (3 * 1024 * 1024) -1;
 					//Size max of 1MB
 					if (size <= sizeMax){
 						// Size inferior
 					} else {
 						proceed = false;
-						M.toast({html: 'Image size must be inferior to 1 MB.'});
+						M.toast({html: 'Image size must be inferior to 3 MB.'});
 					}
 				} else {
 					proceed = false;
@@ -204,10 +205,10 @@ $(document).ready(function(){
 					    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val()};
 					    	console.log(dataToSend);
 					        // $.ajax({
-					        //     contentType: 'application/json',
-					        //     headers: {
-					        //         Authorization: authToken
-					        //     },
+					            // contentType: 'application/json',
+					            // headers: {
+					            //     Authorization: authToken
+					            // },
 					        //     data: JSON.stringify(dataToSend),
 					        //     dataType: 'json',
 					        //     success: function (data) {
@@ -221,10 +222,14 @@ $(document).ready(function(){
 
 									    var dataToGive = new FormData();
 									    var firstFile = $('#project-file')[0].files[0];
-										var filename = firstFile.name;
-										var extension = (filename.lastIndexOf(".") - 1 >>> 0) + 2;
-									    dataToGive.append(String(projectID)+extension, firstFile);
+										var filenameToSend = String(projectID)+"."+extensionStr
+										console.log(filenameToSend)
+									    dataToGive.append('file', firstFile, filenameToSend);
 									    $.ajax({
+	    									contentType: 'application/json',
+					            			headers: {
+					                			Authorization: authToken
+					            			},
 									        url: '/addprojectimage',
 									        data: dataToGive,
 									        cache: false,

@@ -2,15 +2,17 @@
 var express = require('express');
 var path = require("path");
 var app = express();
-var morgan = require('morgan')
-var bodyParser = require('body-parser')
-var jwtValidation = require('./middleware/jwt-validation')
-var xssFilter = require('./middleware/xss-filter')
-var mustache = require('mustache-express')
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
+var jwtValidation = require('./middleware/jwt-validation');
+var xssFilter = require('./middleware/xss-filter');
+var mustache = require('mustache-express');
+var formidable = require('formidable');
+var fs = require('fs');
 
 // middlewares
 // I use the express.static middleware to serve up the static files in the public/ directory
-app.use(morgan('common'))
+app.use(morgan('common'));
 app.use(express.static(path.join(__dirname, './public')));
 app.use(bodyParser.json());
 app.use(jwtValidation);
@@ -45,18 +47,19 @@ app.post('/addprojectimage', function(req, res){
 	// Create an incoming form object
 	var form = new formidable.IncomingForm();
 
-	// Store all uploads in the /uploads directory
-	form.uploadDir = __dirname + "public/img/project_images/"
+	// Store all uploads in the same directory
+	form.uploadDir = __dirname + "/public/project_images/"
 
 	// Every time a file has been uploaded successfully,
-	// Rename it to it's orignal name
+	// Rename the file
 	form.on('file', function(field, file) {
+		console.log(file.name);
 		fs.rename(file.path, path.join(form.uploadDir, file.name), function(err){
 			if (err){
 				console.log("The server failed to rename the uploaded file to its true name "+file.name+". Error: "+err);
 				throw err;
 			}
-		});			
+		});
 	});
 
 	// Log any errors that occur
@@ -71,7 +74,6 @@ app.post('/addprojectimage', function(req, res){
 
 	// Parse the incoming request containing the form data
 	form.parse(req);
-	res.sendStatus(200);
 });	
 
 // routers
