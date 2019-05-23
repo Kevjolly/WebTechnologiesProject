@@ -17,7 +17,7 @@ class MsgService {
 
         try {
             var notification = {
-                'title': 'Teamup',
+                'title': 'TeamUP',
                 'body': user.nickname + ' sent you a message',
                 'click_action': body.link,
                 'icon': '' // TODO add icon
@@ -53,12 +53,13 @@ class MsgService {
             tokens.push(user.token);
         });
 
-        body.id = new Date().getTime();
-
         const project = await projectDao.getProject(projectId)
 
+        body.id = new Date().getTime();
+        body.projectName = project.name;
+
         var notification = {
-            'title': 'Teamup',
+            'title': 'TeamUP',
             'body': 'new message from project ' + project.name,
             'click_action': body.link,
             'icon': ''

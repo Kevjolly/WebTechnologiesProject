@@ -107,12 +107,12 @@ res's format:
 ```
 {
     "single": {
-        "brucejeaung@gmail.com":[],
-        "kevinjolly@gmail.com":[]
+        "brucejeaung@gmail.com":{"last_timestamp":1234,"messages":[]},
+        "kevinjolly@gmail.com":{}
     }
     "project": {
-        "12345": [],
-        "55653": []
+        "12345": {},
+        "55653": {}
     }
 }
 ```
