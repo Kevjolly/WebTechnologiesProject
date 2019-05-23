@@ -118,7 +118,6 @@ function signup(email, password, nickname, skills, extensionStr, fileToSend, suc
                                 M.toast({ html: 'User profile image saved.' });
                                 $('#modal-signup').modal('close');
                                 $('#modal-verify').modal('open');
-                                alert('Successfully uploaded photo.');
                             }
                         });
                     }
