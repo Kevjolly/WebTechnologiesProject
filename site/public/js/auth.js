@@ -38,7 +38,7 @@ $(document).ready(function(){
     }
 });
 
-/**
+/*
  * 
  * @param {string} email 
  * @param {string} password 
@@ -46,12 +46,13 @@ $(document).ready(function(){
  * @param {function} successCallback takes no parameter
  * @param {function} failureCallback takes one parameter (err)
  */
-function signup(email, password, nickname, successCallback, failureCallback) {
+function signup(email, password, nickname, skills, successCallback, failureCallback) {
     const user = {
         email: email,
         nickname: nickname,
         verified: false,
-        projects: []
+        projects: [],
+        skills: skills
     }
 
     console.log(JSON.stringify(user));

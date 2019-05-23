@@ -204,18 +204,18 @@ $(document).ready(function(){
 
 					    	var dataToSend = {desc: $('#project-description').val(), skills: dataSorted, name: $("#project-name").val()};
 					    	console.log(dataToSend);
-					        // $.ajax({
-					            // contentType: 'application/json',
-					            // headers: {
-					            //     Authorization: authToken
-					            // },
-					        //     data: JSON.stringify(dataToSend),
-					        //     dataType: 'json',
-					        //     success: function (data) {
-					             //    console.log("project created successfully", data);
-					             //    M.toast({html: 'Project created!'});
-					            	// var dataR = data["data"];
-					            	// var projectID = dataR["projectId"];
+					        $.ajax({
+					            contentType: 'application/json',
+					            headers: {
+					                Authorization: authToken
+					            },
+					            data: JSON.stringify(dataToSend),
+					            dataType: 'json',
+					            success: function (data) {
+					                console.log("project created successfully", data);
+					                M.toast({html: 'Project created!'});
+					            	var dataR = data["data"];
+					            	var projectID = dataR["projectId"];
 					            	var projectID = 1558561656791;
 
 					            	if (fileToSend){
@@ -248,15 +248,15 @@ $(document).ready(function(){
 						            		}
 								    	});
 									}
-					    //         },
-					    //         error: function (err) {
-					    //             console.log("failed to create the project", err);
-									// M.toast({html: 'Error when creating the project!'});
-					    //         },
-					    //         processData: false,
-					    //         type: 'POST',
-					    //         url: '/project/create'
-					    //     });
+					            },
+					            error: function (err) {
+					                console.log("failed to create the project", err);
+									M.toast({html: 'Error when creating the project!'});
+					            },
+					            processData: false,
+					            type: 'POST',
+					            url: '/project/create'
+					        });
 						} else {
 							M.toast({html: 'You must give at least one skill to the project.'});
 						}

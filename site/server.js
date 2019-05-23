@@ -32,15 +32,15 @@ app.get('/example', function (req, res) {
 });
 
 // Search
-app.get('/search', function(req, res) {
-	var search_content = req.query.search_content
-	res.sendFile('public/views/search.html', {root: __dirname });	
-});	
+// app.get('/search', function(req, res) {
+// 	var search_content = req.query.search_content
+// 	res.sendFile('public/views/search.html', {root: __dirname });	
+// });	
 
-app.get('/project', function(req, res) {
-	var search_content = req.query.search_content
-	res.sendFile('public/views/project.html', {root: __dirname });	
-});	
+// app.get('/project', function(req, res) {
+// 	var search_content = req.query.search_content
+// 	res.sendFile('public/views/project.html', {root: __dirname });	
+// });	
 
 // File uploads to the uploads directory
 app.post('/addprojectimage', function(req, res){
