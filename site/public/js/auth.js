@@ -6,6 +6,18 @@ var poolData = {
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 var authToken;
 
+AWS.config.update({
+    region: 'eu-west-2',
+    credentials: new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'eu-west-2:4be81d47-fe44-4391-8f9c-e1fd894217dc'
+    })
+});
+
+var s3 = new AWS.S3({
+    apiVersion: '2006-03-01',
+    params: { Bucket: 'teamup-images' }
+});
+
 if (userPool.getCurrentUser()) {
     userPool.getCurrentUser().getSession(function sessionCallback(err, session) {
         if (err) {
@@ -21,8 +33,8 @@ if (userPool.getCurrentUser()) {
 
 var cognitoUser = userPool.getCurrentUser();
 
-$(document).ready(function(){
-    if (cognitoUser){
+$(document).ready(function () {
+    if (cognitoUser) {
         console.log('user', cognitoUser);
         $(".signedout").hide();
         $(".signedin").show();
@@ -48,11 +60,11 @@ $(document).ready(function(){
  */
 function signup(email, password, nickname, skills, extensionStr, fileToSend, successCallback, failureCallback) {
     var filenameToSend = "";
-    if (extensionStr !== ""){
-        filenameToSend = email+"."+extensionStr;
+    if (extensionStr !== "") {
+        filenameToSend = email + "." + extensionStr;
     } else {
         filenameToSend = "_default_user_image.png"
-    } 
+    }
 
     const user = {
         email: email,
@@ -90,35 +102,23 @@ function signup(email, password, nickname, skills, extensionStr, fileToSend, suc
                     if (successCallback) {
                         successCallback();
                     }
-                    M.toast({html: 'Signed up!'});
+                    M.toast({ html: 'Signed up!' });
 
-                    if (fileToSend){
-                        var dataToGive = new FormData();
-                        var firstFile = $('#signup-file')[0].files[0];
-                        console.log(filenameToSend);
-                        dataToGive.append('file', firstFile, filenameToSend);
-                        $.ajax({
-                            contentType: 'application/json',
-                            // headers: {
-                            //     Authorization: authToken
-                            // },
-                            url: '/adduserimage',
-                            data: dataToGive,
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            method: 'POST',
-                            type: 'POST', // For jQuery < 1.9
-                            success: function(data){
-                                console.log(data);
-                                M.toast({html: 'User profile image saved.'});
+                    if (fileToSend) {
+                        s3.upload({
+                            Key: filenameToSend,
+                            Body: $('#signup-file')[0].files[0],
+                            ACL: 'public-read'
+                        }, function (err, data) {
+                            if (err) {
+                                console.log("failed to save the image ", err);
+                                M.toast({ html: 'Error when saving the image!' });
+                            } else {
+                                console.log('Successfully uploaded photo', data);
+                                M.toast({ html: 'User profile image saved.' });
                                 $('#modal-signup').modal('close');
                                 $('#modal-verify').modal('open');
-                                
-                            },
-                            error: function (err) {
-                                console.log("failed to save the image ", err);
-                                M.toast({html: 'Error when saving the image!'});
+                                alert('Successfully uploaded photo.');
                             }
                         });
                     }
@@ -130,8 +130,8 @@ function signup(email, password, nickname, skills, extensionStr, fileToSend, suc
             if (failureCallback) {
                 failureCallback(errorThrown);
             }
-            M.toast({html: 'Failed!'});
-            M.toast({html: errorThrown.message});
+            M.toast({ html: 'Failed!' });
+            M.toast({ html: errorThrown.message });
         },
         contentType: 'application/json',
         dataType: 'json'
@@ -166,7 +166,7 @@ function verify(email, code, successCallback, failureCallback) {
                     if (successCallback) {
                         successCallback(result);
                     }
-                    M.toast({html: 'Account is verified!'});
+                    M.toast({ html: 'Account is verified!' });
                     $('#modal-verify').modal('close');
                     $('#modal-login').modal('open');
                 },
@@ -175,8 +175,8 @@ function verify(email, code, successCallback, failureCallback) {
                     if (failureCallback) {
                         failureCallback(errorThrown);
                     }
-                    M.toast({html: 'Account was not verified!'});
-                    M.toast({html: errorThrown.message});
+                    M.toast({ html: 'Account was not verified!' });
+                    M.toast({ html: errorThrown.message });
                 },
                 contentType: 'application/json',
                 dataType: 'json'
@@ -185,8 +185,8 @@ function verify(email, code, successCallback, failureCallback) {
             if (failureCallback) {
                 failureCallback(errorThrown);
             }
-            M.toast({html: 'Account was not verified!'});
-            M.toast({html: err.message});
+            M.toast({ html: 'Account was not verified!' });
+            M.toast({ html: err.message });
         }
     });
 }
@@ -245,25 +245,25 @@ function signin(email, password, successCallback, failureCallback) {
             if (successCallback) {
                 successCallback(result);
             }
-            M.toast({html: 'Signed in!'});
+            M.toast({ html: 'Signed in!' });
             $('#modal-login').modal('close');
             $('#get-started-choice').hide();
             location.reload();
         },
         //onFailure: failureCallback
-        onFailure: function (err){
+        onFailure: function (err) {
             console.log("Authenticate user failure");
             console.log(err);
-            if (err.code === "UserNotConfirmedException"){
-                M.toast({html: 'Failed!'});
-                M.toast({html: 'Your account is not verified.'});
+            if (err.code === "UserNotConfirmedException") {
+                M.toast({ html: 'Failed!' });
+                M.toast({ html: 'Your account is not verified.' });
                 $('#modal-login').modal('close');
                 $('#modal-verify').modal('open');
             } else {
-                M.toast({html: 'Failed!'});
-                M.toast({html: err.message});
+                M.toast({ html: 'Failed!' });
+                M.toast({ html: err.message });
             }
-        }     
+        }
     });
 }
 
@@ -283,12 +283,12 @@ function signout() {
                 authToken = '';
                 console.log("signed out successfully", data);
                 $('#modal-logout').modal('close');
-                M.toast({html: 'Signed out!'});
+                M.toast({ html: 'Signed out!' });
                 location.reload();
             },
             error: function (err) {
                 console.log("failed to unbind token", err);
-                M.toast({html: 'Signed out failed!'});
+                M.toast({ html: 'Signed out failed!' });
             },
             processData: false,
             type: 'POST',

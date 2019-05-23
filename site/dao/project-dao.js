@@ -2,8 +2,6 @@ const client = require('../resource/elasticsearch')
 
 class ProjectDao {
     async save(project) {
-        project.id = new Date().getTime()
-
         const response = await client.index({
             index: 'project',
             type: 'project',
