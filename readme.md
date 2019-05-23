@@ -95,12 +95,15 @@ onMessageReceived(function (data) {
 
 2. load new messages
 
-If page is in background or closed, you can get offline messages from this API. Ideally, you should call this method each time a page is loaded.
+If page is in background or closed, you can get offline messages from this API. Ideally, you should call this method each time the window gains focus.
 
 ```
-loadOfflineMessages(function (res) {
-    console.log('offline load result', res);
-});
+window.addEventListener("focus", function (event) {
+        loadOfflineMessages(function (res) {
+        console.log('offline load result', res);
+    });
+}, false);
+
 ```
 
 res's format:
@@ -117,7 +120,7 @@ res's format:
 }
 ```
 
-3. load history messages
+1. load history messages
 
 Call these functions when user scrolls the chat window.
 ```

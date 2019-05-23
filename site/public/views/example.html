@@ -13,6 +13,7 @@
     <!-- How the layout and content adapts to the mobile viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <script type="text/javascript" src="../js/vendor/aws-sdk.min.js"></script>
     <script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
     <script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
@@ -72,6 +73,15 @@
     <footer>
     </footer>
     <script>
+        var nCounter = 0;
+
+        // Set up event handler to produce text for the window focus event
+        window.addEventListener("focus", function (event) {
+            console.log("window has focus " + nCounter);
+            nCounter = nCounter + 1;
+        }, false);
+
+
         $('#regBtn').click(function () {
             signup($('#email').val(), $('#pass').val(), $('#nickname').val());
         });
