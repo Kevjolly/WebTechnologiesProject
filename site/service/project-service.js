@@ -40,11 +40,20 @@ class ProjectService {
 
     async search(query) {
         var keywords = query.keyword.trim().split(" ");
+        
         console.log('project search keywords', keywords)
+
         var result = await projectDao.search(keywords, query.page, query.count)
         result.keyword = query.keyword
         result.page = query.page
         result.type = 'project'
+
+        for (var i = 0; i < result.projects.length; i++) {
+            result.projects[i].creator = await userDao.getUser(result.projects[i].creator, ['nickname', 'image', 'email'])
+        }
+
+        console.log('project search result', result.projects)
+
         return result
     }
 
