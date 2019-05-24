@@ -352,38 +352,44 @@ $(document).ready(function () {
 	}
 
 	// Pagination for search pages
-	// if(window.location.href.indexOf("search") > -1) {
-	// 	var numberOfResults = parseInt($('#total').attr('data-value'));
-	// 	var currentPage = parseInt($('#current-page').attr('data-value'));
-	// 	var keywords = $('#keywords').attr('data-value');
-	// 	var choiceSearch = $('#type-of-search').attr('data-value');
-
-	// 	var resultsPage = 12;
-	// 	var numberOfPages = Math.floor(numberOfResults/resultsPage) + 1;
-	// 	var strPagination = "";
-	// 	var choiceSearch = "";
+	if(window.location.href.indexOf("search") > -1) {
+		var choiceSearch = "";
 		
-	// 	if (numberOfPages === 1){
-	// 		strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
-	// 		strPagination += '<li class="active"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+currentPage+'&count='+resultsPage+'">1</a></li>';
-	// 		strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
-	// 	} else {
-	// 		if (currentPage === 1){
-	// 			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
-	// 		} else {
-	// 			strPagination += '<li class="waves-effect"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+(currentPage-1)+'&count='+resultsPage+'"><i class="material-icons">chevron_left</i></a></li>';
-	// 		}
-	// 		for (var k=1; k <= numberOfPages, k++){
-	// 			if (k === currentPage){
-	// 				strPagination += '<li class="active"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+k+'&count='+resultsPage+'">'+String(k)+'</a></li>';
-	// 			} else {
-	// 				strPagination += '<li class="waves-effect"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+k+'&count='+resultsPage+'">'+String(k)+'</a></li>';
-	// 			}
-	// 		}
-	// 		strPagination += '<li class="waves-effect"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+(currentPage+1)+'&count='+resultsPage+'"><i class="material-icons">chevron_right</i></a></li>';		
-	// 	}
-	// 	$('#pagination-results').html(linkText);
- //    }
+		var numberOfResults = parseInt($('#total').attr('data-value'));
+		var currentPage = parseInt($('#current-page').attr('data-value'));
+		var keywords = $('#keywords').attr('data-value');
+		var choiceSearch = $('#type-of-search').attr('data-value');
+
+		var resultsPage = 12;
+		var numberOfPages = Math.floor(numberOfResults/resultsPage) + 1;
+		var strPagination = "";
+		
+		if (numberOfPages === 1){
+			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
+			strPagination += '<li class="active"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String(currentPage)+'&count='+String(resultsPage)+'">1</a></li>';
+			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
+		} else {
+			if (currentPage === 1){
+				strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
+			} else {
+				strPagination += '<li class="waves-effect"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String((currentPage-1))+'&count='+String(resultsPage)+'"><i class="material-icons">chevron_left</i></a></li>';
+			}
+			for (var k=1; k <= numberOfPages; k++){
+				if (k === currentPage){
+					strPagination += '<li class="active"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String(k)+'&count='+String(resultsPage)+'">'+String(k)+'</a></li>';
+				} else {
+					strPagination += '<li class="waves-effect"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String(k)+'&count='+String(resultsPage)+'">'+String(k)+'</a></li>';
+				}
+			}
+
+			if (currentPage === numberOfPages){
+				strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
+			} else {
+				strPagination += '<li class="waves-effect"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String((currentPage+1))+'&count='+resultsPage+'"><i class="material-icons">chevron_right</i></a></li>';		
+			}
+		}
+		$('#pagination-results').html(strPagination);
+    }
 });
 
 function returnSearchResults(choice, page){

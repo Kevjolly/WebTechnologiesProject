@@ -176,12 +176,21 @@ nav .select-dropdown{
 	text-align: justify;
 }
 
+.card{
+	margin: .5rem 0 .5rem 0 !important;
+}
+
 .card .card-content{
 	padding: 10px !important;
 }
 
 .card-content-limit{
 	height: 110px;
+	overflow: auto;
+}
+
+.card-content-limit-users{
+	height: 75px;
 	overflow: auto;
 }
 
@@ -200,8 +209,13 @@ nav .select-dropdown{
 	height: 150px;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 50px;
+	margin-top: 5px;
+    margin-bottom: 5px;
 	display: block;
+}
+
+.card-image .circle{
+	border-radius: 50% !important;
 }
 
 /* Pagination color */
@@ -271,16 +285,12 @@ nav .select-dropdown{
 /* Project image */
 .project-image-large{
 	max-width: 100%;
-	/*border-radius: */
 	max-height: 200px;
-	/*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
 }
 
 .project-image-med-and-down{
 	max-width: 100%;
-	/*border-radius: */
 	max-height: 200px;
-	/*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
 }
 
 .image-user{
@@ -339,7 +349,13 @@ nav .select-dropdown{
 	max-width: 30em;
 	overflow: hidden;
 	white-space: nowrap;
-	text-overflow: ellipsis;	
+	text-overflow: ellipsis;
+    margin-bottom: -5px;
+    margin-top: 5px;
+}
+
+.link-user-profile{
+	margin-right: 0px !important;
 }
 
 .link-user{

@@ -117,22 +117,18 @@
 			<div id="search-results-projects" class="col s12 search-results container">
 				<div class="row">
 					{{#users}}
-					<div class="col s12 m6 l4">
+					<div class="col s6 m4 l3">
 						<div class="card sticky-action">
 							<div class="card">
 								<div class="card-image waves-effect waves-block waves-light">
-									<img class="card-image-user" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}"  onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
+									<img class="circle big-circle card-image-user" src=""  onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
 								</div>
-								<div class="card-content card-content-limit">
-									<span class="text-card card-title grey-text text-darken-4">{{nickname}}<br></span>
+								<div class="card-content card-content-limit-users">
+									<span class="card-title grey-text text-darken-4">{{nickname}} nickname nickname nickname nickname nickname nickname nickname nickname nickname nickname<br></span>
 								</div>
-								<div class="card-action"><p><a href="/user/profile?id={{{email}}}">See user profile</a></p></div>
-<!-- 								<div class="card-reveal">
-									<p><a href="/project/profile?id={{{id}}}" class="left">See project details</a><i class="card-title material-icons right">close</i></p>
-									<br/>
-									<h6 class="text-card grey-text text-darken-4">Description</h6>
-									<p class="text-card">{{desc}}</p>
-								</div> -->
+								<div class="card-action">
+									<p class="link-user-project"><a class="link-user-profile" href="/user/profile?id={{{email}}}">See user profile</a></p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -141,14 +137,15 @@
 					<div id="hidden-div-values">
 						<div id="total" data-value="{{{total}}}"></div>
 						<div id="current-page" data-value="{{{page}}}"></div>
-						<div id="keywords" data-value="{{{keywords}}}"></div>
+						<div id="keywords" data-value="{{{keyword}}}"></div>
 						<div id="type-of-search" data-value="{{{type}}}"></div>
 					</div>
-				
-					<ul id="pagination-results" class="pagination">
-					</ul>
 				</div>
 			</div>
+		</div>
+		<div class="row search-results">					
+			<ul id="pagination-results" class="pagination">
+			</ul>
 		</div>
 
 		<div id="modal-login" class="modal modal-fixed-footer">
