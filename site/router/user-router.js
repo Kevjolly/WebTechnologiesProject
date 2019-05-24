@@ -73,10 +73,6 @@ router.get('/search', async function (req, res, next) {
         }
         const result = await userService.search(req.query);
         res.render('search_users.html', result);
-        // res.send(JSON.stringify({
-        //     code: 0,
-        //     data: result
-        // }))
     } catch (e) {
         next(e)
     }

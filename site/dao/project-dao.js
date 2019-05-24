@@ -61,36 +61,40 @@ class ProjectDao {
         return result
     }
 
-    async search(query, page, count) {
-        const response = await client.search({
+    async search(keywords, page, count) {
+        var request = {
             index: 'project',
             body: {
                 query: {
                     bool: {
-                        should: [
-                            {
-                                match: {
-                                    name: query
-                                }
-                            },
-                            {
-                                match: {
-                                    skills: query
-                                }
-                            },
-                            {
-                                match: {
-                                    desc: query
-                                }
-                            }
-                        ],
+                        should: [],
                         minimum_should_match: 1
                     }
                 }
             },
             from: (page - 1) * count,
             size: count,
+        }
+
+        keywords.forEach(keyword => {
+            request.body.query.bool.should.push({
+                match: {
+                    name: keyword
+                }
+            },
+            {
+                match: {
+                    skills: keyword
+                }
+            },
+            {
+                match: {
+                    desc: keyword
+                }
+            })
         })
+
+        const response = await client.search(request)
 
         var result = new Array()
 

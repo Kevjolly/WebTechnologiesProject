@@ -41,24 +41,13 @@ class UserDao {
         return response._source
     }
 
-    async search(query, page, count) {
-        const response = await client.search({
+    async search(keywords, page, count) {
+        var request = {
             index: 'user',
             body: {
                 query: {
                     bool: {
-                        should: [
-                            {
-                                match: {
-                                    nickname: query
-                                },
-                            },
-                            {
-                                match: {
-                                    skills: query
-                                }
-                            }
-                        ],
+                        should: [],
                         must: [
                             {
                                 term: {
@@ -72,7 +61,22 @@ class UserDao {
             },
             from: (page - 1) * count,
             size: count,
+        };
+
+        keywords.forEach(keyword => {
+            request.body.query.bool.should.push({
+                match: {
+                    nickname: keyword
+                },
+            },
+                {
+                    match: {
+                        skills: keyword
+                    }
+                })
         })
+
+        const response = await client.search(request)
 
         var result = new Array()
 
