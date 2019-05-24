@@ -79,7 +79,7 @@ router.postAsync('/approve', async function (req, res, next) {
 router.get('/profile', async function (req, res, next) {
     try {
         const result = await projectService.getProject(req.query.id)
-        res.render('project.html', result.project);
+        res.render('project.html', result);
         // res.setHeader('Content-Type', 'application/json');
         // res.send(JSON.stringify({
         //     code: 0,
@@ -99,12 +99,13 @@ router.getAsync('/search', async function (req, res, next) {
             req.query.count = 10
         }
         const projects = await projectService.search(req.query)
-        res.send(JSON.stringify({
-            code: 0,
-            data: {
-                projects: projects
-            }
-        }))
+        res.render('search.html', projects);
+        // res.send(JSON.stringify({
+        //     code: 0,
+        //     data: {
+        //         projects: projects
+        //     }
+        // }))
     } catch (err) {
         next(err)
     }

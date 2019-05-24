@@ -25,8 +25,8 @@
 	<!-- Javascript -->
 	<script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
 
+	<script type="text/javascript" src="../js/vendor/aws-sdk.min.js"></script>
 	<script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
 	<script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
 	<script type="text/javascript" src="../js/auth.js"></script>
@@ -35,6 +35,7 @@
 	<script type="text/javascript" src="../js/im.js"></script>
 	<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
 
+	<script type="text/javascript" src="js/script.js"></script>
 </head>
 
 <body>
@@ -52,9 +53,9 @@
 				<ul class="right hide-on-med-and-down">
 					<li class="active navbar-home"><a href="#" class="waves-effect nav-link" onclick="navigation('home')"><i class="material-icons">home</i><span id="nav-home">Home</span></a></li>
 					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i><span>Create a project</span></a></li>
-					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li>
+					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li> -->
 					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
-					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li>
+					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
 					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i><span>Sign Up</span></a></li>
@@ -63,10 +64,19 @@
 				</ul>
 
 				<form class="hide-on-med-and-down" id="search-bar">
-					<div class="input-field">
-						<input class="search-input white-text" id="search" type="search" name="search" placeholder="Search" required>
-						<label class="label-icon" for="search"><i class="search-icons material-icons">search</i></label>
-						<i class="material-icons search-close">close</i>
+					<div class="row">
+						<div class="input-field input-select-navbar col l4">
+							<select id="select-navbar" class="select-search">
+								<option value="" disabled selected>Choose</option>
+								<option value="1">Users</option>
+								<option value="2"">Projects</option>
+							</select>
+						</div>
+						<div class="input-field col l8">
+							<input class="search-input white-text" id="search" type="search" name="search" placeholder="Search" required>
+							<label class="label-icon" for="search"><i id="search-icons1" class="search-icons material-icons">search</i></label>
+							<i class="material-icons search-close">close</i>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -76,17 +86,24 @@
 			<li class="active navbar-home"><a href="#" class="waves-effect" onclick="navigation('home')"><i class="material-icons">home</i>Home</a></li>
 			<li>
 				<form id="search-bar-sidenav">
+					<div class="input-field input-select-sidenav">
+						<select id="select-sidenav" class="select-search">
+							<option value="" disabled selected>Choose</option>
+							<option value="1">Users</option>
+							<option value="2"">Projects</option>
+						</select>
+					</div>						
 					<div class="input-field">
 						<input class="search-input" id="search-sidenav" type="search" name="search-sidenav" placeholder="Search" required>
-						<label class="label-icon" for="search-sidenav"><i class="search-icons material-icons search-sidenav-icons">search</i></label>
+						<label class="label-icon" for="search-sidenav"><i id="search-icons2" class="search-icons material-icons search-sidenav-icons">search</i></label>
 						<i class="material-icons search-close search-sidenav-icons">close</i>
 					</div>
 				</form>
 			</li>
 			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i>Create a project</a></li>
-			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li>
+			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li> -->
 			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">message</i><span>Messages</span></a></li>
-			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li>
+			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i>Sign In</a></li>
@@ -97,34 +114,31 @@
 
 	<main>
 		<div class="row">
-			<div class="col s12 tabs-cols">
-				<ul class="tabs">
-					<li class="tab col s6"><a class="active" href="#search-results-projects">Projects</a></li>
-					<li class="tab col s6"><a href="#search-results-persons">People</a></li>
-				</ul>
-			</div>
 			<div id="search-results-projects" class="col s12 search-results container">
 				<div class="row">
-					<div class="col s6 m4 l3">
+					{{#projects}}
+					<div class="col s12 m6 l4">
 						<div class="card sticky-action">
 							<div class="card">
 								<div class="card-image waves-effect waves-block waves-light">
-									<!-- <img class="activator" src="img/jeff-sheldon-3231-unsplash.jpg"> -->
-									<img class="activator" src="">
+									<img class="card-image-style activator" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}"  onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
 								</div>
-								<div class="card-content">
-									<span class="card-title activator grey-text text-darken-4">PROJECT YOLO<i class="material-icons right">more_vert</i></span>
+								<div class="card-content card-content-limit">
+									<span class="text-card card-title activator grey-text text-darken-4">{{name}}<br></span>
 								</div>
-								<div class="card-action"><p>BY <a href="#">Cristiano Ronaldo</a></p></div>
+								<div class="card-action"><p>BY <a href="#">{{creator}}</a><i class="card-title material-icons activator right">more_vert</i></p></div>
 								<div class="card-reveal">
-									<span class="card-title grey-text text-darken-4">Description<i class="material-icons right">close</i></span>
-									<p>This project is about creating a revolutionary app that will revolutionize the world of today and tomorrow.</p>
+									<p><a href="project/profile?id={{{id}}}" class="left">See project details</a><i class="card-title material-icons right">close</i></p>
+									<br/>
+									<h6 class="text-card grey-text text-darken-4">Description</h6>
+									<p class="text-card">{{desc}}</p>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<ul class="pagination">
+					{{/projects}}
+
+<!-- 				<ul class="pagination">
 					<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
 					<li class="active"><a href="#!">1</a></li>
 					<li class="waves-effect"><a href="#!">2</a></li>
@@ -132,19 +146,9 @@
 					<li class="waves-effect"><a href="#!">4</a></li>
 					<li class="waves-effect"><a href="#!">5</a></li>
 					<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-				</ul>
+				</ul> -->
 			</div>
-			<div id="search-results-persons" class="col s12 search-results container">People 
-				<ul class="pagination">
-					<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-					<li class="active"><a href="#!">1</a></li>
-					<li class="waves-effect"><a href="#!">2</a></li>
-					<li class="waves-effect"><a href="#!">3</a></li>
-					<li class="waves-effect"><a href="#!">4</a></li>
-					<li class="waves-effect"><a href="#!">5</a></li>
-					<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-				</ul></div>
-			</div>
+		</div>
 
 		<div id="modal-login" class="modal modal-fixed-footer">
 			<div class="modal-content">

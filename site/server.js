@@ -29,6 +29,15 @@ app.get('/example', function (req, res) {
 	res.sendFile('public/views/example.html', { root: __dirname });
 });
 
+app.get('/profile', function (req, res){
+	res.sendFile('public/views/profile.html', { root: __dirname });
+});
+
+// app.get('/search', function (req, res){
+// 	res.sendFile('public/views/search.html', { root: __dirname });
+// });
+
+
 // routers
 app.use('/user', require('./router/user-router'));
 app.use('/msg', require('./router/msg-router'));

@@ -58,9 +58,8 @@ $(document).ready(function () {
 		// Prevent default action on keypress enter
 		if (e.which == 13) {
 			e.preventDefault();
-			$(".search-icons").click();
+			$("#search-icons1").click();
 		}
-
 	});
 
 	// go to choice between login or sign up
@@ -81,24 +80,43 @@ $(document).ready(function () {
 		}
 	});
 
-	// Chips in search text input
-	// $('.chips').chips();
+	// select init
+    $('select').formSelect();
+
+	$('#select-navbar').on('change', function() {
+		$("#select-sidenav").val($('#select-navbar').val());
+		$('#select-sidenav').formSelect();
+	});
+
+	$('#select-sidenav').on('change', function() {
+		$("#select-navbar").val($('#select-sidenav').val());
+		$('#select-navbar').formSelect();
+	});
 
 	// Launch search
 	$(".search-icons").click(function () {
-		var host = window.location.host;
-		if ((host !== "localhost:8080") || (host !== "127.0.0.1:8080")) {
-			host = "http://" + host;
+		if ($(".select-search").val() !== null){
+			if ($("#select-navbar").val() === "1"){
+				var host = window.location.host;
+				if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
+					host = "http://" + host;
+				}
+				var url = host + '/user/search?keyword='+ $(".search-input").val()+'&page=1&count=12';
+				window.open(url, "_self");
+			} else if ($("#select-navbar").val() === "2"){
+				var host = window.location.host;
+				if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
+					host = "http://" + host;
+				}
+				var url = host + '/project/search?keyword='+ $(".search-input").val()+'&page=1&count=12';
+				window.open(url, "_self");
+			} else {
+				M.toast({ html: 'Search could not proceed due to a fail in the choice selection.' });
+			}
+		} else {
+			M.toast({ html: 'You need to choose either to search users or projects.' });
 		}
-		var url = host + "/search?search_content=" + $(".search-input").val();
-		console.log(url);
-		window.open(url, "_self");
 	})
-
-	// Tabs for search results
-	$('.tabs').tabs({
-		'swipeable': true
-	});
 
 	// SignUp
 	$('#signupBtn').click(function () {
@@ -313,7 +331,7 @@ $(document).ready(function () {
 
 	$(window).resize(function () {
 		if ($("#project-container-med").is(':visible')) {
-			$("#main-project").attr('style', 'min-height: 750px !important');
+			$("#main-project").attr('style', 'min-height: 1000px !important');
 		} else {
 			$("#main-project").attr('style', 'min-height: 450px !important');
 		}
@@ -323,7 +341,7 @@ $(document).ready(function () {
 
 function navigation(page) {
 	var host = window.location.host;
-	if ((host !== "localhost:8080") || (host !== "127.0.0.1:8080")) {
+	if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
 		host = "http://" + host;
 	}
 

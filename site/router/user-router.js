@@ -52,14 +52,14 @@ router.getAsync('/profile', async function (req, res, next) {
         const user = await userService.getProfile(userId);
         const projects = await projectService.getProjects(user.projects);
 
-        res.setHeader('Content-Type', 'application/json')
-        res.send(JSON.stringify({
-            code: 0,
-            data: {
-                user: user,
-                projects: projects
-            }
-        }))
+        // res.setHeader('Content-Type', 'application/json')
+        // res.send(JSON.stringify({
+        //     code: 0,
+        //     data: {
+        //         user: user,
+        //         projects: projects
+        //     }
+        // }))
     } catch (e) {
         next(e)
     }
