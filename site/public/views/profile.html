@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>TeamUP&uarr; - Project details</title>
+	<title>TeamUP&uarr; - My profile</title>
 
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
@@ -115,86 +115,60 @@
 		<div id="background-image"></div>
       	<div class="project-container grey lighten-3 hide-on-med-and-down">
 		    <div class="row">
-			    <div class="col s12"><h4>{{project.name}}</h4><hr/></div>
-			    <div class="col s6">
-			    	<button class="btn waves-effect btn-apply"><i class="material-icons left">add</i>Apply for project</button>
-			    	<div>
-			    		<img class="project-image-large" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{project.image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-			    	</div>
-			    </div>
-			    <div class="col s6 project-text">
-	    	 		<div class="project-text-title"><h5>Creator</h5></div>
-					<ul class="collection">
-						<li class="collection-item avatar grey lighten-4">
-						<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{creator.image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-						<span class="title title-user">{{creator.nickname}}</span>
-						<a href="#!" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
-						</li>
-					</ul>
-				    <div class="project-text-title"><h5>Description</h5></div>
-					<div>{{project.desc}}</div>
+				<div class="col s6">
+					<img class="circle big-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
+					<div class="project-text-title"><h4>{{user.nickname}}</h4></div>
+				</div>
+				<div class="col s6 project-text">
 					<div class="project-text-title"><h5>List of skills</h5></div>
 					<div>
 						<ul class="collection">
-						{{#project.skills}}
+						{{#user.skills}}
 							<li class="collection-item grey lighten-4">{{.}}</li>
-						{{/project.skills}}
+						{{/user.skills}}
 						</ul>
 					</div>
-
-					<div class="project-text-title"><h5>Participants</h5></div>
+					<div class="project-text-title"><h5>List of projects</h5></div>
 					<ul class="collection">
-						{{#users}}
+						{{#projects}}
 						<li class="collection-item avatar grey lighten-4">
-						<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-						<span class="title title-user">{{nickname}}</span>
-						<a href="#!" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
-						{{/users}}
+						<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+						<span class="title title-user">{{name}}</span>
+						<a href="project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
+						{{/projects}}
 						</li>
 					</ul>
 				</div>
-	    	</div>
+			</div>
       	</div>
 
       	<div id="project-container-med" class="project-container grey lighten-3 hide-on-large-only">
 		    <div class="row">
-			    <div class="col s12"><h5>{{project.name}}</h5><hr/></div>
-			    <div class="col s12">
-			    	<img class="project-image-med-and-down" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{project.image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-			    </div>
-			    <div class="col s12 project-text-med">
-			    	<div class="project-text-title"><h6>Creator</h6></div>
-					<ul class="collection">
-						<li class="collection-item avatar grey lighten-4">
-						<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{creator.image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-						<span class="title title-user">{{creator.nickname}}</span>
-						<a href="#!" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
-						</li>
-					</ul>
-				    <div class="project-text-title"><h6>Description</h6></div>
-					<div>{{project.desc}}</div>
-					<div class="project-text-title"><h6>List of skills</h6></div>
+				<div class="col s12">
+					<img class="circle big-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
+					<div class="project-text-title"><h4>{{user.nickname}}</h4></div>
+				</div>
+				<div class="col s12 project-text">
+					<div class="project-text-title"><h5>List of skills</h5></div>
 					<div>
 						<ul class="collection">
-						{{#project.skills}}
+						{{#user.skills}}
 							<li class="collection-item grey lighten-4">{{.}}</li>
-						{{/project.skills}}
+						{{/user.skills}}
 						</ul>
 					</div>
-					<div class="project-text-title"><h6>Participants</h6></div>
+					<div class="project-text-title"><h5>List of projects</h5></div>
 					<ul class="collection">
-						{{#users}}
+						{{#projects}}
 						<li class="collection-item avatar grey lighten-4">
-						<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-						<span class="title title-user">{{nickname}}</span>
-						<a href="#!" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
-						{{/users}}
+						<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+						<span class="title title-user">{{name}}</span>
+						<a href="project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
+						{{/projects}}
 						</li>
-					</ul>					
+					</ul>
 				</div>
-				<div class="col s12"><hr/></div>
-				<div class="col s12"><button class="btn waves-effect"><i class="material-icons left">add</i>Apply for project</button></div>
-	    	</div>
+			</div>
       	</div>      	
 
 		<div id="modal-login" class="modal modal-fixed-footer">

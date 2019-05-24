@@ -120,6 +120,9 @@ function signup(email, password, nickname, skills, extensionStr, fileToSend, suc
                                 $('#modal-verify').modal('open');
                             }
                         });
+                    } else {
+                        $('#modal-signup').modal('close');
+                        $('#modal-verify').modal('open');
                     }
                 }
             });
