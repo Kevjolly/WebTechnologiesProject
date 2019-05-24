@@ -2,7 +2,6 @@
 var express = require('express');
 var path = require("path");
 var app = express();
-var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var jwtValidation = require('./middleware/jwt-validation');
 var xssFilter = require('./middleware/xss-filter');
@@ -10,7 +9,6 @@ var mustache = require('mustache-express');
 
 // middlewares
 // I use the express.static middleware to serve up the static files in the public/ directory
-app.use(morgan('common'));
 app.use(express.static(path.join(__dirname, './public')));
 app.use(bodyParser.json());
 app.use(jwtValidation);
@@ -29,14 +27,9 @@ app.get('/example', function (req, res) {
 	res.sendFile('public/views/example.html', { root: __dirname });
 });
 
-app.get('/profile', function (req, res){
-	res.sendFile('public/views/profile.html', { root: __dirname });
-});
-
 // app.get('/search', function (req, res){
 // 	res.sendFile('public/views/search.html', { root: __dirname });
 // });
-
 
 // routers
 app.use('/user', require('./router/user-router'));

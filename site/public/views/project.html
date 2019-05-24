@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- Favicon -->
-	<link rel='shortcut icon' type='image/x-icon' href='../img/favicon.png' />
+	<link rel='shortcut icon' type='image/x-icon' href='/img/favicon.png' />
 
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -44,7 +44,7 @@
 			<div class="nav-wrapper blue darken-4">
 				<div id="nav-left-content">
 					<!-- <a href="#!" class="brand-logo" onclick="navigation('home')">TeamUP&uarr;</a> -->
-					<a href="#!" class="brand-logo" onclick="navigation('home')"><img src="img/logo.png"></a>
+					<a href="#!" class="brand-logo" onclick="navigation('home')"><img src="/img/logo.png"></a>
 					<a href="#" data-target="smaller-size-browser" class="sidenav-trigger">
 						<i class="material-icons">menu</i>
 					</a>
@@ -128,7 +128,7 @@
 						<li class="collection-item avatar grey lighten-4">
 						<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{creator.image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
 						<span class="title title-user">{{creator.nickname}}</span>
-						<a href="#!" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
+						<a href="/user/profile?id={{creator.email}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
 						</li>
 					</ul>
 				    <div class="project-text-title"><h5>Description</h5></div>
@@ -374,7 +374,7 @@
 						This site was created in the context of a project in the web technologies course. This is a not-for-profit website where people can meet and communicate. We, the creators of this site hope you enjoy your stay here. &#128513; &#128513;
 					</div>
 					<div class="col s3 brand-logo-about">
-						<img src="../img/logo.png">
+						<img src="/img/logo.png">
 					</div>
 				</div>
 			</div>
