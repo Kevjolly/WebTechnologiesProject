@@ -5,6 +5,7 @@ var poolData = {
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 var authToken;
+var userEmail;
 
 AWS.config.update({
     region: 'eu-west-2',
@@ -18,8 +19,10 @@ var s3 = new AWS.S3({
     params: { Bucket: 'teamup-images' }
 });
 
-if (userPool.getCurrentUser()) {
-    userPool.getCurrentUser().getSession(function sessionCallback(err, session) {
+var cognitoUser = userPool.getCurrentUser();
+
+if (cognitoUser) {
+    cognitoUser.getSession(function sessionCallback(err, session) {
         if (err) {
             console.log(err);
         } else if (!session.isValid()) {
@@ -27,15 +30,26 @@ if (userPool.getCurrentUser()) {
         } else {
             authToken = session.getIdToken().getJwtToken();
             console.log('auth token', authToken);
+            cognitoUser.getUserAttributes(function(err, result) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                for (i = 0; i < result.length; i++) {
+                    if (result[i].getName() == 'email') {
+                        userEmail = result[i].getValue();
+                        break;
+                    }
+                }
+            });
+    
         }
     });
 }
 
-var cognitoUser = userPool.getCurrentUser();
-
 $(document).ready(function () {
     if (cognitoUser) {
-        console.log('user', cognitoUser);
+        console.log('user', cognitoUser, userEmail);
         $(".signedout").hide();
         $(".signedin").show();
         $("#get-started-choice, .get-started").hide();
