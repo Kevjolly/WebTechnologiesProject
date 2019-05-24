@@ -71,7 +71,8 @@ router.get('/search', async function (req, res, next) {
         if (!('count' in req.query)) {
             req.query.count = 10
         }
-        const result = await userService.search(req.query);
+
+        const result = await userService.search(query);
         res.send(JSON.stringify({
             code: 0,
             data: result
