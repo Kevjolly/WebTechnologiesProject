@@ -1,15 +1,15 @@
 var express = require('express')
 const { decorateRouter } = require('@awaitjs/express');
 
-var router = decorateRouter(express.Router())
+var router = decorateRouter(express.Router());
 
-const projectService = require('../service/project-service')
+const projectService = require('../service/project-service');
 
 router.postAsync('/create', async function (req, res, next) {
     try {
-        var projectId = new Date().getTime()
-        req.body.id = projectId
-        req.body.creator = req.email
+        var projectId = new Date().getTime();
+        req.body.id = projectId;
+        req.body.creator = req.email;
 
         await projectService.create(req.body)
         res.send(JSON.stringify({
@@ -17,9 +17,9 @@ router.postAsync('/create', async function (req, res, next) {
             data: {
                 projectId: projectId
             }
-        }))
+        }));
     } catch (err) {
-        next(err)
+        next(err);
     }
 })
 
@@ -31,73 +31,78 @@ router.postAsync('/edit', async function (req, res, next) {
             msg: 'project edited',
             data: {
             }
-        }))
+        }));
     } catch (e) {
-        next(e)
+        next(e);
     }
 })
 
 router.postAsync('/join', async function (req, res, next) {
     try {
-        await projectService.join(req.email, req.body.projectId)
+        await projectService.join(req.email, req.body.projectId);
         res.send(JSON.stringify({
             code: 0,
             data: {
             }
-        }))
+        }));
     } catch (err) {
-        next(err)
+        next(err);
     }
 })
 
 router.postAsync('/quit', async function (req, res, next) {
     try {
-        await projectService.quit(req.email, req.body.projectId)
+        await projectService.quit(req.email, req.body.projectId);
         res.send(JSON.stringify({
             code: 0,
             data: {
             }
-        }))
+        }));
     } catch (err) {
-        next(err)
+        next(err);
     }
 })
 
 router.postAsync('/approve', async function (req, res, next) {
     try {
-        projectService.agree(req.body.applicant, req.body.projectId)
+        projectService.agree(req.body.applicant, req.body.projectId);
         res.send(JSON.stringify({
             code: 0,
             data: {
             }
-        }))
+        }));
     } catch (err) {
-        next(err)
+        next(err);
     }
 })
 
 router.get('/profile', async function (req, res, next) {
     try {
-        const result = await projectService.getProject(req.query.id)
+        const result = await projectService.getProject(req.query.id);
         res.render('project.html', result);
     } catch (err) {
-        next(err)
+        next(err);
     }
 })
 
 router.get('/search', async function (req, res, next) {
     try {
         if (!('page' in req.query)) {
-            req.query.page = 1
+            req.query.page = 1;
         }
         if (!('count' in req.query)) {
-            req.query.count = 10
+            req.query.count = 12;
         }
-        const result = await projectService.search(req.query)
-        res.render('search.html', result);
+        const result = await projectService.search(req.query);
+        res.render('search_projects.html', result);
+        // res.send(JSON.stringify({
+        //     code: 0,
+        //     msg: 'project edited',
+        //     data: result
+        // }))
     } catch (err) {
-        next(err)
+        next(err);
     }
 })
 
-module.exports = router
+module.exports = router;

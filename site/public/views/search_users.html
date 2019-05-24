@@ -116,37 +116,38 @@
 		<div class="row">
 			<div id="search-results-projects" class="col s12 search-results container">
 				<div class="row">
-					{{#projects}}
+					{{#users}}
 					<div class="col s12 m6 l4">
 						<div class="card sticky-action">
 							<div class="card">
 								<div class="card-image waves-effect waves-block waves-light">
-									<img class="card-image-style activator" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}"  onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+									<img class="card-image-user" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}"  onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
 								</div>
 								<div class="card-content card-content-limit">
-									<span class="text-card card-title activator grey-text text-darken-4">{{name}}<br></span>
+									<span class="text-card card-title grey-text text-darken-4">{{name}}<br></span>
 								</div>
-								<div class="card-action"><p>BY <a href="#">{{creator}}</a><i class="card-title material-icons activator right">more_vert</i></p></div>
-								<div class="card-reveal">
-									<p><a href="project/profile?id={{{id}}}" class="left">See project details</a><i class="card-title material-icons right">close</i></p>
+								<div class="card-action"><p><a href="/user/profile?id={{{email}}}">See user profile</a></p></div>
+<!-- 								<div class="card-reveal">
+									<p><a href="/project/profile?id={{{id}}}" class="left">See project details</a><i class="card-title material-icons right">close</i></p>
 									<br/>
 									<h6 class="text-card grey-text text-darken-4">Description</h6>
 									<p class="text-card">{{desc}}</p>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
-					{{/projects}}
+					{{/users}}
 
-<!-- 				<ul class="pagination">
-					<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-					<li class="active"><a href="#!">1</a></li>
-					<li class="waves-effect"><a href="#!">2</a></li>
-					<li class="waves-effect"><a href="#!">3</a></li>
-					<li class="waves-effect"><a href="#!">4</a></li>
-					<li class="waves-effect"><a href="#!">5</a></li>
-					<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-				</ul> -->
+					<div id="hidden-div-values">
+						<div id="total" data-value="{{{total}}}"></div>
+						<div id="current-page" data-value="{{{page}}}"></div>
+						<div id="keywords" data-value="{{{keywords}}}"></div>
+						<div id="type-of-search" data-value="{{{type}}}"></div>
+					</div>
+				
+					<ul id="pagination-results" class="pagination">
+					</ul>
+				</div>
 			</div>
 		</div>
 

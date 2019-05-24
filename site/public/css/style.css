@@ -117,6 +117,10 @@ nav .input-field{
 	max-width: 200px;
 }
 
+.input-select-navbar span{
+	display: block !important;
+}
+
 nav .select-wrapper .caret{
 	fill: white !important;
 }
@@ -173,12 +177,22 @@ nav .select-dropdown{
 	overflow: auto;
 }
 
-.card-image-style{
-	width: unset !important;
+.card-image-project{
+	/*width: unset !important;*/
 	max-width: 100%;
 	height: 250px;
 	margin-left: auto;
 	margin-right: auto;
+	display: block;
+}
+
+.card-image-user{
+	width: unset !important;
+	max-width: 100%;
+	height: 150px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
 	display: block;
 }
 
@@ -203,7 +217,11 @@ nav .select-dropdown{
 
 /* Project details */
 #main-project{
-	min-height: 450px !important;
+	min-height: 600px !important;
+}
+
+#main-user-profile{
+	min-height: 500px !important;
 }
 
 .project-container{
@@ -224,6 +242,12 @@ nav .select-dropdown{
 	text-align: justify;
 	max-height: 300px;
 	overflow: auto;
+}
+
+.user-text{
+	text-align: justify;
+	max-height: 380px;
+	overflow: auto;	
 }
 
 .project-text-med{
@@ -293,4 +317,7 @@ nav .select-dropdown{
 	border-radius: unset !important;
 }
 
+#hidden-div-values{
+	display: none;
+}
 

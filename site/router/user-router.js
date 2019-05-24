@@ -1,10 +1,10 @@
-var express = require('express')
+var express = require('express');
 const { decorateRouter } = require('@awaitjs/express');
 
-var router = decorateRouter(express.Router())
+var router = decorateRouter(express.Router());
 
-const userService = require('../service/user-service')
-const projectService = require('../service/project-service')
+const userService = require('../service/user-service');
+const projectService = require('../service/project-service');
 
 router.postAsync('/signup', async function (req, res, next) {
     console.log('sign up req body', req.body)
@@ -66,16 +66,17 @@ router.get('/profile', async function (req, res, next) {
 router.get('/search', async function (req, res, next) {
     try {
         if (!('page' in req.query)) {
-            req.query.page = 1
+            req.query.page = 1;
         }
         if (!('count' in req.query)) {
-            req.query.count = 10
+            req.query.count = 12;
         }
         const result = await userService.search(req.query);
-        res.send(JSON.stringify({
-            code: 0,
-            data: result
-        }))
+        res.render('search_users.html', result);
+        // res.send(JSON.stringify({
+        //     code: 0,
+        //     data: result
+        // }))
     } catch (e) {
         next(e)
     }

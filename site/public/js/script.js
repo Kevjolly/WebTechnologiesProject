@@ -97,19 +97,9 @@ $(document).ready(function () {
 	$(".search-icons").click(function () {
 		if ($(".select-search").val() !== null){
 			if ($("#select-navbar").val() === "1"){
-				var host = window.location.host;
-				if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
-					host = "http://" + host;
-				}
-				var url = host + '/user/search?keyword='+ $(".search-input").val()+'&page=1&count=12';
-				window.open(url, "_self");
+				returnSearchResults("user", 1);
 			} else if ($("#select-navbar").val() === "2"){
-				var host = window.location.host;
-				if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
-					host = "http://" + host;
-				}
-				var url = host + '/project/search?keyword='+ $(".search-input").val()+'&page=1&count=12';
-				window.open(url, "_self");
+				returnSearchResults("project", 1);
 			} else {
 				M.toast({ html: 'Search could not proceed due to a fail in the choice selection.' });
 			}
@@ -215,6 +205,24 @@ $(document).ready(function () {
 		}
 	});
 
+	// $("#my-profile").click(function(e){
+	// 	e.preventDefault();
+	// 	$.ajax({
+	// 		headers: {
+	// 			Authorization: authToken
+	// 		},
+	// 		success: function (data) {
+	// 			dataFROMGET = data;
+	// 			console.log("project created successfully", data);
+	// 		},
+	// 		error: function (err) {
+	// 			console.log("failed to retrieve user details", err);
+	// 			M.toast({ html: 'Error when retrieving your details' });
+	// 		},
+	// 		type: 'GET',
+	// 		url: '/user/profile'
+	// 	});		
+	// });
 
 	// Create a project
 	// List of skills
@@ -303,6 +311,8 @@ $(document).ready(function () {
 												M.toast({ html: 'Image saved for project!' });
 											}
 										});
+									} else {
+										$('#modal-project').modal('close');
 									}
 								},
 								error: function (err) {
@@ -329,23 +339,66 @@ $(document).ready(function () {
 		}
 	});
 
+	// Set size of main body on resize
 	$(window).resize(function () {
 		if ($("#project-container-med").is(':visible')) {
 			$("#main-project").attr('style', 'min-height: 1000px !important');
+			$("#main-user-profile").attr('style', 'min-height: 800px !important');
 		} else {
-			$("#main-project").attr('style', 'min-height: 450px !important');
+			$("#main-project").attr('style', 'min-height: 600px !important');
+			$("#main-user-profile").attr('style', 'min-height: 500px !important');
 		}
 	});
 
+	// Set size of main body at the start
+	if ($(window).width() <= 1092){
+		$("#main-project").attr('style', 'min-height: 1000px !important');
+		$("#main-user-profile").attr('style', 'min-height: 800px !important');
+	}
+
+	// Pagination for search pages
+	// if(window.location.href.indexOf("search") > -1) {
+	// 	var numberOfResults = parseInt($('#total').attr('data-value'));
+	// 	var currentPage = parseInt($('#current-page').attr('data-value'));
+	// 	var keywords = $('#keywords').attr('data-value');
+	// 	var choiceSearch = $('#type-of-search').attr('data-value');
+
+	// 	var resultsPage = 12;
+	// 	var numberOfPages = Math.floor(numberOfResults/resultsPage) + 1;
+	// 	var strPagination = "";
+	// 	var choiceSearch = "";
+		
+	// 	if (numberOfPages === 1){
+	// 		strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
+	// 		strPagination += '<li class="active"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+currentPage+'&count='+resultsPage+'">1</a></li>';
+	// 		strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
+	// 	} else {
+	// 		if (currentPage === 1){
+	// 			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
+	// 		} else {
+	// 			strPagination += '<li class="waves-effect"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+(currentPage-1)+'&count='+resultsPage+'"><i class="material-icons">chevron_left</i></a></li>';
+	// 		}
+	// 		for (var k=1; k <= numberOfPages, k++){
+	// 			if (k === currentPage){
+	// 				strPagination += '<li class="active"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+k+'&count='+resultsPage+'">'+String(k)+'</a></li>';
+	// 			} else {
+	// 				strPagination += '<li class="waves-effect"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+k+'&count='+resultsPage+'">'+String(k)+'</a></li>';
+	// 			}
+	// 		}
+	// 		strPagination += '<li class="waves-effect"><a href="/'+choiceSearch+'/search?keyword="'+keywords+'&page='+(currentPage+1)+'&count='+resultsPage+'"><i class="material-icons">chevron_right</i></a></li>';		
+	// 	}
+	// 	$('#pagination-results').html(linkText);
+ //    }
 });
 
-function navigation(page) {
+function returnSearchResults(choice, page){
+	/* Returns page results - choice: user or project, page: page to give */
+	var resultsPerPage = 12;
 	var host = window.location.host;
 	if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
 		host = "http://" + host;
 	}
-
-	if (page === "home") {
-		window.open(host, "_self");
-	}
+	var url = host + '/' + choice + '/search?keyword='+ $(".search-input").val()+'&page='+page+'&count='+resultsPerPage;
+	window.open(url, "_self");
 }
+
