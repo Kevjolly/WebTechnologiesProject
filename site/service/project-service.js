@@ -44,6 +44,7 @@ class ProjectService {
         var result = await projectDao.search(keywords, query.page, query.count)
         result.keyword = query.keyword
         result.page = query.page
+        result.type = 'project'
         return result
     }
 

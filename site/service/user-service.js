@@ -19,6 +19,7 @@ class UserService {
         var result = userDao.search(keywords, query.page, query.count)
         result.keyword = query.keyword
         result.page = query.page
+        result.type = 'user'
         return result
     }
 
