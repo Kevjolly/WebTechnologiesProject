@@ -80,17 +80,12 @@ router.get('/profile', async function (req, res, next) {
     try {
         const result = await projectService.getProject(req.query.id)
         res.render('project.html', result);
-        // res.setHeader('Content-Type', 'application/json');
-        // res.send(JSON.stringify({
-        //     code: 0,
-        //     data: result
-        // }))
     } catch (err) {
         next(err)
     }
 })
 
-router.getAsync('/search', async function (req, res, next) {
+router.get('/search', async function (req, res, next) {
     try {
         if (!('page' in req.query)) {
             req.query.page = 1
@@ -98,14 +93,8 @@ router.getAsync('/search', async function (req, res, next) {
         if (!('count' in req.query)) {
             req.query.count = 10
         }
-        const projects = await projectService.search(req.query)
-        res.render('search.html', projects);
-        // res.send(JSON.stringify({
-        //     code: 0,
-        //     data: {
-        //         projects: projects
-        //     }
-        // }))
+        const result = await projectService.search(req.query)
+        res.render('search.html', result);
     } catch (err) {
         next(err)
     }

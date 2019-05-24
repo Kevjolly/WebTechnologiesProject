@@ -98,9 +98,12 @@ class ProjectDao {
             result.push(hit._source)
         })
 
-        console.log('search project result', result)
+        console.log('search project result', response, result)
 
-        return result
+        return {
+            projects: result,
+            total: response.hits.total
+        }
     }
 }
 

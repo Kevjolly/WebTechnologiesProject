@@ -82,7 +82,10 @@ class UserDao {
 
         console.log('search user result', result)
 
-        return result
+        return {
+            users: result,
+            total: response.hits.total
+        }
     }
 
     async updateToken(email, token) {

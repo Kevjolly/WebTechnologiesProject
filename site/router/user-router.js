@@ -63,7 +63,7 @@ router.get('/profile', async function (req, res, next) {
     }
 })
 
-router.getAsync('/search', async function (req, res, next) {
+router.get('/search', async function (req, res, next) {
     try {
         if (!('page' in req.query)) {
             req.query.page = 1
@@ -74,9 +74,7 @@ router.getAsync('/search', async function (req, res, next) {
         const result = await userService.search(req.query);
         res.send(JSON.stringify({
             code: 0,
-            data: {
-                result: result
-            }
+            data: result
         }))
     } catch (e) {
         next(e)
