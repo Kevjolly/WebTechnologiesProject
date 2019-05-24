@@ -93,14 +93,14 @@ onMessageReceived(function (data) {
 });
 ```
 
-2. load new messages
+2. load conversations
 
-If page is in background or closed, you can get offline messages from this API. Ideally, you should call this method each time the window gains focus.
+Ideally, you should call this method ***each time the page is loaded or the window gains focus***.
 
 ```
 window.addEventListener("focus", function (event) {
-        loadOfflineMessages(function (res) {
-        console.log('offline load result', res);
+    loadConversations(function (res) {
+        console.log('conversation load result', res);
     });
 }, false);
 
@@ -109,22 +109,32 @@ window.addEventListener("focus", function (event) {
 res's format:
 ```
 {
-    "single": {
-        "brucejeaung@gmail.com":{"last_timestamp":1234,"messages":[]},
-        "kevinjolly@gmail.com":{}
-    }
-    "project": {
-        "12345": {},
-        "55653": {}
-    }
+    "single": [{
+        "unread": true,
+        "latestMessage":{
+            "id":12312321213,
+            "from": "brucejeaung@gmail.com",
+            "to": "mu18336@bristol.ac.uk",
+            "message": "hello world",
+        }
+    }],
+    "project": []
 }
 ```
 
-1. load history messages
+3. load history messages
 
-Call these functions when user scrolls the chat window.
+Call these functions when a user click on a conversation to open a chat dialog.
 ```
 function loadSingleHistoryMessages(peerEmail, maxId, count, callback)
 
 function loadProjectHistoryMessages(projectId, maxId, count, callback)
+```
+
+4. send messages
+
+```
+function sendSingleMessage(message, successCallback, failureCallback)
+
+function sendProjectMessage(message, successCallback, failureCallback)
 ```

@@ -177,11 +177,17 @@ function loadConversations(callback) {
 
             var projectLatestMsgs = await alasql.promise('select data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             projectLatestMsgs.forEach(row => {
+                var conversation = new Object();
+
                 var message = JSON.parse(row.data);
+
+                conversation.latestMessage = message;
+                
                 if (message.id > projectMaxId) {
-                    message.unread = true;
+                    conversation.unread = true;
                 }
-                conversations.project.push(message);
+
+                conversations.project.push(conversation);
             });
         }
 
@@ -201,11 +207,17 @@ function loadConversations(callback) {
 
             var singleLatestMsgs = await alasql.promise('select data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             singleLatestMsgs.forEach(row => {
+                var conversation = new Object();
+
                 var message = JSON.parse(row.data);
+
+                conversation.latestMessage = message;
+                
                 if (message.id > singleMaxId) {
-                    message.unread = true;
+                    conversation.unread = true;
                 }
-                conversations.single.push(message);
+                
+                conversations.single.push(conversation);
             });
         }
 
