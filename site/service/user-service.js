@@ -15,7 +15,11 @@ class UserService {
 
     async search(query) {
         var keywords = query.keyword.trim().split(" ");
-        return await userDao.search(keywords, query.page, query.count)
+        console.log('user search keywords', keywords)
+        var result = userDao.search(keywords, query.page, query.count)
+        result.keyword = query.keyword
+        result.page = query.page
+        return result
     }
 
     async updateToken(email, token) {

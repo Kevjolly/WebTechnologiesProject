@@ -39,7 +39,12 @@ class ProjectService {
     }
 
     async search(query) {
-        return await projectDao.search(query.keyword, query.page, query.count)
+        var keywords = query.keyword.trim().split(" ");
+        console.log('project search keywords', keywords)
+        var result = await projectDao.search(keywords, query.page, query.count)
+        result.keyword = query.keyword
+        result.page = query.page
+        return result
     }
 
     async join(email, projectId) {

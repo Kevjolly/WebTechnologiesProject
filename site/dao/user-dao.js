@@ -47,8 +47,7 @@ class UserDao {
             body: {
                 query: {
                     bool: {
-                        should: [
-                        ],
+                        should: [],
                         must: [
                             {
                                 term: {
