@@ -96,12 +96,16 @@ $(document).ready(function () {
 	// Launch search
 	$(".search-icons").click(function () {
 		if ($(".select-search").val() !== null){
-			if ($("#select-navbar").val() === "1"){
-				returnSearchResults("user", 1);
-			} else if ($("#select-navbar").val() === "2"){
-				returnSearchResults("project", 1);
+			if (($(".search-input").val() !== null) && ($(".search-input").val() !== "")){
+				if ($("#select-navbar").val() === "1"){
+					returnSearchResults("user", 1);
+				} else if ($("#select-navbar").val() === "2"){
+					returnSearchResults("project", 1);
+				} else {
+					M.toast({ html: 'Search could not proceed due to a fail in the choice selection.' });
+				}		
 			} else {
-				M.toast({ html: 'Search could not proceed due to a fail in the choice selection.' });
+				M.toast({ html: 'The search bar is empty.' });
 			}
 		} else {
 			M.toast({ html: 'You need to choose either to search users or projects.' });
@@ -205,24 +209,15 @@ $(document).ready(function () {
 		}
 	});
 
-	// $("#my-profile").click(function(e){
-	// 	e.preventDefault();
-	// 	$.ajax({
-	// 		headers: {
-	// 			Authorization: authToken
-	// 		},
-	// 		success: function (data) {
-	// 			dataFROMGET = data;
-	// 			console.log("project created successfully", data);
-	// 		},
-	// 		error: function (err) {
-	// 			console.log("failed to retrieve user details", err);
-	// 			M.toast({ html: 'Error when retrieving your details' });
-	// 		},
-	// 		type: 'GET',
-	// 		url: '/user/profile'
-	// 	});		
-	// });
+	$(".my-profile").click(function(e){
+		e.preventDefault();
+		var host = window.location.host;
+		if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
+			host = "http://" + host;
+		}
+		var url = host + '/user/profile?id='+userEmail;
+		window.open(url, "_self");
+	});
 
 	// Create a project
 	// List of skills
@@ -400,5 +395,16 @@ function returnSearchResults(choice, page){
 	}
 	var url = host + '/' + choice + '/search?keyword='+ $(".search-input").val()+'&page='+page+'&count='+resultsPerPage;
 	window.open(url, "_self");
+}
+
+function navigation(page){
+	var host = window.location.host;
+	if ((host !== "localhost:8080") || (host !== "127.0.0.1:8080")){
+		host = "http://" + host;
+	}
+
+	if (page === "home"){
+		window.open(host, "_self");
+	}
 }
 

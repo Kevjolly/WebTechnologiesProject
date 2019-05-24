@@ -56,7 +56,7 @@
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li> -->
 					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
-					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
+					<li class="signedin"><a href="#" class="my-profile waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i><span>Sign Up</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i><span>Sign In</span></a></li>					
@@ -107,7 +107,7 @@
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i>Sign In</a></li>
-			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">account_circle</i>My Profile</a></li>
+			<li class="signedin"><a href="#" class="my-profile waves-effect"><i class="material-icons">account_circle</i>My Profile</a></li>
 			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-logout"><i class="material-icons">power_settings_new</i>Sign Out</a></li>
 		</ul>		
 	</header>
@@ -124,7 +124,7 @@
 									<img class="card-image-user" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}"  onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
 								</div>
 								<div class="card-content card-content-limit">
-									<span class="text-card card-title grey-text text-darken-4">{{name}}<br></span>
+									<span class="text-card card-title grey-text text-darken-4">{{nickname}}<br></span>
 								</div>
 								<div class="card-action"><p><a href="/user/profile?id={{{email}}}">See user profile</a></p></div>
 <!-- 								<div class="card-reveal">

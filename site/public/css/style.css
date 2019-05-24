@@ -163,6 +163,10 @@ nav .select-dropdown{
     max-width: 200px;
 }
 
+.search-icons:hover {
+    cursor: pointer;
+}
+
 /* Search results */
 .search-results{
 	text-align: center;
@@ -172,8 +176,12 @@ nav .select-dropdown{
 	text-align: justify;
 }
 
+.card .card-content{
+	padding: 10px !important;
+}
+
 .card-content-limit{
-	height: 150px;
+	height: 110px;
 	overflow: auto;
 }
 
@@ -290,7 +298,17 @@ nav .select-dropdown{
 	width: 64px !important;
 }
 
+.project-name{
+	max-height: 80px;
+	overflow: auto;	
+}
+
 /* Profile page */
+.user-nickname{
+	max-height: 150px;
+	overflow: auto;
+}
+
 .big-circle{
 	height: 256px !important;
 	width: 256px !important;
@@ -301,6 +319,27 @@ nav .select-dropdown{
 	top: 40px !important;
 	left: 90px !important;
 	font-size: 24px !important;
+}
+
+.title-user-large{
+	width: 13em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.title-user-med-and-down{
+	width: 20em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.link-user-project{
+	max-width: 30em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;	
 }
 
 .link-user{

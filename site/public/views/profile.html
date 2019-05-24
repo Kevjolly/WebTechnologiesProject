@@ -56,7 +56,7 @@
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li> -->
 					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
-					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
+					<li class="signedin"><a href="#" class="my-profile waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i><span>Sign Up</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i><span>Sign In</span></a></li>					
@@ -107,7 +107,7 @@
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i>Sign In</a></li>
-			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">account_circle</i>My Profile</a></li>
+			<li class="signedin"><a href="#" class="my-profile waves-effect"><i class="material-icons">account_circle</i>My Profile</a></li>
 			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-logout"><i class="material-icons">power_settings_new</i>Sign Out</a></li>
 		</ul>		
 	</header>
@@ -117,7 +117,7 @@
 		    <div class="row">
 				<div class="col s6">
 					<img class="circle big-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{user.image}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-					<div class="project-text-title"><h4>{{user.nickname}}</h4></div>
+					<div class="project-text-title user-nickname"><h4>{{user.nickname}}</h4></div>
 				</div>
 				<div class="col s6 user-text">
 					<div class="project-text-title"><h5>List of skills</h5></div>
@@ -133,7 +133,7 @@
 						{{#projects}}
 						<li class="collection-item avatar grey lighten-4">
 						<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-						<span class="title title-user">{{name}}</span>
+						<span class="title title-user title-user-large">{{name}}</span>
 						<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
 						{{/projects}}
 						</li>
@@ -146,7 +146,7 @@
 		    <div class="row">
 				<div class="col s12">
 					<img class="circle big-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{user.image}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-					<div class="project-text-title"><h4>{{user.nickname}}</h4></div>
+					<div class="project-text-title user-nickname"><h4>{{user.nickname}}</h4></div>
 				</div>
 				<div class="col s12 project-text">
 					<div class="project-text-title"><h5>List of skills</h5></div>
@@ -162,7 +162,7 @@
 						{{#projects}}
 						<li class="collection-item avatar grey lighten-4">
 						<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-						<span class="title title-user">{{name}}</span>
+						<span class="title title-user title-user-med-and-down">{{name}}</span>
 						<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
 						{{/projects}}
 						</li>
