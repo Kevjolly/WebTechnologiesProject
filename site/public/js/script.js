@@ -81,29 +81,29 @@ $(document).ready(function () {
 	});
 
 	// select init
-    $('select').formSelect();
+	$('select').formSelect();
 
-	$('#select-navbar').on('change', function() {
+	$('#select-navbar').on('change', function () {
 		$("#select-sidenav").val($('#select-navbar').val());
 		$('#select-sidenav').formSelect();
 	});
 
-	$('#select-sidenav').on('change', function() {
+	$('#select-sidenav').on('change', function () {
 		$("#select-navbar").val($('#select-sidenav').val());
 		$('#select-navbar').formSelect();
 	});
 
 	// Launch search
 	$(".search-icons").click(function () {
-		if ($(".select-search").val() !== null){
-			if (($(".search-input").val() !== null) && ($(".search-input").val() !== "")){
-				if ($("#select-navbar").val() === "1"){
+		if ($(".select-search").val() !== null) {
+			if (($(".search-input").val() !== null) && ($(".search-input").val() !== "")) {
+				if ($("#select-navbar").val() === "1") {
 					returnSearchResults("user", 1);
-				} else if ($("#select-navbar").val() === "2"){
+				} else if ($("#select-navbar").val() === "2") {
 					returnSearchResults("project", 1);
 				} else {
 					M.toast({ html: 'Search could not proceed due to a fail in the choice selection.' });
-				}		
+				}
 			} else {
 				M.toast({ html: 'The search bar is empty.' });
 			}
@@ -203,19 +203,36 @@ $(document).ready(function () {
 	// SignIn
 	$('#signinBtn').click(function () {
 		if (/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($("#login-email").val())) {
-			signin($('#login-email').val(), $('#login-password').val());
+			signin($('#login-email').val(), $('#login-password').val(), function () {
+				M.toast({ html: 'Signed in!' });
+				$('#modal-login').modal('close');
+				$('#get-started-choice').hide();
+				location.reload();
+			}, function (err) {
+				console.log("Authenticate user failure");
+				console.log(err);
+				if (err.code === "UserNotConfirmedException") {
+					M.toast({ html: 'Failed!' });
+					M.toast({ html: 'Your account is not verified.' });
+					$('#modal-login').modal('close');
+					$('#modal-verify').modal('open');
+				} else {
+					M.toast({ html: 'Failed!' });
+					M.toast({ html: err.message });
+				}
+			});
 		} else {
 			M.toast({ html: 'Enter a valid email.' })
 		}
 	});
 
-	$(".my-profile").click(function(e){
+	$(".my-profile").click(function (e) {
 		e.preventDefault();
 		var host = window.location.host;
 		if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
 			host = "http://" + host;
 		}
-		var url = host + '/user/profile?id='+userEmail;
+		var url = host + '/user/profile?id=' + userEmail;
 		window.open(url, "_self");
 	});
 
@@ -346,70 +363,70 @@ $(document).ready(function () {
 	});
 
 	// Set size of main body at the start
-	if ($(window).width() <= 1092){
+	if ($(window).width() <= 1092) {
 		$("#main-project").attr('style', 'min-height: 1000px !important');
 		$("#main-user-profile").attr('style', 'min-height: 800px !important');
 	}
 
 	// Pagination for search pages
-	if(window.location.href.indexOf("search") > -1) {
+	if (window.location.href.indexOf("search") > -1) {
 		var choiceSearch = "";
-		
+
 		var numberOfResults = parseInt($('#total').attr('data-value'));
 		var currentPage = parseInt($('#current-page').attr('data-value'));
 		var keywords = $('#keywords').attr('data-value');
 		var choiceSearch = $('#type-of-search').attr('data-value');
 
 		var resultsPage = 12;
-		var numberOfPages = Math.floor(numberOfResults/resultsPage) + 1;
+		var numberOfPages = Math.floor(numberOfResults / resultsPage) + 1;
 		var strPagination = "";
-		
-		if (numberOfPages === 1){
+
+		if (numberOfPages === 1) {
 			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
-			strPagination += '<li class="active"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String(currentPage)+'&count='+String(resultsPage)+'">1</a></li>';
+			strPagination += '<li class="active"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String(currentPage) + '&count=' + String(resultsPage) + '">1</a></li>';
 			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
 		} else {
-			if (currentPage === 1){
+			if (currentPage === 1) {
 				strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
 			} else {
-				strPagination += '<li class="waves-effect"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String((currentPage-1))+'&count='+String(resultsPage)+'"><i class="material-icons">chevron_left</i></a></li>';
+				strPagination += '<li class="waves-effect"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String((currentPage - 1)) + '&count=' + String(resultsPage) + '"><i class="material-icons">chevron_left</i></a></li>';
 			}
-			for (var k=1; k <= numberOfPages; k++){
-				if (k === currentPage){
-					strPagination += '<li class="active"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String(k)+'&count='+String(resultsPage)+'">'+String(k)+'</a></li>';
+			for (var k = 1; k <= numberOfPages; k++) {
+				if (k === currentPage) {
+					strPagination += '<li class="active"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String(k) + '&count=' + String(resultsPage) + '">' + String(k) + '</a></li>';
 				} else {
-					strPagination += '<li class="waves-effect"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String(k)+'&count='+String(resultsPage)+'">'+String(k)+'</a></li>';
+					strPagination += '<li class="waves-effect"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String(k) + '&count=' + String(resultsPage) + '">' + String(k) + '</a></li>';
 				}
 			}
 
-			if (currentPage === numberOfPages){
+			if (currentPage === numberOfPages) {
 				strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
 			} else {
-				strPagination += '<li class="waves-effect"><a href="/'+String(choiceSearch)+'/search?keyword='+String(keywords)+'&page='+String((currentPage+1))+'&count='+resultsPage+'"><i class="material-icons">chevron_right</i></a></li>';		
+				strPagination += '<li class="waves-effect"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String((currentPage + 1)) + '&count=' + resultsPage + '"><i class="material-icons">chevron_right</i></a></li>';
 			}
 		}
 		$('#pagination-results').html(strPagination);
-    }
+	}
 });
 
-function returnSearchResults(choice, page){
+function returnSearchResults(choice, page) {
 	/* Returns page results - choice: user or project, page: page to give */
 	var resultsPerPage = 12;
 	var host = window.location.host;
 	if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
 		host = "http://" + host;
 	}
-	var url = host + '/' + choice + '/search?keyword='+ $(".search-input").val()+'&page='+page+'&count='+resultsPerPage;
+	var url = host + '/' + choice + '/search?keyword=' + $(".search-input").val() + '&page=' + page + '&count=' + resultsPerPage;
 	window.open(url, "_self");
 }
 
-function navigation(page){
+function navigation(page) {
 	var host = window.location.host;
-	if ((host !== "localhost:8080") || (host !== "127.0.0.1:8080")){
+	if ((host !== "localhost:8080") || (host !== "127.0.0.1:8080")) {
 		host = "http://" + host;
 	}
 
-	if (page === "home"){
+	if (page === "home") {
 		window.open(host, "_self");
 	}
 }

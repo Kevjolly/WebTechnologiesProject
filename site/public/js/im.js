@@ -60,8 +60,8 @@ function handleMessage(data, callback) {
         window.localStorage.setItem('teamup_single_max_id_' + suffix, msg.id);
 
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, from_user, to_user, data) values (?, ?, ?, ?)');
-            stmt([msg.id, msg.from, msg.to, data.msg], function () {
+            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
+            stmt([msg.id, msg.from, data.msg], function () {
                 console.log('insert single message successfully');
             });
         });
@@ -70,7 +70,7 @@ function handleMessage(data, callback) {
 
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
             var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
-            stmt([msg.id, msg.from, msg.group, data.msg], function () {
+            stmt([msg.id, msg.from, msg.project, data.msg], function () {
                 console.log('insert project message successfully');
             });
         });
@@ -104,7 +104,7 @@ function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.single_messages_' + suffix + ' where (from_user="' + peerEmail + '" or to_user="' + peerEmail + '") and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+        alasql('select data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -141,10 +141,15 @@ function loadProjectHistoryMessages(projectId, maxId, count, callback) {
     });
 }
 
-function loadOfflineMessages(callback) {
+function loadConversations(callback) {
+    var conversations = {
+        single: [],
+        project: []
+    };
+
     // console.log(userPool.getCurrentUser());
     if (!(userPool.getCurrentUser())) {
-        callback([]);
+        callback(conversations);
         return
     }
 
@@ -153,42 +158,124 @@ function loadOfflineMessages(callback) {
     var singleMaxId = window.localStorage.getItem('teamup_single_max_id_' + suffix);
     var projectMaxId = window.localStorage.getItem('teamup_project_max_id_' + suffix);
 
-    var offlineMessages = {
-        single: {},
-        project: {}
-    };
+    alasql('ATTACH INDEXEDDB DATABASE teamup', async function () {
+        // project conversations
+        var projectMaxIds = await alasql.promise('select max(id) as maxId from teamup.project_messages_' + suffix + ' group by project');
 
-    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.project_messages_' + suffix + ' where id>' + projectMaxId + ' order by id desc', function (projectResult) {
-            projectResult.forEach(row => {
-                var message = JSON.parse(row.data);
-                if (!(message.project in offlineMessages.project)) {
-                    offlineMessages.project[message.project] = new Object();
-                    offlineMessages.project[message.project].messages = new Array();
+        console.log('projectMaxIds', projectMaxIds);
+
+        if (projectMaxIds[0].maxId) {
+            var idClause = "";
+            for (var i = 0; i < projectMaxIds.length; i++) {
+                if (i != 0) {
+                    idClause += ',';
                 }
-                offlineMessages.project[message.project].messages.push(message);
-            });
-
-            for (var project in offlineMessages.project) {
-                offlineMessages.project[project].last_timestamp = offlineMessages.project[project].messages[0];
+                idClause += projectMaxIds[i].maxId;
             }
 
-            alasql('select data from teamup.single_messages_' + suffix + ' where id>' + singleMaxId + ' order by id desc', function (singleResult) {
-                singleResult.forEach(row => {
-                    var message = JSON.parse(row.data);
-                    if (!(message.from in offlineMessages.single)) {
-                        offlineMessages.single[message.from] = new Object();
-                        offlineMessages.single[message.from].messages = new Array();
-                    }
-                    offlineMessages.single[message.from].messages.push(message);
-                });
+            console.log('project id clause', idClause);
 
-                for (var peer in offlineMessages.single) {
-                    offlineMessages.single[peer].last_timestamp = offlineMessages.single[peer].messages[0];
+            var projectLatestMsgs = await alasql.promise('select data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            projectLatestMsgs.forEach(row => {
+                var message = JSON.parse(row.data);
+                if (message.id > projectMaxId) {
+                    message.unread = true;
                 }
-
-                callback(offlineMessages);
+                conversations.project.push(message);
             });
-        });
+        }
+
+        // single conversations
+        var singleMaxIds = await alasql.promise('select max(id) as maxId from teamup.single_messages_' + suffix + ' group by user');
+
+        if (singleMaxIds[0].maxId) {
+            var idClause = "";
+            for (var i = 0; i < singleMaxIds.length; i++) {
+                if (i != 0) {
+                    idClause += ',';
+                }
+                idClause += singleMaxIds[i].maxId;
+            }
+
+            console.log('single id clause', idClause);
+
+            var singleLatestMsgs = await alasql.promise('select data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            singleLatestMsgs.forEach(row => {
+                var message = JSON.parse(row.data);
+                if (message.id > singleMaxId) {
+                    message.unread = true;
+                }
+                conversations.single.push(message);
+            });
+        }
+
+        // TODO set max Ids
+        console.log('conversations', conversations);
+
+        callback(conversations);
+    });
+}
+
+function sendSingleMessage(message, successCallback, failureCallback) {
+    $.ajax({
+        contentType: 'application/json',
+        headers: {
+            Authorization: authToken
+        },
+        data: JSON.stringify(message),
+        dataType: 'json',
+        success: function (data) {
+            console.log("call /msg/single successfully", data);
+
+            var res = JSON.parse(data);
+            message.id = res.data.msgId;
+
+            alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+                var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
+                stmt([message.id, message.to, JSON.stringify(message)], function () {
+                    console.log('insert single message successfully');
+                    successCallback();
+                });
+            });
+        },
+        error: function (err) {
+            console.log("call /msg/single failed", data);
+            failureCallback(err);
+        },
+        processData: false,
+        type: 'POST',
+        url: '/msg/single'
+    });
+}
+
+function sendProjectMessage(message, successCallback, failureCallback) {
+    $.ajax({
+        contentType: 'application/json',
+        headers: {
+            Authorization: authToken
+        },
+        data: JSON.stringify(message),
+        dataType: 'json',
+        success: function (data) {
+            console.log("call /msg/project successfully", data);
+
+            var res = JSON.parse(data);
+            message.id = res.data.msgId;
+
+            alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+                var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
+                stmt([message.id, message.from, message.project, JSON.stringify(message)], function () {
+                    console.log('insert project message successfully');
+                    successCallback();
+                });
+            });
+        },
+        error: function (err) {
+            console.log("call /msg/project failed", data);
+            failureCallback(err);
+        },
+        processData: false,
+        type: 'POST',
+        url: '/msg/project'
     });
 }

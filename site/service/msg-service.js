@@ -13,8 +13,6 @@ class MsgService {
             return
         }
 
-        body.id = new Date().getTime();
-
         try {
             var notification = {
                 'title': 'TeamUP',
@@ -55,7 +53,6 @@ class MsgService {
 
         const project = await projectDao.getProject(projectId)
 
-        body.id = new Date().getTime();
         body.projectName = project.name;
 
         var notification = {
