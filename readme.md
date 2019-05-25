@@ -109,9 +109,8 @@ window.addEventListener("focus", function (event) {
 res's format:
 ```
 {
-    "single": [{
-        "unread": true,
-        "latestMessage":{
+    "single": [
+        {
             "id": 1231435234, // server inserts
             "fromInfo": { // server inserts
 
@@ -128,8 +127,6 @@ res's format:
     }],
     "project": [
         {
-        "unread": true.
-        "latestMessage":{
             "id": 1231435234, // server inserts, timestamp in milliseconds
             "projectInfo": { // server inserts, same format as /project/profile
 
@@ -142,7 +139,6 @@ res's format:
             "project": 12346,
             "message": "I want to join the project"
         }
-    }
     ]
 }
 ```
