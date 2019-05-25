@@ -176,11 +176,30 @@
 								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
 							</p>
 							<p class="texto-text">I would like to apply for this project because blablabla.</p>
+							<p class="texto-application-values">
+								<div class="hidden-appli-user-email" data-value=""></div>
+								<div class="hidden-appli-project-id" data-value=""></div>
+							</p>
 							<p class="texto-application">
 						    	<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>
-			    				<button class="btn waves-effect btn-apply appli-dismiss red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button>
+			    				<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button>
 							</p>	
 						</div>
+						<div class="texto">
+							<p class="texto-title">
+								<span>Bruce</span>
+								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
+							</p>
+							<p class="texto-text">I would like to apply for this project because blablabla.</p>
+							<p class="texto-invitation-values">
+								<div id="hidden-invit-user-email" data-value=""></div>
+								<div id="hidden-invit-project-id" data-value=""></div>
+							</p>
+							<p class="texto-invitation">
+						    	<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>
+			    				<button class="btn waves-effect btn-apply invit-dismiss red modal-trigger" data-target="modal-dismiss"><i class="material-icons left">cancel</i>Dismiss</button>
+							</p>	
+						</div>						
 					</div>
 					<div class="card-footer">
 						<form>
@@ -425,6 +444,48 @@
 				</button>
 			</div>
 		</div>		
+
+		<div id="modal-join" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Confirm and send a message to the creator</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">message</i>
+							<textarea id="join-description" class="materialize-textarea"></textarea>
+							<label for="join-description">Message</label>
+						</div>
+					</div>
+				</form>	
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="joinBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
+
+		<div id="modal-dismiss" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Confirm and send a message of refusal to the creator</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">message</i>
+							<textarea id="dismiss-description" class="materialize-textarea"></textarea>
+							<label for="dismiss-description">Message</label>
+						</div>
+					</div>
+				</form>	
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light red" id="dismissBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
 
 	</main>
 

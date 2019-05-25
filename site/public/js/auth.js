@@ -281,7 +281,8 @@ function signout() {
                 console.log("signed out successfully", data);
                 $('#modal-logout').modal('close');
                 M.toast({ html: 'Signed out!' });
-                location.reload();
+                // location.reload();
+                navigation('home');
             },
             error: function (err) {
                 console.log("failed to unbind token", err);

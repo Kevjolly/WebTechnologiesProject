@@ -508,60 +508,51 @@ $(document).ready(function () {
 
 	// Apply for a project
 	$('#applyProjectBtn').click(function () {
-		var project_id = parseInt($("#hidden-div").attr('data-value'));
-		var message = $("#apply-description").val();
-		var dataForApply = {projectId: project_id, message: message};
-		if (cognitoUser){		
-			// $.ajax({
-			// 	contentType: 'application/json',
-			// 	headers: {
-			// 		Authorization: authToken
-			// 	},
-			// 	data: JSON.stringify(dataForApply),
-			// 	dataType: 'json',
-			// 	success: function (data) {
-			// 		console.log("project successfully left", data);
-			// 		M.toast({ html: 'You left this project!' });
-			// 	},
-			// 	error: function (err) {
-			// 		console.log("failed to quit the project", err);
-			// 		M.toast({ html: 'Error when quiting the project!' });
-			// 	},
-			// 	processData: false,
-			// 	type: 'POST',
-			// 	url: '/project/quit'
-			// });
+		if (cognitoUser){
+			var project_id = parseInt($("#hidden-div").attr('data-value'));
+			var userTo = $("#hidden-div-values").attr('data-value');
+			var message = $("#apply-description").val();
+			if (message !== null && message !== ""){
+				var dataForApply = {projectId: project_id, type: "application", to: userTo ,message: message};
+				sendSingleMessage(dataForApply, function(){
+					M.toast({ html: 'Application sent' });
+					$('#modal-apply').modal('close');
+					$('.applicationBtn').hide();
+				}, function (err){
+					console.log("Application failure");
+					console.log(err);
+					M.toast({ html: 'Failed!' });
+					M.toast({ html: err.message });
+				});
+			} else {
+				M.toast({ html: 'You need to give a message.'});
+			}
 		} else {
 			$('#modal-apply').modal('close');
 			M.toast({ html: 'You are not logged in' });
 			$('#modal-login').modal('open');
-		}		
+		}
 	});
 
 	// Send initial message
 	$('#messageSendBtn').click(function () {
 		if (cognitoUser){
 			var message = $("#message-description").val();
-			var dataForQuit = {message: message};
-			// $.ajax({
-			// 	contentType: 'application/json',
-			// 	headers: {
-			// 		Authorization: authToken
-			// 	},
-			// 	data: JSON.stringify(dataForQuit),
-			// 	dataType: 'json',
-			// 	success: function (data) {
-			// 		console.log("project successfully left", data);
-			// 		M.toast({ html: 'You left this project!' });
-			// 	},
-			// 	error: function (err) {
-			// 		console.log("failed to quit the project", err);
-			// 		M.toast({ html: 'Error when quiting the project!' });
-			// 	},
-			// 	processData: false,
-			// 	type: 'POST',
-			// 	url: '/project/quit'
-			// });			
+			var userTo = $("#hidden-div-values").attr('data-value');
+			if (message !== null && message !== ""){
+				var dataForMessage = {type: "normal", to: userTo, message: message};
+				sendSingleMessage(dataForApply, function(){
+					M.toast({ html: 'Message sent' });
+					$('#modal-message').modal('close');
+				}, function (err){
+					console.log("Send message failure");
+					console.log(err);
+					M.toast({ html: 'Failed!' });
+					M.toast({ html: err.message });
+				});
+			} else {
+				M.toast({ html: 'You need to give a message.'});
+			}
 		} else {
 			$('#modal-message').modal('close');
 			M.toast({ html: 'You are not logged in' });
@@ -573,33 +564,43 @@ $(document).ready(function () {
 	$('#acceptBtn').click(function () {
 		if (cognitoUser){
 			var message = $("#accept-description").val();
-			//var dataForQuit = {message: message};
-			// $.ajax({
-			// 	contentType: 'application/json',
-			// 	headers: {
-			// 		Authorization: authToken
-			// 	},
-			// 	data: JSON.stringify(dataForQuit),
-			// 	dataType: 'json',
-			// 	success: function (data) {
-			// 		console.log("project successfully left", data);
-			// 		M.toast({ html: 'You left this project!' });
-			// 	},
-			// 	error: function (err) {
-			// 		console.log("failed to quit the project", err);
-			// 		M.toast({ html: 'Error when quiting the project!' });
-			// 	},
-			// 	processData: false,
-			// 	type: 'POST',
-			// 	url: '/project/quit'
-			// });			
+			var userTo = $("#hidden-appli-user-email").attr('data-value');
+			var project_id = parseInt($("#hidden-appli-project-id").attr('data-value'));
+			if (message !== null && message !== ""){
+				var dataForAccept = {projectId: project_id, applicant: userTo};
+				$.ajax({
+					contentType: 'application/json',
+					headers: {
+						Authorization: authToken
+					},
+					data: JSON.stringify(dataForAccept),
+					dataType: 'json',
+					success: function (data) {
+						$(".texto-application").hide();
+						M.toast({ html: 'Application accepted' });
 
-			// 1. add user to project
-			// 2. send message
-			// On success
-			$(".texto-application").hide();
-			$('#modal-accept').modal('close');
-			M.toast({ html: 'Application accepted' });
+						var dataForMessage = {type: "normal", to: userTo, message: message};
+						sendSingleMessage(dataForMessage, function(){
+							M.toast({ html: 'Message sent' });
+							$('#modal-accept').modal('close');
+						}, function (err){
+							console.log("Send message failure");
+							console.log(err);
+							M.toast({ html: 'Send message failed!' });
+							M.toast({ html: err.message });
+						});
+					},
+					error: function (err) {
+						console.log("failed to approve a user", err);
+						M.toast({ html: 'Error when approving the user!' });
+					},
+					processData: false,
+					type: 'POST',
+					url: '/project/approve'
+				});	
+			} else {
+				M.toast({ html: 'You need to give a message.'});
+			}		
 		} else {
 			$('#modal-accept').modal('close');
 			M.toast({ html: 'You are not logged in' });
@@ -611,40 +612,111 @@ $(document).ready(function () {
 	$('#refuseBtn').click(function () {
 		if (cognitoUser){
 			var message = $("#refuse-description").val();
-			//var dataForQuit = {message: message};
-			// $.ajax({
-			// 	contentType: 'application/json',
-			// 	headers: {
-			// 		Authorization: authToken
-			// 	},
-			// 	data: JSON.stringify(dataForQuit),
-			// 	dataType: 'json',
-			// 	success: function (data) {
-			// 		console.log("project successfully left", data);
-			// 		M.toast({ html: 'You left this project!' });
-			// 	},
-			// 	error: function (err) {
-			// 		console.log("failed to quit the project", err);
-			// 		M.toast({ html: 'Error when quiting the project!' });
-			// 	},
-			// 	processData: false,
-			// 	type: 'POST',
-			// 	url: '/project/quit'
-			// });			
-
-			// 1. send message
-			// On success
-			$(".texto-application").hide();
-			$('#modal-refuse').modal('close');
-			M.toast({ html: 'Application refused' });
+			var userTo = $("#hidden-appli-user-email").attr('data-value');
+			if (message !== null && message !== ""){
+				$(".texto-application").hide();
+				M.toast({ html: 'Application refused' });	
+			
+				var dataForMessage = {type: "normal", to: userTo, message: message};
+				sendSingleMessage(dataForMessage, function(){
+					M.toast({ html: 'Message sent' });
+					$('#modal-refuse').modal('close');
+				}, function (err){
+					console.log("Send message failure");
+					console.log(err);
+					M.toast({ html: 'Send message failed!' });
+					M.toast({ html: err.message });
+				});
+			} else {
+				M.toast({ html: 'You need to give a message.'});
+			}		
 		} else {
 			$('#modal-refuse').modal('close');
 			M.toast({ html: 'You are not logged in' });
-			$('#modal-refuse').modal('open');
+			$('#modal-login').modal('open');
+		}
+	});
+
+	// Accept join project
+	$('#joinBtn').click(function () {
+		if (cognitoUser){
+			var message = $("#join-description").val();
+			var userFrom = $("#hidden-invit-user-email").attr('data-value');
+			var project_id = parseInt($("#hidden-invit-project-id").attr('data-value'));
+			if (message !== null && message !== ""){
+				var dataForJoin = {projectId: project_id};
+				$.ajax({
+					contentType: 'application/json',
+					headers: {
+						Authorization: authToken
+					},
+					data: JSON.stringify(dataForJoin),
+					dataType: 'json',
+					success: function (data) {
+						$(".texto-invitation").hide();
+						M.toast({ html: 'Project joined' });	
+
+						var dataForMessage = {type: "normal", to: userFrom, message: message};
+						sendSingleMessage(dataForMessage, function(){
+							M.toast({ html: 'Message sent' });
+							$('#modal-join').modal('close');
+						}, function (err){
+							console.log("Send message failure");
+							console.log(err);
+							M.toast({ html: 'Send message failed!' });
+							M.toast({ html: err.message });
+						});
+					},
+					error: function (err) {
+						console.log("failed to join the project", err);
+						M.toast({ html: 'Error when joining the project!' });
+					},
+					processData: false,
+					type: 'POST',
+					url: '/project/join'
+				});	
+			} else {
+				M.toast({ html: 'You need to give a message.'});
+			}		
+		} else {
+			$('#modal-join').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}
+	});
+
+	// Refuse invitation project
+	$('#dismissBtn').click(function () {
+		if (cognitoUser){
+			var message = $("#dismiss-description").val();
+			var userTo = $("#hidden-invit-user-email").attr('data-value');
+			if (message !== null && message !== ""){
+				$(".texto-invitation").hide();
+				M.toast({ html: 'Invitation refused' });	
+			
+				var dataForMessage = {type: "normal", to: userTo, message: message};
+				sendSingleMessage(dataForMessage, function(){
+					M.toast({ html: 'Message sent' });
+					$('#modal-dismiss').modal('close');
+				}, function (err){
+					console.log("Send message failure");
+					console.log(err);
+					M.toast({ html: 'Send message failed!' });
+					M.toast({ html: err.message });
+				});
+			} else {
+				M.toast({ html: 'You need to give a message.'});
+			}		
+		} else {
+			$('#modal-dismiss').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
 		}
 	});
 
 	// Calculate notification count
+
+
 	// Get Message count blabla	
 
 
