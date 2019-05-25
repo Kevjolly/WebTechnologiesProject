@@ -43,4 +43,28 @@ router.postAsync('/project', async function (req, res, next) {
     }
 })
 
+router.postAsync('/offline', async function (req, res, next) {
+    try {
+        const result = await msgService.getOffline(req.email)
+        res.send({
+            code: 0,
+            data: result
+        })
+    } catch (err) {
+        next(err)
+    }
+})
+
+router.postAsync('/ack', async function (req, res, next) {
+    try {
+        await msgService.ack(req.email, req.body.messageId)
+        res.send({
+            code: 0,
+            data: {}
+        })
+    } catch (err) {
+        next(err)
+    }
+})
+
 module.exports = router
