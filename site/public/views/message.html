@@ -114,8 +114,8 @@
 
 	<main>
 		<div class="row row-message">
-			<div id="col-choice-conv" class="col s7 m6 l4 col-message">
-				<div class="row row-message">
+			<div id="col-choice-conv" class="col s5 m4 l4 col-message">
+				<div class="row row-message row-message-bis">
 					<div class="col s12 m12 l12 tabs-cols">
 						<ul class="tabs">
 							<li class="tab col s6 m6 l6"><a class="active" href="#message-users">Users</a></li>
@@ -124,47 +124,77 @@
 					</div>
 					<div id="message-users" class="col s12 m12 l12 col-message">				
 						<ul class="collection collection-users">
-							<li class="collection-item avatar grey lighten-4">
+							<li class="collection-item collection-item-message avatar grey lighten-5">
 								<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-								<span class="title title-user-bis title-user-large">{{nickname}}</span>
-								<a href="/user/profile?id={{email}}" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>
-								<a href="" class="secondary-content conv-user link-user"><i class="material-icons">play_arrow</i><span class="link-text-user">Conversation</span></a>
-								<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">Friday 16, 7:05pm</span></a>
-							</li>
-							<li class="collection-item avatar grey lighten-4">
-								<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-								<span class="title title-user title-user-large">{{nickname}}</span>
-								<a href="/user/profile?id={{email}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
-							</li>					
-							<li class="collection-item avatar grey lighten-4">
-								<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
-								<span class="title title-user title-user-large">{{nickname}}</span>
-								<a href="/user/profile?id={{email}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
-							</li>
+								<span class="title title-user-bis title-user-size">{{nickname}}</span>
+								<a href="/user/profile?id={{{email}}}" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>
+								<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">{{latest}}</span></a>
+							</li>																					
 						</ul>
 					</div>
 					<div id="message-groups" class="col s12 m12 l12 col-message">
 						<ul class="collection collection-users">
-							<li class="collection-item avatar grey lighten-4">
-							<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-							<span class="title title-user title-user-large">{{name}}</span>
-							<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
-							</li>
-							<li class="collection-item avatar grey lighten-4">
-							<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-							<span class="title title-user title-user-large">{{name}}</span>
-							<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
-							</li>
-							<li class="collection-item avatar grey lighten-4">
-							<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
-							<span class="title title-user title-user-large">{{name}}</span>
-							<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
-							</li>														
-						</ul>
+							<li class="collection-item avatar collection-item-message avatar grey lighten-5">
+								<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+								<span class="title title-user-bis title-user-size">{{name}}</span>
+								<a href="/project/profile?id={{{id}}}" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Details</span></a>
+								<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
+							</li>						
+						</ul>						
 					</div>
 				</div>
 			</div>
-			<div class="col s5 m6 l8 col-message">
+			<div id="col-conv" class="col s7 m8 l8 col-message">
+				<div class="card">
+					<div class="card-content box-messages">
+						<div class="texto">
+							<div class="message-type" data-value="{{{type}}}"></div>
+							<p class="texto-title">
+								<span>{{from}}</span>
+								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">{{date}}</span></a>
+							</p>
+							<p class="texto-text">{{content}}</p>
+						</div>
+						<div class="texto texto-from-user">
+							<p class="texto-title-user">
+								<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
+								<span>Maxtoan</span>
+							</p>
+							<p class="texto-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+						</div>
+						<div class="texto">
+							<p class="texto-title">
+								<span>Maxtoan</span>
+								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
+							</p>
+							<p class="texto-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+						</div>
+					</div>
+					<div class="card-footer">
+						<form>
+							<div class="row input-message-top">
+								<div class="input-field col s8 m9 l10 input-message">
+									<textarea class="materialize-textarea"></textarea> 
+			          				<label>Message</label>
+								</div>
+								<div class="input-field col s4 m3 l2 input-message">
+									<button class="btn waves-effect waves-light" id="messageSendBtn" type="submit" name="action">SEND
+										<i class="material-icons right">send</i>
+									</button>
+								</div>
+							</div>
+						</form>
+				  	</div>
+				</div>
 			</div>
 		</div>
 

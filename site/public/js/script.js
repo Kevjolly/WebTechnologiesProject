@@ -360,12 +360,25 @@ $(document).ready(function () {
 			$("#main-project").attr('style', 'min-height: 600px !important');
 			$("#main-user-profile").attr('style', 'min-height: 500px !important');
 		}
+
+		if ($(window).width() <= 1092) {
+			$(".title-user-size").addClass("title-user-med-and-down-bis");
+			$(".title-user-size").removeClass("title-user-large");
+		} else {
+			$(".title-user-size").addClass("title-user-large");
+			$(".title-user-size").removeClass("title-user-med-and-down-bis");
+		}		
 	});
 
 	// Set size of main body at the start
 	if ($(window).width() <= 1092) {
 		$("#main-project").attr('style', 'min-height: 1000px !important');
 		$("#main-user-profile").attr('style', 'min-height: 800px !important');
+		$(".title-user-size").addClass("title-user-med-and-down-bis");
+		$(".title-user-size").removeClass("title-user-large");
+	} else {
+		$(".title-user-size").addClass("title-user-large");
+		$(".title-user-size").removeClass("title-user-med-and-down-bis");
 	}
 
 	// Pagination for search pages
@@ -408,10 +421,52 @@ $(document).ready(function () {
 		$('#pagination-results').html(strPagination);
     }
 
+	if (cognitoUser){
+		if (window.location.href.indexOf("user/profile") > -1) {
+			var user_profiled = $('#hidden-div-values').attr('data-value');
+			if (user_profiled === userEmail){
+				$(".if-not-same-user").hide();			
+			} else {
+				$(".if-not-same-user").show();
+			}
+		}
+
+		if (window.location.href.indexOf("user/profile") > -1) {
+			$(".applicationBtn").show();
+			$('.hidden-div').each(function(){
+    			if ($(this).attr('data-value') === userEmail){
+    				$(".quitBtn").show();
+    				$(".applicationBtn").hide();
+    			}
+			});
+		}
+	}
+
 	// Message page
 	// Tabs for search results
 	$('.tabs').tabs({
 		'swipeable':true
+	});
+
+	// Focus on conversatiions on the left column
+	$(".collection-item-message").click(function (e) {
+		$(".collection-item-message").removeClass("lighten-2");
+		$(".collection-item-message").addClass("lighten-5");
+		$(this).removeClass("lighten-5");
+		$(this).addClass("lighten-2");
+	});
+
+	$(".collection-item-message").hover(function(){
+			$(this).removeClass("lighten-5");
+			$(this).addClass("lighten-3");
+		}, function(){
+			$(this).removeClass("lighten-3");
+			$(this).addClass("lighten-5");
+		}
+	);
+
+	$(".link-to-profile-user").click(function(e){
+		e.stopPropagation();
 	});
 });
 

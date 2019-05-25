@@ -176,7 +176,7 @@ nav .select-dropdown{
 	text-align: justify;
 }
 
-.card{
+.search-results .card{
 	margin: .5rem 0 .5rem 0 !important;
 }
 
@@ -315,11 +315,16 @@ nav .select-dropdown{
 
 /* Profile page */
 .user-nickname{
-	max-height: 150px;
+	max-height: 100px;
 	overflow: auto;
 }
 
 .big-circle{
+	height: 200px !important;
+	width: 200px !important;
+}
+
+.big-circle-bis{
 	height: 256px !important;
 	width: 256px !important;
 }
@@ -376,6 +381,10 @@ nav .select-dropdown{
 	display: none;
 }
 
+.hidden-div{
+	display: none;
+}
+
 /* Messaging pages */
 .col-message{
 	padding: unset !important;
@@ -418,10 +427,6 @@ nav .select-dropdown{
     background-color: #135aaa;
 }
 
-#col-choice-conv{
-	border-right: 3px solid #1976d2;
-}
-
 .collection-users{
 	margin: 0 !important;
 }
@@ -434,11 +439,7 @@ nav .select-dropdown{
 
 .link-to-profile-user{
 	top: 5px !important;
-	right: 140px !important;
-}
-
-.conv-user{
-	color: #512da8;
+	right: 10px !important;
 }
 
 .title-user-bis{
@@ -450,9 +451,103 @@ nav .select-dropdown{
 
 .inactive-link {
    pointer-events: none;
-   cursor: default;
+   /*cursor: default;*/
 }
 
 .carousel{
 	height:400px !important;
+}
+
+.row-message-bis{
+	margin: 0 !important;
+}
+
+.title-user-med-and-down-bis{
+	width: 9em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+#message-users, #message-groups{
+	overflow: auto;
+}
+
+.collection-item-message{
+	border-bottom: 1px solid #bdbdbd !important;
+	border-top: 1px solid #bdbdbd;
+	cursor: pointer;
+}
+
+.col-message .card{
+	margin: 0;
+}
+
+#col-conv{
+	border-left: 2px solid #1976d2;
+}
+
+#col-conv .box-messages{
+	max-height: 450px;
+	overflow-y: scroll;
+	background: #f9f9f9;
+}
+
+#col-conv .texto{
+	background: #e2dfdf;
+    border-radius: 20px 20px 20px 0px;
+    padding: 12px;
+    margin-bottom: 10px;
+    width: 70%;
+}
+
+#col-conv .texto-text{
+	text-align: justify;
+}
+
+#col-conv .texto-from-user{
+	background: #4084f5 !important;
+	border-radius: 20px 20px 0px 20px !important;
+	color: #ffffff;
+	width: 70%;
+    margin-left: auto;
+}
+
+#col-conv p.texto-title{
+	font-size: 18px;
+    margin-bottom: 3px;
+}
+
+#col-conv p.texto-title-user{
+	font-size: 18px;
+    margin-bottom: 3px;
+    text-align: right;
+}
+
+#col-conv .date-conv{
+	font-size: 14.5px;
+	color: #5f5e5e;
+}
+
+#col-conv .date-conv-user{
+	font-size: 14.5px;
+	color: white;
+	float: left !important;
+	color: #ffffff;
+}
+
+#col-conv .input-message{
+	margin: 0;
+}
+
+#col-conv .input-message-top{
+	margin: 22px 0px 0px 0px;
+}
+
+#col-conv .message-type{
+	display: none;
+}
+
+.quitBtn{
+	display: none;
 }
