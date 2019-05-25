@@ -112,23 +112,48 @@ res's format:
     "single": [{
         "unread": true,
         "latestMessage":{
-            "id":12312321213,
-            "from": "brucejeaung@gmail.com",
-            "to": "mu18336@bristol.ac.uk",
-            "message": "hello world",
+            "id": 1231435234, // server inserts
+            "fromInfo": { // server inserts
+
+            },
+            "toInfo": { // server inserts
+
+            },
+            "from":"brucejeaung@gmail.com", // server inserts
+
+            "type":"normal",
+            "to": "brucejeaung@gmail.com",
+            "message": "I want to join the project"
         }
     }],
-    "project": []
+    "project": [
+        {
+        "unread": true.
+        "latestMessage":{
+            "id": 1231435234, // server inserts, timestamp in milliseconds
+            "projectInfo": { // server inserts, same format as /project/profile
+
+            },
+            "fromInfo":{ // server inserts, same format as /user/profile
+
+            }, 
+            "from":"brucejeaung@gmail.com", // server inserts
+
+            "project": 12346,
+            "message": "I want to join the project"
+        }
+    }
+    ]
 }
 ```
 
 3. load history messages
 
-Call these functions when a user click on a conversation to open a chat dialog.
+Call these functions when a user click on a conversation to open a chat dialogue.
 ```
-function loadSingleHistoryMessages(peerEmail, maxId, count, callback)
+function loadSingleHistoryMessages(peerEmail, callback)
 
-function loadProjectHistoryMessages(projectId, maxId, count, callback)
+function loadProjectHistoryMessages(projectId, callback)
 ```
 
 4. send messages
@@ -137,4 +162,58 @@ function loadProjectHistoryMessages(projectId, maxId, count, callback)
 function sendSingleMessage(message, successCallback, failureCallback)
 
 function sendProjectMessage(message, successCallback, failureCallback)
+```
+
+5. message formats
+   
+```
+
+// normal project message
+{
+    "id": 1231435234, // server inserts, timestamp in milliseconds
+    "projectInfo": { // server inserts, same format as /project/profile
+
+    },
+    "fromInfo":{ // server inserts, same format as /user/profile
+
+    }, 
+    "from":"brucejeaung@gmail.com", // server inserts
+
+    "project": 12346,
+    "message": "I want to join the project"
+}
+
+// application message
+{
+    "id": 1231435234, // server inserts
+    "fromInfo": { // server inserts
+
+    },
+    "toInfo": { // server inserts
+
+    },
+    "from":"brucejeaung@gmail.com", // server inserts
+
+    "project": 12345,
+    "type":"application",
+    "to": "brucejeaung@gmail.com",
+    "message": "I want to join the project"
+}
+
+// normal single message
+{
+    "id": 1231435234, // server inserts
+    "fromInfo": { // server inserts
+
+    },
+    "toInfo": { // server inserts
+
+    },
+    "from":"brucejeaung@gmail.com", // server inserts
+
+    "type":"normal",
+    "to": "brucejeaung@gmail.com",
+    "message": "I want to join the project"
+}
+
 ```

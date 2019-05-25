@@ -92,11 +92,9 @@ function onMessageReceived(callback) {
 /**
  * 
  * @param {string} peerEmail 
- * @param {long} maxId 
- * @param {int} count 
  * @param {function} callback takes one parameter, messages array
  */
-function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
+function loadSingleHistoryMessages(peerEmail, callback) {
     if (!(userPool.getCurrentUser())) {
         callback([]);
         return;
@@ -104,7 +102,7 @@ function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+        alasql('select data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + ' order by id asc', function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -118,11 +116,9 @@ function loadSingleHistoryMessages(peerEmail, maxId, count, callback) {
 /**
  * 
  * @param {long} projectId 
- * @param {long} maxId 
- * @param {int} count 
  * @param {function} callback takes one parameter, messages array
  */
-function loadProjectHistoryMessages(projectId, maxId, count, callback) {
+function loadProjectHistoryMessages(projectId, callback) {
     if (!(userPool.getCurrentUser())) {
         callback([]);
         return;
@@ -130,7 +126,7 @@ function loadProjectHistoryMessages(projectId, maxId, count, callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' and id<' + maxId + ' order by id desc limit ' + count, function (result) {
+        alasql('select data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' order by id asc', function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -160,6 +156,7 @@ function loadConversations(callback) {
 
     alasql('ATTACH INDEXEDDB DATABASE teamup', async function () {
         // project conversations
+        // TODO get all project info from server
         var projectMaxIds = await alasql.promise('select max(id) as maxId from teamup.project_messages_' + suffix + ' group by project');
 
         console.log('projectMaxIds', projectMaxIds);
@@ -221,7 +218,6 @@ function loadConversations(callback) {
             });
         }
 
-        // TODO set max Ids
         console.log('conversations', conversations);
 
         callback(conversations);
@@ -290,4 +286,13 @@ function sendProjectMessage(message, successCallback, failureCallback) {
         type: 'POST',
         url: '/msg/project'
     });
+}
+
+// TODO set max Ids
+function resetSingleUnread(peerEmail) {
+
+}
+
+function resetProjectUnread(projectId) {
+
 }
