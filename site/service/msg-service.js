@@ -23,7 +23,7 @@ class MsgService {
         try {
             var notification = {
                 'title': 'TeamUP',
-                'body': user.nickname + ' sent you a message',
+                'body': body.fromInfo.nickname + ' sent you a message',
                 'click_action': config['host'],
                 'icon': config['host'] + '/img/favicon.png'
             };
@@ -35,7 +35,7 @@ class MsgService {
                     'Content-Type': 'application/json'
                 },
                 'body': JSON.stringify({
-                    'to': user.token,
+                    'to': toUser.token,
                     'data': {
                         'msg': body,
                         'notification': notification

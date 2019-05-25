@@ -42,6 +42,8 @@ See site/public/views/example.html
 should include following scripts in every web page: 
 
 ```
+<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
+<script type="text/javascript" src="../js/vendor/aws-sdk.min.js"></script>
 <script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
 <script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
@@ -49,7 +51,6 @@ should include following scripts in every web page:
 <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-messaging.js"></script>
 <script type="text/javascript" src="../js/im.js"></script>
-<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
 ```
 
 #### Auth SDK
