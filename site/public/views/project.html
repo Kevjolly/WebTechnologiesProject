@@ -118,7 +118,7 @@
 			    <div class="col s12"><h4 class="user-nickname">{{project.name}}</h4><hr/></div>
 			    <div class="col s6">
 			    	<button class="btn waves-effect btn-apply applicationBtn modal-trigger" data-target="modal-apply"><i class="material-icons left">add</i>Apply for the project</button>
-			    	<button class="btn waves-effect btn-apply quitBtn red"><i class="material-icons left">exit_to_app</i>Quit the project</button>
+			    	<button class="btn waves-effect btn-apply quitBtn red modal-trigger" data-target="modal-quit"><i class="material-icons left">exit_to_app</i>Quit the project</button>
 			    	<div>
 			    		<img class="project-image-large" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{project.image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
 			    	</div>
@@ -131,6 +131,8 @@
 						<span class="title title-user title-user-large">{{creator.nickname}}</span>
 						<a href="/user/profile?id={{{creator.email}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
 						</li>
+						<div id="hidden-div-values" data-value="{{{creator.email}}}"></div>
+						<div id="hidden-div" data-value="{{{project.id}}}"></div>
 					</ul>
 				    <div class="project-text-title"><h5>Description</h5></div>
 					<div>{{project.desc}}</div>
@@ -197,7 +199,7 @@
 				<div class="col s12"><hr/></div>
 				<div class="col s12">
 					<button class="btn waves-effect applicationBtn modal-trigger" data-target="modal-apply"><i class="material-icons left">add</i>Apply for the project</button>
-					<button class="btn waves-effect btn-apply quitBtn red"><i class="material-icons left">exit_to_app</i>Quit the project</button>
+					<button class="btn waves-effect btn-apply quitBtn red modal-trigger" data-target="modal-quit"><i class="material-icons left">exit_to_app</i>Quit the project</button>
 				</div>
 	    	</div>
       	</div>
@@ -388,23 +390,35 @@
 		<div id="modal-apply" class="modal modal-fixed-footer">
 			<div class="modal-content">
 				<i class="material-icons modal-close right">close</i>
-				<h4>Send a message to the creator to apply for this project: {{project.name}}</h4>
+				<h4>Send a message to the creator to apply for this project: {{project.name}}.</h4>
 				<form>
 					<div class="row">
 						<div class="input-field col s12">
 							<i class="material-icons prefix">message</i>
-							<textarea id="message-description" class="materialize-textarea"></textarea>
-							<label for="message-description">Message</label>
+							<textarea id="apply-description" class="materialize-textarea"></textarea>
+							<label for="apply-description">Message</label>
 						</div>
 					</div>
 				</form>	
 			</div>
 			<div class="modal-footer">
-				<button class="btn waves-effect waves-light" id="messageSendBtn" type="submit" name="action">APPLY
+				<button class="btn waves-effect waves-light" id="applyProjectBtn" type="submit" name="action">APPLY
 					<i class="material-icons right">send</i>
 				</button>
 			</div>
-		</div>	
+		</div>
+
+		<div id="modal-quit" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Are you sure you want to quit the project?</h4>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="quitProjectBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>			
 	</main>
 
 	

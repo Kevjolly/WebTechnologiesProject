@@ -421,24 +421,30 @@ $(document).ready(function () {
 		$('#pagination-results').html(strPagination);
     }
 
-	if (cognitoUser){
+	if (cognitoUser) {
 		if (window.location.href.indexOf("user/profile") > -1) {
+			$(".if-not-same-user").show();
 			var user_profiled = $('#hidden-div-values').attr('data-value');
 			if (user_profiled === userEmail){
 				$(".if-not-same-user").hide();			
-			} else {
+			} else {				
 				$(".if-not-same-user").show();
 			}
 		}
 
-		if (window.location.href.indexOf("user/profile") > -1) {
-			$(".applicationBtn").show();
-			$('.hidden-div').each(function(){
-    			if ($(this).attr('data-value') === userEmail){
-    				$(".quitBtn").show();
-    				$(".applicationBtn").hide();
-    			}
-			});
+		if (window.location.href.indexOf("project/profile") > -1) {
+			$(".applicationBtn").css("display", "inline-block");
+			if ($('#hidden-div-values').attr('data-value') === userEmail){
+				$(".applicationBtn").hide();
+				$(".quitBtn").hide();			
+			} else {
+				$('.hidden-div').each(function(){
+	    			if ($(this).attr('data-value') === userEmail){
+	    				$(".quitBtn").css("display", "inline-block");
+	    				$(".applicationBtn").hide();
+	    			}
+				});
+			}
 		}
 	}
 
@@ -468,6 +474,101 @@ $(document).ready(function () {
 	$(".link-to-profile-user").click(function(e){
 		e.stopPropagation();
 	});
+
+	// Quit a project
+	$('#quitProjectBtn').click(function () {
+		var project_id = parseInt($("#hidden-div").attr('data-value'));
+		var dataForQuit = {projectId: project_id};
+		if (cognitoUser){		
+			$.ajax({
+				contentType: 'application/json',
+				headers: {
+					Authorization: authToken
+				},
+				data: JSON.stringify(dataForQuit),
+				dataType: 'json',
+				success: function (data) {
+					console.log("project successfully left", data);
+					M.toast({ html: 'You left this project!' });
+				},
+				error: function (err) {
+					console.log("failed to quit the project", err);
+					M.toast({ html: 'Error when quiting the project!' });
+				},
+				processData: false,
+				type: 'POST',
+				url: '/project/quit'
+			});
+		} else {
+			$('#modal-quit').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}		
+	});
+
+	// Apply for a project
+	$('#applyProjectBtn').click(function () {
+		var project_id = parseInt($("#hidden-div").attr('data-value'));
+		var message = $("#apply-description").val();
+		var dataForApply = {projectId: project_id, message: message};
+		if (cognitoUser){		
+			// $.ajax({
+			// 	contentType: 'application/json',
+			// 	headers: {
+			// 		Authorization: authToken
+			// 	},
+			// 	data: JSON.stringify(dataForApply),
+			// 	dataType: 'json',
+			// 	success: function (data) {
+			// 		console.log("project successfully left", data);
+			// 		M.toast({ html: 'You left this project!' });
+			// 	},
+			// 	error: function (err) {
+			// 		console.log("failed to quit the project", err);
+			// 		M.toast({ html: 'Error when quiting the project!' });
+			// 	},
+			// 	processData: false,
+			// 	type: 'POST',
+			// 	url: '/project/quit'
+			// });
+		} else {
+			$('#modal-apply').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}		
+	});
+
+	// Send initial message
+	$('#messageSendBtn').click(function () {
+		if (cognitoUser){
+			var message = $("#message-description").val();
+			var dataForQuit = {message: message};
+			// $.ajax({
+			// 	contentType: 'application/json',
+			// 	headers: {
+			// 		Authorization: authToken
+			// 	},
+			// 	data: JSON.stringify(dataForQuit),
+			// 	dataType: 'json',
+			// 	success: function (data) {
+			// 		console.log("project successfully left", data);
+			// 		M.toast({ html: 'You left this project!' });
+			// 	},
+			// 	error: function (err) {
+			// 		console.log("failed to quit the project", err);
+			// 		M.toast({ html: 'Error when quiting the project!' });
+			// 	},
+			// 	processData: false,
+			// 	type: 'POST',
+			// 	url: '/project/quit'
+			// });			
+		} else {
+			$('#modal-message').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}
+
+	});		
 });
 
 function returnSearchResults(choice, page) {

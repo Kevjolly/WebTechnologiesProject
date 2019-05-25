@@ -238,6 +238,11 @@ nav .select-dropdown{
 }
 
 /* Project details */
+#modal-quit{
+    height: 40% !important;
+    width: 50% !important;
+}
+
 #main-project{
 	min-height: 600px !important;
 }
@@ -378,6 +383,10 @@ nav .select-dropdown{
 }
 
 #hidden-div-values{
+	display: none;
+}
+
+#hidden-div{
 	display: none;
 }
 
