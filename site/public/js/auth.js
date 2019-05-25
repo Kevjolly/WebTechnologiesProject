@@ -300,10 +300,10 @@ function signin(email, password, successCallback, failureCallback) {
                     await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.current_user (username string PRIMARY KEY, auth_token string)');
                     console.log('current_user table created');
 
-                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, user string, data string)');
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, user string, data string, recv TINYINT)');
                     console.log('single message table created');
 
-                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)');
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string, recv TINYINT)');
                     console.log('project message table created');
 
                     await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.single_conversation_cursor_' + suffix + ' (user string PRIMARY KEY, max_id BIGINT)');

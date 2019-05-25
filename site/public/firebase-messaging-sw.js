@@ -26,15 +26,15 @@ function handleMessage(data) {
 
       if ('to' in msg) {
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-          var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
-          stmt([msg.id, msg.from, data.msg], function () {
+          var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values (?, ?, ?, ?)');
+          stmt([msg.id, msg.from, data.msg, 1], function () {
             console.log('insert background single message successfully');
           });
         });
       } else if ('project' in msg) {
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-          var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
-          stmt([msg.id, msg.from, msg.project, data.msg], function () {
+          var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values (?, ?, ?, ?, ?)');
+          stmt([msg.id, msg.from, msg.project, data.msg, 1], function () {
             console.log('insert project message successfully');
           });
         });

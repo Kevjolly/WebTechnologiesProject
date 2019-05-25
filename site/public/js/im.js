@@ -57,20 +57,16 @@ function handleMessage(data, callback) {
     var suffix = userPool.getCurrentUser().username.split('-').join('');
 
     if ('to' in msg) {
-        window.localStorage.setItem('teamup_single_max_id_' + suffix, msg.id);
-
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
-            stmt([msg.id, msg.from, data.msg], function () {
+            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values (?, ?, ?, ?)');
+            stmt([msg.id, msg.from, data.msg, 1], function () {
                 console.log('insert single message successfully');
             });
         });
     } else if ('project' in msg) {
-        window.localStorage.setItem('teamup_project_max_id_' + suffix, msg.id);
-
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-            var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
-            stmt([msg.id, msg.from, msg.project, data.msg], function () {
+            var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values (?, ?, ?, ?, ?)');
+            stmt([msg.id, msg.from, msg.project, data.msg, 1], function () {
                 console.log('insert project message successfully');
             });
         });
@@ -172,12 +168,9 @@ function loadConversations(callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
 
-    var singleMaxId = window.localStorage.getItem('teamup_single_max_id_' + suffix);
-    var projectMaxId = window.localStorage.getItem('teamup_project_max_id_' + suffix);
-
     alasql('ATTACH INDEXEDDB DATABASE teamup', async function () {
         // project conversations
-        var projectMaxIds = await alasql.promise('select max(id) as maxId from teamup.project_messages_' + suffix + ' group by project');
+        var projectMaxIds = await alasql.promise('select project, max(id) as maxId from teamup.project_messages_' + suffix + ' group by project');
 
         console.log('projectMaxIds', projectMaxIds);
 
@@ -190,9 +183,26 @@ function loadConversations(callback) {
                 idClause += projectMaxIds[i].maxId;
             }
 
-            console.log('project id clause', idClause);
+            var projectClause = "";
+            for (var i = 0; i < projectMaxIds.length; i++) {
+                if (i != 0) {
+                    idClause += ',';
+                }
+                projectClause += projectMaxIds[i].project;
+            }
 
-            var projectLatestMsgs = await alasql.promise('select data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            console.log('project id clause', idClause, ' project clause', projectClause);
+
+            var projectCursors = {};
+            var projectCursorRows = await alasql.promise('select project, max_id from teamup.project_conversation_cursor_' + suffix + ' where project in (' + projectClause + ') order by id desc');
+
+            projectCursorRows.forEach(row => {
+                if (row.project) {
+                    projectCursors[row.project.toString()] = row.max_id;
+                }
+            });
+
+            var projectLatestMsgs = await alasql.promise('select recv, data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             projectLatestMsgs.forEach(row => {
                 var conversation = new Object();
 
@@ -200,8 +210,15 @@ function loadConversations(callback) {
 
                 conversation.latestMessage = message;
 
+                var projectMaxId = 0;
+                if (message.project.toString() in projectCursors) {
+                    projectMaxId = projectCursors[message.project.toString()];
+                }
+
                 if (message.id > projectMaxId) {
                     conversation.unread = true;
+                } else {
+                    conversation.unread = false;
                 }
 
                 conversations.project.push(conversation);
@@ -209,7 +226,9 @@ function loadConversations(callback) {
         }
 
         // single conversations
-        var singleMaxIds = await alasql.promise('select max(id) as maxId from teamup.single_messages_' + suffix + ' group by user');
+        var singleMaxIds = await alasql.promise('select user, max(id) as maxId from teamup.single_messages_' + suffix + ' group by user');
+
+        console.log('singleMaxIds', projectMaxIds);
 
         if (singleMaxIds[0].maxId) {
             var idClause = "";
@@ -220,9 +239,26 @@ function loadConversations(callback) {
                 idClause += singleMaxIds[i].maxId;
             }
 
-            console.log('single id clause', idClause);
+            var userClause = "";
+            for (var i = 0; i < projectMaxIds.length; i++) {
+                if (i != 0) {
+                    userClause += ',';
+                }
+                userClause += projectMaxIds[i].project;
+            }
 
-            var singleLatestMsgs = await alasql.promise('select data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            console.log('single id clause', userClause, ' user clause', userClause);
+
+            var userCursors = {};
+            var userCursorRows = await alasql.promise('select user, max_id from teamup.single_conversation_cursor_' + suffix + ' where user in (' + userClause + ') order by id desc');
+
+            userCursorRows.forEach(row => {
+                if (row.user) {
+                    userCursors[row.user.toString()] = row.max_id;
+                }
+            });
+
+            var singleLatestMsgs = await alasql.promise('select recv, data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             singleLatestMsgs.forEach(row => {
                 var conversation = new Object();
 
@@ -230,8 +266,15 @@ function loadConversations(callback) {
 
                 conversation.latestMessage = message;
 
+                var singleMaxId = 0;
+                if (message.user.toString() in userCursors) {
+                    singleMaxId = userCursors[message.user.toString()];
+                }
+
                 if (message.id > singleMaxId) {
                     conversation.unread = true;
+                } else {
+                    conversation.unread = false;
                 }
 
                 conversations.single.push(conversation);
@@ -259,8 +302,8 @@ function sendSingleMessage(message, successCallback, failureCallback) {
 
             alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
                 var suffix = userPool.getCurrentUser().username.split('-').join('');
-                var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
-                stmt([message.id, message.to, JSON.stringify(message)], function () {
+                var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values (?, ?, ?, ?)');
+                stmt([message.id, message.to, JSON.stringify(message), 0], function () {
                     console.log('insert single message successfully');
                     successCallback();
                 });
@@ -291,8 +334,8 @@ function sendProjectMessage(message, successCallback, failureCallback) {
 
             alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
                 var suffix = userPool.getCurrentUser().username.split('-').join('');
-                var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');
-                stmt([message.id, message.from, message.project, JSON.stringify(message)], function () {
+                var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values (?, ?, ?, ?, ?)');
+                stmt([message.id, message.from, message.project, JSON.stringify(message), 0], function () {
                     console.log('insert project message successfully');
                     successCallback();
                 });
@@ -308,11 +351,20 @@ function sendProjectMessage(message, successCallback, failureCallback) {
     });
 }
 
-// TODO set max Ids
-function resetSingleUnread(peerEmail, maxId) {
-
+function resetSingleConversationCursor(peerEmail, maxId) {
+    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+        var stmt = alasql.compile('update teamup.single_conversation_cursor_' + suffix + ' set max_id=? where user=?');
+        stmt([maxId, peerEmail], function () {
+            console.log('single cursor reset', peerEmail, maxId);
+        });
+    });
 }
 
-function resetProjectUnread(projectId, maxId) {
-
+function resetProjectConversationCursor(projectId, maxId) {
+    alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+        var stmt = alasql.compile('update teamup.project_conversation_cursor_' + suffix + ' set max_id=? where project=?');
+        stmt([maxId, projectId], function () {
+            console.log('project cursor reset', projectId, maxId);
+        });
+    });
 }
