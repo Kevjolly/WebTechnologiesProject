@@ -30,7 +30,15 @@ if (cognitoUser) {
         } else {
             authToken = session.getIdToken().getJwtToken();
             console.log('auth token', authToken);
-            cognitoUser.getUserAttributes(function(err, result) {
+
+            alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
+                var stmt = alasql.compile('update teamup.current_user set auth_token=?');
+                stmt([authToken], function () {
+                    console.log('alasql update current auth_token successfully');
+                });
+            });
+
+            cognitoUser.getUserAttributes(function (err, result) {
                 if (err) {
                     console.log(err);
                     return;
@@ -41,8 +49,7 @@ if (cognitoUser) {
                         break;
                     }
                 }
-            });
-    
+            });    
         }
     });
 }
@@ -241,7 +248,7 @@ function signin(email, password, successCallback, failureCallback) {
 
             alasql('CREATE INDEXEDDB DATABASE IF NOT EXISTS teamup', function () {
                 alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-                    alasql('CREATE TABLE IF NOT EXISTS teamup.current_user (username string PRIMARY KEY)', () => {
+                    alasql('CREATE TABLE IF NOT EXISTS teamup.current_user (username string PRIMARY KEY, auth_token string)', () => {
                         console.log('current_user table created');
                         var stmt = alasql.compile('insert into teamup.current_user (username) values (?)');
                         stmt([user.username], function () {

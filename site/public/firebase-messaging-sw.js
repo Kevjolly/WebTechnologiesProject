@@ -27,7 +27,7 @@ function handleMessage(data) {
         alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
           var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
           stmt([msg.id, msg.from, data.msg], function () {
-            console.log('insert single message successfully');
+            console.log('insert background single message successfully');
           });
         });
       } else if ('project' in msg) {
@@ -85,8 +85,6 @@ self.addEventListener('notificationclick', function (event) {
     }
   }());
 
-  handleMessage(event.notification.data);
-
   console.log('notification clicked', event);
 
   event.notification.close();
@@ -94,6 +92,8 @@ self.addEventListener('notificationclick', function (event) {
 
 messaging.setBackgroundMessageHandler(function (payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
+
+  handleMessage(payload.data);
 
   var notification = JSON.parse(payload.data.notification);
 
