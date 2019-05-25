@@ -396,7 +396,7 @@ $(document).ready(function () {
 
 		if (numberOfPages === 1) {
 			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>';
-			strPagination += '<li class="active"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String(currentPage) + '&count=' + String(resultsPage) + '">1</a></li>';
+			strPagination += '<li class="active"><a href="/' + String(choiceSearch) + '/search?keyword=' + String(keywords) + '&page=' + String(k) + '&count=' + String(resultsPage) + '">1</a></li>';
 			strPagination += '<li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>';
 		} else {
 			if (currentPage === 1) {
