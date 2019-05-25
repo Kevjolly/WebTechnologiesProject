@@ -38,18 +38,9 @@ router.postAsync('/editProfile', async function (req, res, next) {
 
 router.get('/profile', async function (req, res, next) {
     try {
-        var userId;
+        var userId = req.query.id
 
-        console.log('query id', req.query.id, 'email', req.email)
-
-        if (req.query.id) {
-            userId = req.query.id
-        } else if (req.email) {
-            userId = req.email
-        } else {
-            next()
-            return
-        }
+        console.log('profile user id', userId)
 
         const user = await userService.getProfile(userId);
         const projects = await projectService.getProjects(user.projects);
@@ -58,6 +49,26 @@ router.get('/profile', async function (req, res, next) {
             user: user,
             projects: projects
         });
+    } catch (e) {
+        next(e)
+    }
+})
+
+router.getAsync('/projects', async function (req, res, next) {
+    try {
+        var userId = req.query.id
+
+        console.log('list projects user id', userId)
+
+        const user = await userService.getProfile(userId, ['projects']);
+        const projects = await projectService.getProjects(user.projects);
+
+        res.send(JSON.stringify({
+            code: 0,
+            data: {
+                projects: projects
+            }
+        }))
     } catch (e) {
         next(e)
     }

@@ -3,9 +3,6 @@ const userDao = require('../dao/user-dao')
 
 class ProjectService {
     async create(project) {
-        project.users = new Array();
-        project.users.push(project.creator);
-
         await projectDao.save(project)
 
         await userDao.joinProject(project.creator, project.id)
@@ -40,7 +37,7 @@ class ProjectService {
 
     async search(query) {
         var keywords = query.keyword.trim().split(" ");
-        
+
         console.log('project search keywords', keywords)
 
         var result = await projectDao.search(keywords, query.page, query.count)
@@ -58,17 +55,14 @@ class ProjectService {
     }
 
     async join(email, projectId) {
-        // TODO add to project members
         return await userDao.joinProject(email, projectId)
     }
 
     async quit(email, projectId) {
-        // TODO remove from project members
         return await userDao.quitProject(email, projectId)
     }
 
     async agree(applicant, projectId) {
-        // TODO add to project members
         return await userDao.joinProject(applicant, projectId)
     }
 }
