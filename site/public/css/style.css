@@ -167,6 +167,33 @@ nav .select-dropdown{
     cursor: pointer;
 }
 
+/* Notification badge */
+.notification-count {
+    position: relative;
+    right: 2px;
+    top: -17px;
+    margin: 0 -.8em;
+
+    border-radius: 50%;
+    padding: 5px 9px;
+
+    color: white;
+    background-color: #ab2b2b;    
+}
+
+.notification-count-sidenav {
+    position: relative;
+	right: 31px;
+    top: -13px;
+    margin: 0 -.8em;
+
+    border-radius: 50%;
+    padding: 5px 9px;
+
+    color: white;
+    background-color: #ab2b2b;    
+}
+
 /* Search results */
 .search-results{
 	text-align: center;

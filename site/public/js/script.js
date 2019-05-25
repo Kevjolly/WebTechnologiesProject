@@ -567,8 +567,93 @@ $(document).ready(function () {
 			M.toast({ html: 'You are not logged in' });
 			$('#modal-login').modal('open');
 		}
+	});
 
-	});		
+	// Accept join project
+	$('#acceptBtn').click(function () {
+		if (cognitoUser){
+			var message = $("#accept-description").val();
+			//var dataForQuit = {message: message};
+			// $.ajax({
+			// 	contentType: 'application/json',
+			// 	headers: {
+			// 		Authorization: authToken
+			// 	},
+			// 	data: JSON.stringify(dataForQuit),
+			// 	dataType: 'json',
+			// 	success: function (data) {
+			// 		console.log("project successfully left", data);
+			// 		M.toast({ html: 'You left this project!' });
+			// 	},
+			// 	error: function (err) {
+			// 		console.log("failed to quit the project", err);
+			// 		M.toast({ html: 'Error when quiting the project!' });
+			// 	},
+			// 	processData: false,
+			// 	type: 'POST',
+			// 	url: '/project/quit'
+			// });			
+
+			// 1. add user to project
+			// 2. send message
+			// On success
+			$(".texto-application").hide();
+			$('#modal-accept').modal('close');
+			M.toast({ html: 'Application accepted' });
+		} else {
+			$('#modal-accept').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}
+	});
+
+	// Refuse join project
+	$('#refuseBtn').click(function () {
+		if (cognitoUser){
+			var message = $("#refuse-description").val();
+			//var dataForQuit = {message: message};
+			// $.ajax({
+			// 	contentType: 'application/json',
+			// 	headers: {
+			// 		Authorization: authToken
+			// 	},
+			// 	data: JSON.stringify(dataForQuit),
+			// 	dataType: 'json',
+			// 	success: function (data) {
+			// 		console.log("project successfully left", data);
+			// 		M.toast({ html: 'You left this project!' });
+			// 	},
+			// 	error: function (err) {
+			// 		console.log("failed to quit the project", err);
+			// 		M.toast({ html: 'Error when quiting the project!' });
+			// 	},
+			// 	processData: false,
+			// 	type: 'POST',
+			// 	url: '/project/quit'
+			// });			
+
+			// 1. send message
+			// On success
+			$(".texto-application").hide();
+			$('#modal-refuse').modal('close');
+			M.toast({ html: 'Application refused' });
+		} else {
+			$('#modal-refuse').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-refuse').modal('open');
+		}
+	});
+
+	// Calculate notification count
+	// Get Message count blabla	
+
+
+	// Get messages for side conv bar
+
+
+	// Get message for one conversation
+		// Get for conv between 1 and 1 users
+		// Get for project conv
 });
 
 function returnSearchResults(choice, page) {
@@ -591,5 +676,11 @@ function navigation(page) {
 	if (page === "home") {
 		window.open(host, "_self");
 	}
+}
+
+function scrollToTheBottom(id){
+	/* Call it to scroll to the bottom of messages */
+    var el = document.getElementById("#"+id);
+    el.scrollTop = el.scrollHeight;
 }
 

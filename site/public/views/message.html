@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>TeamUP&uarr; - Search results</title>
+	<title>TeamUP&uarr; - Messages</title>
 
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
@@ -54,7 +54,7 @@
 					<li class="active navbar-home"><a href="#" class="waves-effect nav-link" onclick="navigation('home')"><i class="material-icons">home</i><span id="nav-home">Home</span></a></li>
 					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i><span>Create a project</span></a></li>
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li> -->
-					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
+					<li class="signedin"><a href="/message" class="waves-effect nav-link"><i class="material-icons">message</i><small class="notification-count">5</small><span>Messages</span></a></li>
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
 					<li class="signedin"><a href="#" class="my-profile waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
@@ -102,7 +102,7 @@
 			</li>
 			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i>Create a project</a></li>
 			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li> -->
-			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">message</i><span>Messages</span></a></li>
+			<li class="signedin"><a href="/message" class="waves-effect"><i class="material-icons">message</i><small class="notification-count-sidenav">5</small><span>Messages</span></a></li>
 			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
@@ -153,12 +153,16 @@
 								<span>{{from}}</span>
 								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">{{date}}</span></a>
 							</p>
-							<p class="texto-text">{{content}}</p>
+							<p class="texto-text">{{content}}Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
 						</div>
 						<div class="texto texto-from-user">
 							<p class="texto-title-user">
 								<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
-								<span>Maxtoan</span>
+								<span>Kevin</span>
 							</p>
 							<p class="texto-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -168,15 +172,14 @@
 						</div>
 						<div class="texto">
 							<p class="texto-title">
-								<span>Maxtoan</span>
+								<span>Bruce</span>
 								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
 							</p>
-							<p class="texto-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+							<p class="texto-text">I would like to apply for this project because blablabla.</p>
+							<p class="texto-application">
+						    	<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>
+			    				<button class="btn waves-effect btn-apply appli-dismiss red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button>
+							</p>	
 						</div>
 					</div>
 					<div class="card-footer">
@@ -380,6 +383,48 @@
 				</div>
 			</div>
 		</div>
+
+		<div id="modal-accept" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Confirm and send a message of acceptation to the user</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">message</i>
+							<textarea id="accept-description" class="materialize-textarea"></textarea>
+							<label for="accept-description">Message</label>
+						</div>
+					</div>
+				</form>	
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="acceptBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
+
+		<div id="modal-refuse" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Confirm and send a message of refusal to the user</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">message</i>
+							<textarea id="refuse-description" class="materialize-textarea"></textarea>
+							<label for="refuse-description">Message</label>
+						</div>
+					</div>
+				</form>	
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light red" id="refuseBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>		
 
 	</main>
 
