@@ -31,11 +31,60 @@ if (cognitoUser) {
             authToken = session.getIdToken().getJwtToken();
             console.log('auth token', authToken);
 
-            alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-                var stmt = alasql.compile('update teamup.current_user set auth_token=?');
-                stmt([authToken], function () {
-                    console.log('alasql update current auth_token successfully');
-                });
+            // load offline messages whenever a page is reloaded
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({}),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("call /msg/offline successfully", data);
+
+                    if (data.data.single.length > 0 || data.data.project.length > 0) {
+                        var maxId = 0;
+
+                        if (data.data.single.length > 0) {
+                            if (data.data.single[0].id > maxId) {
+                                maxId = data.data.single[0].id;
+                            }
+                        }
+
+                        if (data.data.project.length > 0) {
+                            if (data.data.project[0].id > maxId) {
+                                maxId = data.data.project[0].id;
+                            }
+                        }
+
+                        // send ack to server
+                        $.ajax({
+                            contentType: 'application/json',
+                            headers: {
+                                Authorization: authToken
+                            },
+                            data: JSON.stringify({
+                                messageId: maxId
+                            }),
+                            dataType: 'json',
+                            success: function (data) {
+                                console.log("call /msg/ack successfully", data);
+                            },
+                            error: function (err) {
+                                console.log("call /msg/ack failed", err);
+                            },
+                            processData: false,
+                            type: 'POST',
+                            url: '/msg/ack'
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log("call /msg/offline failed", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/msg/offline'
             });
 
             cognitoUser.getUserAttributes(function (err, result) {
@@ -49,7 +98,7 @@ if (cognitoUser) {
                         break;
                     }
                 }
-            });    
+            });
         }
     });
 }
@@ -247,22 +296,27 @@ function signin(email, password, successCallback, failureCallback) {
             console.log('create database teamup');
 
             alasql('CREATE INDEXEDDB DATABASE IF NOT EXISTS teamup', function () {
-                alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-                    alasql('CREATE TABLE IF NOT EXISTS teamup.current_user (username string PRIMARY KEY, auth_token string)', () => {
-                        console.log('current_user table created');
-                        var stmt = alasql.compile('insert into teamup.current_user (username) values (?)');
-                        stmt([user.username], function () {
-                            console.log('current user inserted');
-                            alasql('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, user string, data string)', function () {
-                                console.log('single message table created');
-                                alasql('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)', function () {
-                                    console.log('project message table created');
-                                    if (successCallback) {
-                                        successCallback(result);
-                                    }
-                                })
-                            });
-                        });
+                alasql('ATTACH INDEXEDDB DATABASE teamup', async function () {
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.current_user (username string PRIMARY KEY, auth_token string)');
+                    console.log('current_user table created');
+
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, user string, data string)');
+                    console.log('single message table created');
+
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)');
+                    console.log('project message table created');
+
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.single_conversation_cursor_' + suffix + ' (user string PRIMARY KEY, max_id BIGINT)');
+                    console.log('single conversation cursor table created');
+
+                    await alasql.promise('CREATE TABLE IF NOT EXISTS teamup.project_conversation_cursor_' + suffix + ' (project BIGINT PRIMARY KEY, max_id BIGINT)');
+                    console.log('project conversation cursor table created');
+
+                    var stmt = alasql.compile('insert into teamup.current_user (username, auth_token) values (?,?)');
+                    stmt([user.username, authToken], function () {
+                        if (successCallback) {
+                            successCallback(result);
+                        }
                     });
                 });
             });

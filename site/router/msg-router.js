@@ -31,7 +31,7 @@ router.postAsync('/project', async function (req, res, next) {
         req.body.id = new Date().getTime();
 
         await msgService.sendProject(req.body)
-        
+
         res.send({
             code: 0,
             data: req.body

@@ -308,67 +308,11 @@ function sendProjectMessage(message, successCallback, failureCallback) {
     });
 }
 
-// load offline messages whenever a page is reloaded
-$.ajax({
-    contentType: 'application/json',
-    headers: {
-        Authorization: authToken
-    },
-    data: JSON.stringify({}),
-    dataType: 'json',
-    success: function (data) {
-        console.log("call /msg/offline successfully", data);
-
-        if (data.data.single.length > 0 || data.data.project.length > 0) {
-            var maxId = 0;
-
-            if (data.data.single.length > 0) {
-                if (data.data.single[0].id > maxId) {
-                    maxId = data.data.single[0].id;
-                }
-            }
-
-            if (data.data.project.length > 0) {
-                if (data.data.project[0].id > maxId) {
-                    maxId = data.data.project[0].id;
-                }
-            }
-
-            // send ack to server
-            $.ajax({
-                contentType: 'application/json',
-                headers: {
-                    Authorization: authToken
-                },
-                data: JSON.stringify({
-                    messageId: maxId
-                }),
-                dataType: 'json',
-                success: function (data) {
-                    console.log("call /msg/ack successfully", data);
-                },
-                error: function (err) {
-                    console.log("call /msg/ack failed", err);
-                },
-                processData: false,
-                type: 'POST',
-                url: '/msg/ack'
-            });
-        }
-    },
-    error: function (err) {
-        console.log("call /msg/offline failed", err);
-    },
-    processData: false,
-    type: 'POST',
-    url: '/msg/offline'
-});
-
 // TODO set max Ids
-function resetSingleUnread(peerEmail) {
+function resetSingleUnread(peerEmail, maxId) {
 
 }
 
-function resetProjectUnread(projectId) {
+function resetProjectUnread(projectId, maxId) {
 
 }
