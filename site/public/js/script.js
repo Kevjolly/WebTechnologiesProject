@@ -756,3 +756,35 @@ function scrollToTheBottom(id){
     el.scrollTop = el.scrollHeight;
 }
 
+function getProjects(){
+	if (cognitoUser){
+		$.ajax({
+			success: function (results) {
+
+				var resultsJSON = JSON.parse(results);
+				var projects = resultsJSON.data.projects;
+				var options = '<option value="" disabled selected>Select the project</option>';
+				var crtProject;
+				for (k=0; k<projects.length; k++){
+					crtProject = projects[k]
+					options += '<option value="'+crtProject.id+'">'+crtProject.name+'</option>';
+				}
+				$('#projects-insert').html(options);
+				$('#projects-insert').formSelect();
+				$("#modal-invite").modal('open');
+
+			},
+			error: function (err) {
+				console.log("failed to retrieve the projects", err);
+				M.toast({ html: 'Error when listing your projects!' });
+			},
+			type: 'GET',
+			url: '/user/projects?id='+userEmail
+		});
+
+	} else {
+		$('#modal-invite').modal('close');
+		M.toast({ html: 'You are not logged in' });
+		$('#modal-login').modal('open');
+	}
+}

@@ -26,6 +26,7 @@
 	<script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
+	<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
 	<script type="text/javascript" src="../js/vendor/aws-sdk.min.js"></script>
 	<script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
 	<script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
@@ -33,7 +34,6 @@
 	<script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-messaging.js"></script>
 	<script type="text/javascript" src="../js/im.js"></script>
-	<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
 
 	<script type="text/javascript" src="../js/script.js"></script>
 </head>
@@ -118,7 +118,14 @@
 				<div class="col s6">
 					<img class="circle big-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{user.image}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
 					<div class="project-text-title user-nickname"><h4>{{user.nickname}}</h4></div>
-					<button class="btn waves-effect btn-apply modal-trigger if-not-same-user" data-target="modal-message"><i class="material-icons left">send</i>Send a message</button>
+					<div class="row if-not-same-user">
+						<div class="col s6">
+							<button class="btn waves-effect modal-trigger" data-target="modal-message"><i class="material-icons left">send</i>Message</button>
+						</div>
+						<div class="col s6">
+							<button class="btn waves-effect" onclick="getProjects()"><i class="material-icons left">add</i>Invite</button>
+						</div>
+					</div>
 				</div>
 				<div class="col s6 user-text">
 					<div class="project-text-title"><h5>List of skills</h5></div>
@@ -170,7 +177,10 @@
 					</ul>
 				</div>
 				<div class="col s12 if-not-same-user"><hr/></div>
-				<div class="col s12 if-not-same-user"><button class="btn waves-effect modal-trigger" data-target="modal-message"><i class="material-icons left">send</i>Send a message</button></div>
+				<div class="col s12 if-not-same-user">
+					<button class="btn waves-effect modal-trigger" data-target="modal-message"><i class="material-icons left">send</i>Send</button>
+					<button class="btn waves-effect btn-apply if-not-same-user" onclick="getProjects()"><i class="material-icons left">add</i>Invite</button>
+				</div>
 			</div>
       	</div>
       	<div id="hidden-div-values" data-value="{{{user.email}}}"></div>
@@ -363,6 +373,32 @@
 				</button>
 			</div>
 		</div>
+
+		<div id="modal-invite" class="modal modal-fixed-footer">
+				<div class="modal-content">
+					<i class="material-icons modal-close right">close</i>
+					<h4>Invite {{user.nickname}} to a project</h4>
+					<form>
+						<div class="row">
+							<div class="input-field col s12">
+								<select id="projects-insert">
+								</select>
+								<label>Select the project</label>
+								</div>						
+							<div class="input-field col s12">
+								<i class="material-icons prefix">message</i>
+								<textarea id="invite-description" class="materialize-textarea"></textarea>
+								<label for="invite-description">Message</label>
+							</div>
+						</div>
+					</form>	
+				</div>
+				<div class="modal-footer">
+					<button class="btn waves-effect waves-light" id="inviteBtn" type="submit" name="action">SEND
+						<i class="material-icons right">send</i>
+					</button>
+				</div>
+			</div>
 
 		<div id="modal-about" class="modal bottom-sheet">
 			<div class="modal-content">
