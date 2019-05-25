@@ -5,6 +5,8 @@ var router = decorateRouter(express.Router());
 
 const projectService = require('../service/project-service');
 
+// TODO list projects API
+
 router.postAsync('/create', async function (req, res, next) {
     try {
         var projectId = new Date().getTime();

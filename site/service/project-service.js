@@ -58,14 +58,17 @@ class ProjectService {
     }
 
     async join(email, projectId) {
+        // TODO add to project members
         return await userDao.joinProject(email, projectId)
     }
 
     async quit(email, projectId) {
+        // TODO remove from project members
         return await userDao.quitProject(email, projectId)
     }
 
     async agree(applicant, projectId) {
+        // TODO add to project members
         return await userDao.joinProject(applicant, projectId)
     }
 }

@@ -42,6 +42,7 @@ class MsgService {
         }
     }
 
+    // TODO server inserts
     async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['token'])

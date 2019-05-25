@@ -16,7 +16,7 @@ class UserService {
     async search(query) {
         var keywords = query.keyword.trim().split(" ");
         console.log('user search keywords', keywords)
-        var result = userDao.search(keywords, query.page, query.count)
+        var result = await userDao.search(keywords, query.page, query.count)
         result.keyword = query.keyword
         result.page = query.page
         result.type = 'user'
