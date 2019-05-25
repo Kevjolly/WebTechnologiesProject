@@ -1,8 +1,10 @@
 {
     "development": {
-        "es-endpoint": "https://teamup:TeamUp2019!kevinREN~@localhost:9200"
+        "es-endpoint": "https://teamup:TeamUp2019!kevinREN~@localhost:9200",
+        "host": "http://localhost:8081"
     },
     "production": {
-        "es-endpoint": "https://vpc-teamup-ynxh5rbjfehckd5iph4uwznmaa.eu-west-2.es.amazonaws.com"
+        "es-endpoint": "https://vpc-teamup-ynxh5rbjfehckd5iph4uwznmaa.eu-west-2.es.amazonaws.com",
+        "host": "https://teamup-env.qck29pusvr.eu-west-2.elasticbeanstalk.com"
     }
 }

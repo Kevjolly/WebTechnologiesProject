@@ -1,24 +1,31 @@
 const userDao = require('../dao/user-dao')
 const projectDao = require('../dao/project-dao')
 const fetch = require('node-fetch');
+var config = require('../config/config')
 
 const serverKey = 'AAAAgYfJ0Wg:APA91bFWmAJSk79StVf9ofPijbVCgc7ft78csLIFrb_dIRaOnRhYcEjeF8Bq4iNQrO9PZey9shc8X-q9sMDuhqW6ZO18FzELZUND2XSXUBfol5I8ePv82jy-a0PrlOpsryn8O9trIeGf';
 
 class MsgService {
     async sendSingle(body) {
-        const email = body.to
-        const user = await userDao.getUser(email, ['token', 'nickname'])
+        const toUser = await userDao.getUser(body.to)
 
-        if (user.token == '' || !user || !(user.token)) {
+        if (toUser.token == '' || !toUser || !(toUser.token)) {
             return
+        }
+
+        body.toInfo = toUser
+        body.fromInfo = await userDao.getUser(body.from)
+
+        if (body.type == 'invitation' || body.type == 'application') {
+            body.projectInfo = await projectDao.getProject(body.project)
         }
 
         try {
             var notification = {
                 'title': 'TeamUP',
                 'body': user.nickname + ' sent you a message',
-                'click_action': 'http://localhost:8081',
-                'icon': 'http://localhost:8081/img/favicon.png'
+                'click_action': config['host'],
+                'icon': config['host'] + '/img/favicon.png'
             };
 
             const res = await fetch('https://fcm.googleapis.com/fcm/send', {
@@ -42,7 +49,6 @@ class MsgService {
         }
     }
 
-    // TODO server inserts
     async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['token'])
@@ -54,13 +60,14 @@ class MsgService {
 
         const project = await projectDao.getProject(projectId)
 
-        body.projectName = project.name;
+        body.projectInfo = project
+        body.fromInfo = await userDao.getUser(body.from)
 
         var notification = {
             'title': 'TeamUP',
             'body': 'new message from project ' + project.name,
-            'click_action': 'http://localhost:8081',
-            'icon': 'http://localhost:8081/img/favicon.png'
+            'click_action': config['host'],
+            'icon': config['host'] + '/img/favicon.png'
         };
 
         try {

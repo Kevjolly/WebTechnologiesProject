@@ -6,10 +6,14 @@ var router = decorateRouter(express.Router())
 const msgService = require('../service/msg-service')
 
 router.postAsync('/single', async function (req, res, next) {
+    console.log('send single message body', req.body)
+
     try {
         req.body.from = req.email
         req.body.id = new Date().getTime();
+
         await msgService.sendSingle(req.body)
+
         res.send({
             code: 0,
             data: {
@@ -22,6 +26,8 @@ router.postAsync('/single', async function (req, res, next) {
 })
 
 router.postAsync('/project', async function (req, res, next) {
+    console.log('send project message body', req.body)
+
     try {
         req.body.from = req.email
         req.body.id = new Date().getTime();
