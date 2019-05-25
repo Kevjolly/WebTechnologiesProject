@@ -9,12 +9,13 @@ function handleMessage(data) {
   var msg = JSON.parse(data.msg);
 
   alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-    alasql('select username from teamup.current_user', function (result) {
+    alasql('select username, auth_token from teamup.current_user', function (result) {
       console.log('background message received', msg.id, data.msg);
 
-      var username;
+      var username, authToken
       result.forEach(row => {
         username = row.username;
+        authToken = row.auth_token;
       });
 
       if (!username) {
@@ -38,6 +39,21 @@ function handleMessage(data) {
           });
         });
       }
+
+      fetch('/msg/ack', {
+        body: JSON.stringify({
+          messageId: msg.id
+        }),
+        headers: {
+          'Authorization': authToken,
+          'content-type': 'application/json'
+        },
+        method: 'POST',
+      }).then(response => {
+        console.log("call /msg/ack successfully");
+      }).catch(e => {
+        console.log("call /msg/ack failed", e);
+      })
     });
   });
 }

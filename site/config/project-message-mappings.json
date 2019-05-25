@@ -1,0 +1,17 @@
+{
+    "settings": {
+        "number_of_shards": 1
+    },
+    "mappings": {
+        "project": {
+            "properties": {
+                "id": {
+                    "type": "long"
+                },
+                "user": {
+                    "type": "keyword"
+                }
+            }
+        }
+    }
+}

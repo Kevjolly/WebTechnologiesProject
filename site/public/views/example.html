@@ -132,12 +132,6 @@
             });
         })
 
-        $('#offlineBtn').click(function () {
-            loadOfflineMessages(function (res) {
-                console.log('offline load result', res);
-            });
-        });
-
         $('#createProjectBtn').click(function () {
             $.ajax({
                 contentType: 'application/json',
