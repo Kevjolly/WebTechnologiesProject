@@ -16,9 +16,7 @@ router.postAsync('/single', async function (req, res, next) {
 
         res.send({
             code: 0,
-            data: {
-                msgId: req.body.id
-            }
+            data: req.body
         })
     } catch (err) {
         next(err)
@@ -31,12 +29,12 @@ router.postAsync('/project', async function (req, res, next) {
     try {
         req.body.from = req.email
         req.body.id = new Date().getTime();
+
         await msgService.sendProject(req.body)
+        
         res.send({
             code: 0,
-            data: {
-                msgId: req.body.id
-            }
+            data: req.body
         })
     } catch (err) {
         next(err)
