@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>TeamUP&uarr; - Search results</title>
+
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<!-- Special tag for Microsoft -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">		
+	<!-- Description -->
+	<meta name="description" content="Home page of the coursework for the Web Technologies course">
+	<!-- How the layout and content adapts to the mobile viewport -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Favicon -->
+	<link rel='shortcut icon' type='image/x-icon' href='/img/favicon.png' />
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Sofia' rel='stylesheet'>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="/css/style.css" rel="stylesheet">
+
+	<!-- Javascript -->
+	<script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+	<script type="text/javascript" src="../js/vendor/aws-sdk.min.js"></script>
+	<script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>
+	<script type="text/javascript" src="../js/vendor/amazon-cognito-identity.min.js"></script>
+	<script type="text/javascript" src="../js/auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-messaging.js"></script>
+	<script type="text/javascript" src="../js/im.js"></script>
+	<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
+
+	<script type="text/javascript" src="/js/script.js"></script>
+</head>
+
+<body>
+	<header>
+		<nav>
+			<div class="nav-wrapper blue darken-4">
+				<div id="nav-left-content">
+					<!-- <a href="#!" class="brand-logo" onclick="navigation('home')">TeamUP&uarr;</a> -->
+					<a href="#!" class="brand-logo" onclick="navigation('home')"><img src="/img/logo.png"></a>
+					<a href="#" data-target="smaller-size-browser" class="sidenav-trigger">
+						<i class="material-icons">menu</i>
+					</a>
+				</div>
+
+				<ul class="right hide-on-med-and-down">
+					<li class="active navbar-home"><a href="#" class="waves-effect nav-link" onclick="navigation('home')"><i class="material-icons">home</i><span id="nav-home">Home</span></a></li>
+					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i><span>Create a project</span></a></li>
+					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li> -->
+					<li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
+					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
+					<li class="signedin"><a href="#" class="my-profile waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
+					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
+					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i><span>Sign Up</span></a></li>
+					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i><span>Sign In</span></a></li>					
+					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-logout"><i class="material-icons">power_settings_new</i><span>Sign Out</span></a></li>
+				</ul>
+
+				<form class="hide-on-med-and-down" id="search-bar">
+					<div class="row">
+						<div class="input-field input-select-navbar col l4">
+							<select id="select-navbar" class="select-search">
+								<option value="" disabled selected>Choose</option>
+								<option value="1">Users</option>
+								<option value="2"">Projects</option>
+							</select>
+						</div>
+						<div class="input-field col l8">
+							<input class="search-input white-text" id="search" type="search" name="search" placeholder="Search" required>
+							<label class="label-icon" for="search"><i id="search-icons1" class="search-icons material-icons">search</i></label>
+							<i class="material-icons search-close">close</i>
+						</div>
+					</div>
+				</form>
+			</div>
+		</nav>
+
+		<ul class="sidenav" id="smaller-size-browser">
+			<li class="active navbar-home"><a href="#" class="waves-effect" onclick="navigation('home')"><i class="material-icons">home</i>Home</a></li>
+			<li>
+				<form id="search-bar-sidenav">
+					<div class="input-field input-select-sidenav">
+						<select id="select-sidenav" class="select-search">
+							<option value="" disabled selected>Choose</option>
+							<option value="1">Users</option>
+							<option value="2"">Projects</option>
+						</select>
+					</div>						
+					<div class="input-field">
+						<input class="search-input" id="search-sidenav" type="search" name="search-sidenav" placeholder="Search" required>
+						<label class="label-icon" for="search-sidenav"><i id="search-icons2" class="search-icons material-icons search-sidenav-icons">search</i></label>
+						<i class="material-icons search-close search-sidenav-icons">close</i>
+					</div>
+				</form>
+			</li>
+			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i>Create a project</a></li>
+			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li> -->
+			<li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">message</i><span>Messages</span></a></li>
+			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
+			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
+			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
+			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-login"><i class="material-icons">exit_to_app</i>Sign In</a></li>
+			<li class="signedin"><a href="#" class="my-profile waves-effect"><i class="material-icons">account_circle</i>My Profile</a></li>
+			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-logout"><i class="material-icons">power_settings_new</i>Sign Out</a></li>
+		</ul>		
+	</header>
+
+	<main>
+		<div class="row row-message">
+			<div id="col-choice-conv" class="col s7 m6 l4 col-message">
+				<div class="row row-message">
+					<div class="col s12 m12 l12 tabs-cols">
+						<ul class="tabs">
+							<li class="tab col s6 m6 l6"><a class="active" href="#message-users">Users</a></li>
+							<li class="tab col s6 m6 l6"><a href="#message-groups">Groups</a></li>
+						</ul>
+					</div>
+					<div id="message-users" class="col s12 m12 l12 col-message">				
+						<ul class="collection collection-users">
+							<li class="collection-item avatar grey lighten-4">
+								<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
+								<span class="title title-user-bis title-user-large">{{nickname}}</span>
+								<a href="/user/profile?id={{email}}" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>
+								<a href="" class="secondary-content conv-user link-user"><i class="material-icons">play_arrow</i><span class="link-text-user">Conversation</span></a>
+								<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">Friday 16, 7:05pm</span></a>
+							</li>
+							<li class="collection-item avatar grey lighten-4">
+								<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
+								<span class="title title-user title-user-large">{{nickname}}</span>
+								<a href="/user/profile?id={{email}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
+							</li>					
+							<li class="collection-item avatar grey lighten-4">
+								<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png';" alt="Image is missing">
+								<span class="title title-user title-user-large">{{nickname}}</span>
+								<a href="/user/profile?id={{email}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to user profile</span></a>
+							</li>
+						</ul>
+					</div>
+					<div id="message-groups" class="col s12 m12 l12 col-message">
+						<ul class="collection collection-users">
+							<li class="collection-item avatar grey lighten-4">
+							<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+							<span class="title title-user title-user-large">{{name}}</span>
+							<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
+							</li>
+							<li class="collection-item avatar grey lighten-4">
+							<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+							<span class="title title-user title-user-large">{{name}}</span>
+							<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
+							</li>
+							<li class="collection-item avatar grey lighten-4">
+							<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/{{{image}}}" onerror="this.src='https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg';" alt="Image is missing">
+							<span class="title title-user title-user-large">{{name}}</span>
+							<a href="/project/profile?id={{{id}}}" class="secondary-content link-user"><i class="material-icons">link</i><span class="link-text-user">Go to project details</span></a>
+							</li>														
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col s5 m6 l8 col-message">
+			</div>
+		</div>
+
+		<div id="modal-login" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Sign In</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">mail</i>
+							<input id="login-email" type="email" class="validate">
+							<label for="login-email">Email</label>
+							<span class="helper-text" data-error="Enter a valid email address" data-success="Correct"></span>
+						</div>
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">lock</i>
+							<input id="login-password" type="password" class="validate">
+							<label for="login-password">Password</label>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="signinBtn" type="submit" name="action">SIGN IN
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
+		<div id="modal-signup" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Sign Up</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">person_pin</i>
+							<input id="signup-username" type="text" class="validate">
+							<label for="signup-username">Username</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">mail</i>
+							<input id="signup-email" type="email" class="validate">
+							<label for="signup-email">Email</label>
+							<span class="helper-text" data-error="Enter a valid email address" data-success="Correct"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">lock</i>
+							<input id="signup-password" type="password" class="signup-passwords">
+							<label for="signup-password">Password</label>
+						</div>
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">lock</i>
+							<input id="signup-confirm-password" type="password" class="signup-passwords">
+							<label for="signup-confirm-password">Confirm Password</label>
+						</div>
+						<span id="helper-text-password1">The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit number and one special character</span>
+						<span id="helper-text-password2">The passwords must be the same</span>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<h6>Add your skills:</h6>
+							<div id="signup-skills" class="chips chips-initial"></div>
+						</div>
+					</div>
+					<form action="#">
+						<h6>You can optionally add an image to your profile.</h6>
+						<div class="file-field input-field">
+							<div class="btn">
+								<span>File</span>
+								<input id="signup-file" type="file">
+							</div>
+							<div class="file-path-wrapper">
+								<input class="file-path validate" type="text">
+							</div>
+						</div>
+					</form>									
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="signupBtn" type="submit" name="action">CREATE ACCOUNT
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
+		<div id="modal-verify" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Verify your email address</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">mail</i>
+							<input id="verify-email" type="email" class="validate">
+							<label for="verify-email">Email</label>
+							<span class="helper-text" data-error="Enter a valid email address" data-success="Correct"></span>
+						</div>
+						<div class="input-field col s12 m6 l6">
+							<i class="material-icons prefix">lock</i>
+							<input id="verify-code" type="number" class="validate">
+							<label for="verify-code">Code</label>
+							<span class="helper-text" data-error="The code must contain numbers"></span>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="verifyBtn" type="submit" name="action">VERIFY EMAIL
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
+
+		<div id="modal-project" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Create a new project</h4>
+				<form>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">title</i>
+							<input id="project-name" type="text" class="validate">
+							<label for="project-name">Title</label>
+						</div>
+						<div class="input-field col s12">
+							<i class="material-icons prefix">description</i>
+							<textarea id="project-description" class="materialize-textarea"></textarea>
+							<label for="project-description">Description</label>
+						</div>
+						<div class="input-field col s12">
+							<h6>Add the skills necessary to this project:</h6>
+							<div id="project-skills" class="chips chips-initial"></div>
+						</div>
+					</div>
+				</form>
+				<form action="#">
+					<h6>You can optionally add an image to your project.</h6>
+					<div class="file-field input-field">
+						<div class="btn">
+							<span>File</span>
+							<input id="project-file" type="file">
+						</div>
+						<div class="file-path-wrapper">
+							<input class="file-path validate" type="text">
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="createProjectBtn" type="submit" name="action">CREATE PROJECT
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>
+
+		<div id="modal-logout" class="modal modal-fixed-footer">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<h4>Confirm you want to sign out</h4>
+			</div>
+			<div class="modal-footer">
+				<button class="btn waves-effect waves-light" id="signoutBtn" type="submit" name="action">CONFIRM
+					<i class="material-icons right">send</i>
+				</button>
+			</div>
+		</div>			
+
+		<div id="modal-about" class="modal bottom-sheet">
+			<div class="modal-content">
+				<i class="material-icons modal-close right">close</i>
+				<div class="row">
+					<div class="col s9">
+						<h4>About <span class="brand-logo">TeamUP&uarr;</span></h4>
+						This site was created in the context of a project in the web technologies course. This is a not-for-profit website where people can meet and communicate. We, the creators of this site hope you enjoy your stay here. &#128513; &#128513;
+					</div>
+					<div class="col s3 brand-logo-about">
+						<img src="/img/logo.png">
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</main>
+
+	<footer class="page-footer blue darken-3">
+		<div class="container">
+			<div id="footer-row" class="row">
+				<div class="col l9 s9">
+					<!-- <h5 class="white-text">Footer Content</h5> -->
+					<h6 class="footer-h6 grey-text text-lighten-4">TeamUP&uarr; is a group project created by Ren Jiang & Kevin Jolly.</h6>
+				</div>
+				<div class="col l2 offset-l1 s3">
+					<!-- <h5 class="white-text">Github</h5> -->
+					<h6 class="footer-h6"><a class="grey-text text-lighten-3" href="https://github.com/Kevjolly/WebTechnologiesProject/">
+						<i class="material-icons">link</i>
+						<span id="github-link">Github</span></a>
+					</h6>
+				</div>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>

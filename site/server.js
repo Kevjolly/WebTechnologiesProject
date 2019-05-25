@@ -27,9 +27,9 @@ app.get('/example', function (req, res) {
 	res.sendFile('public/views/example.html', { root: __dirname });
 });
 
-// app.get('/search', function (req, res){
-// 	res.sendFile('public/views/search.html', { root: __dirname });
-// });
+app.get('/message', function (req, res){
+	res.sendFile('public/views/message.html', { root: __dirname });
+});
 
 // routers
 app.use('/user', require('./router/user-router'));

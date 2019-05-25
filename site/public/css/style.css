@@ -376,3 +376,83 @@ nav .select-dropdown{
 	display: none;
 }
 
+/* Messaging pages */
+.col-message{
+	padding: unset !important;
+}
+
+.row-message{
+	margin-bottom: unset !important;
+}
+
+
+/* Tabs */
+/* Overwrite padding of tabs given by materialize */
+.tabs-cols{
+	padding: unset !important;
+}
+
+/* Colors of tabs */
+/* Color of the text */
+.tabs .tab a{
+    color:#000;
+}
+
+/* Text color when hover */
+.tabs .tab a:hover {
+    background-color:rgba(0,0,0, 0.05);
+    color:#000;
+}
+
+/* Background & color of the text when tab is active */
+.tabs .tab a:focus.active {
+    background-color:rgba(0,0,0, 0.1);
+}
+
+.tabs .tab a.active {
+    color:#000;
+}
+
+/* Color of the line */
+.tabs .indicator {
+    background-color: #135aaa;
+}
+
+#col-choice-conv{
+	border-right: 3px solid #1976d2;
+}
+
+.collection-users{
+	margin: 0 !important;
+}
+
+.time-user{
+	color: #1565c0;
+	top: 55px !important;
+	right: 10px !important;	
+}
+
+.link-to-profile-user{
+	top: 5px !important;
+	right: 140px !important;
+}
+
+.conv-user{
+	color: #512da8;
+}
+
+.title-user-bis{
+	position: absolute !important;
+	top: 33px !important;
+	left: 90px !important;
+	font-size: 18px !important;
+}
+
+.inactive-link {
+   pointer-events: none;
+   cursor: default;
+}
+
+.carousel{
+	height:400px !important;
+}

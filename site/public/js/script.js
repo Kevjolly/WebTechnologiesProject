@@ -390,6 +390,12 @@ $(document).ready(function () {
 		}
 		$('#pagination-results').html(strPagination);
     }
+
+	// Message page
+	// Tabs for search results
+	$('.tabs').tabs({
+		'swipeable':true
+	});    
 });
 
 function returnSearchResults(choice, page){
