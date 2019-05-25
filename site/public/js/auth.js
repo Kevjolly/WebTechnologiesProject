@@ -246,40 +246,21 @@ function signin(email, password, successCallback, failureCallback) {
                         var stmt = alasql.compile('insert into teamup.current_user (username) values (?)');
                         stmt([user.username], function () {
                             console.log('current user inserted');
-                            alasql('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, from_user string, to_user string, data string)', function () {
+                            alasql('CREATE TABLE IF NOT EXISTS teamup.single_messages_' + suffix + ' (id BIGINT NOT NULL PRIMARY KEY, user string, data string)', function () {
                                 console.log('single message table created');
+                                alasql('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)', function () {
+                                    console.log('project message table created');
+                                    if (successCallback) {
+                                        successCallback(result);
+                                    }
+                                })
                             });
-
-                            alasql('CREATE TABLE IF NOT EXISTS teamup.project_messages_' + suffix + ' (id BIGINT PRIMARY KEY, from_user string, project BIGINT, data string)', function () {
-                                console.log('project message table created');
-                            })
                         });
                     });
                 });
             });
-
-            if (successCallback) {
-                successCallback(result);
-            }
-            M.toast({ html: 'Signed in!' });
-            $('#modal-login').modal('close');
-            $('#get-started-choice').hide();
-            location.reload();
         },
-        //onFailure: failureCallback
-        onFailure: function (err) {
-            console.log("Authenticate user failure");
-            console.log(err);
-            if (err.code === "UserNotConfirmedException") {
-                M.toast({ html: 'Failed!' });
-                M.toast({ html: 'Your account is not verified.' });
-                $('#modal-login').modal('close');
-                $('#modal-verify').modal('open');
-            } else {
-                M.toast({ html: 'Failed!' });
-                M.toast({ html: err.message });
-            }
-        }
+        onFailure: failureCallback
     });
 }
 

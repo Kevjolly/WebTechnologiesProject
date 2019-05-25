@@ -77,7 +77,10 @@
 
         // Set up event handler to produce text for the window focus event
         window.addEventListener("focus", function (event) {
-            console.log("window has focus " + nCounter);
+            loadConversations(function(conversations) {
+                
+            })
+            console.log("load conversations " + nCounter);
             nCounter = nCounter + 1;
         }, false);
 

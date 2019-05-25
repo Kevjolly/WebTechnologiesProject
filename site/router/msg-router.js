@@ -8,8 +8,14 @@ const msgService = require('../service/msg-service')
 router.postAsync('/single', async function (req, res, next) {
     try {
         req.body.from = req.email
+        req.body.id = new Date().getTime();
         await msgService.sendSingle(req.body)
-        res.send('{"msg":"single message sent successfully"}')
+        res.send({
+            code: 0,
+            data: {
+                msgId: req.body.id
+            }
+        })
     } catch (err) {
         next(err)
     }
@@ -18,8 +24,14 @@ router.postAsync('/single', async function (req, res, next) {
 router.postAsync('/project', async function (req, res, next) {
     try {
         req.body.from = req.email
+        req.body.id = new Date().getTime();
         await msgService.sendProject(req.body)
-        res.send('{"msg":"group message sent successfully"}')
+        res.send({
+            code: 0,
+            data: {
+                msgId: req.body.id
+            }
+        })
     } catch (err) {
         next(err)
     }
