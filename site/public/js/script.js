@@ -319,13 +319,21 @@ $(document).ready(function () {
 												M.toast({ html: 'Error when saving the image!' });
 											} else {
 												console.log(data);
-												$('#modal-project').modal('close');
 												M.toast({ html: 'Image saved for project!' });
 											}
 										});
-									} else {
-										$('#modal-project').modal('close');
 									}
+
+									var dataForMessage = {projectId: projectID, message: "You've created a project. Here you can talk with other participants of this project."};
+									sendProjectMessage(dataForMessage, function(){
+										M.toast({ html: 'Initiated project conversation in Messages' });
+										$('#modal-project').modal('close');
+									}, function (err){
+										console.log("Initiation of project conversation failure");
+										console.log(err);
+										M.toast({ html: 'Failed to initiate a conversation!' });
+										M.toast({ html: err.message });
+									});
 								},
 								error: function (err) {
 									console.log("failed to create the project", err);
@@ -541,7 +549,7 @@ $(document).ready(function () {
 			var userTo = $("#hidden-div-values").attr('data-value');
 			if (message !== null && message !== ""){
 				var dataForMessage = {type: "normal", to: userTo, message: message};
-				sendSingleMessage(dataForApply, function(){
+				sendSingleMessage(dataForMessage, function(){
 					M.toast({ html: 'Message sent' });
 					$('#modal-message').modal('close');
 				}, function (err){
@@ -714,6 +722,39 @@ $(document).ready(function () {
 		}
 	});
 
+	// Send invitation
+	$('#inviteBtn').click(function () {	
+		if (cognitoUser){
+			if ($("#projects-insert").val() !== null) {
+				var project_id = parseInt($("#projects-insert").val());
+				var userTo = $("#hidden-div-values").attr('data-value');
+				var message = $("#invite-description").val();
+				if (message !== null && message !== ""){
+					var dataForMessage = {projectId: project_id, type: "invitation", to: userTo ,message: message};
+					sendSingleMessage(dataForMessage, function(){
+						M.toast({ html: 'Invitation sent' });
+						$('#modal-invite').modal('close');
+						$('.invite-button').hide();
+					}, function (err){
+						console.log("Invitation failure");
+						console.log(err);
+						M.toast({ html: 'Failed to invite!' });
+						M.toast({ html: err.message });
+					});
+				} else {
+					M.toast({ html: 'You need to give a message.'});
+				}
+			} else {
+				M.toast({ html: 'You must select a project' });
+			}
+
+		} else {
+			$('#modal-invite').modal('close');
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}
+	});
+
 	// Calculate notification count
 
 
@@ -726,6 +767,11 @@ $(document).ready(function () {
 	// Get message for one conversation
 		// Get for conv between 1 and 1 users
 		// Get for project conv
+		// Scroll to bottom
+
+	// Reload messages when apply/etc
+	// Send message button reload messages
+	// Scroll to bottom
 });
 
 function returnSearchResults(choice, page) {
@@ -787,4 +833,89 @@ function getProjects(){
 		M.toast({ html: 'You are not logged in' });
 		$('#modal-login').modal('open');
 	}
+}
+
+onMessageReceived(function (data) {
+    console.log('received', data);
+});
+
+loadConversations(function (res) {
+	if (window.location.href.indexOf("search") > -1) {
+		loadConvHeads(res);
+	}
+	//console.log('conversation load result', res);
+});
+
+window.addEventListener("focus", function (event) {
+    loadConversations(function (res) {
+		//console.log('conversation load result', res);
+		if (window.location.href.indexOf("search") > -1) {
+			loadConvHeads(res);
+		}
+    });
+}, false);
+
+function loadConvHeads(res){
+	var singles = res.single;
+	var projects = res.project;
+	var strSingles = '';
+	var strProjects = '';
+	var crtConv;
+	var peerInfos;
+	var projectInfo;
+
+	if (singles.length === 0){
+		for (k = 0; k<singles.length; k++){
+			crtConv = singles[k];
+			if (crtConv.latestMessage.from === userEmail){
+				peerInfos = crtConv.latestMessage.toInfo;
+			} else {
+				peerInfos = crtConv.latestMessage.fromInfo;
+			}
+			strSingles += '<li class="collection-item collection-item-message avatar grey lighten-5">';
+			strSingles += '<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png\';" alt="Image is missing">';
+			strSingles += '<span class="title title-user-bis title-user-size">'+String(peerInfos.nickname)+'</span>'
+			strSingles += '<a href="/user/profile?id='+String(peerInfos.email)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>';
+			strSingles += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtConv.latestMessage.id))+'</span></a>';
+			strSingles += '<div class="hidden-conversation-trigger" data-target="'+String(peerInfos.email)+'"></div>';
+			strSingles += '</li>';
+		}
+	}
+
+	if (projects.length === 0){
+		for (k = 0; k<projects.length; k++){
+			crtConv = projects[k];
+			projectInfo = crtConv.latestMessage.projectInfo;
+			strProjects += '<li class="collection-item avatar collection-item-message avatar grey lighten-5">';
+			strProjects += '<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg\';" alt="Image is missing">';
+			strProjects += '<span class="title title-user-bis title-user-size">'+String(projectInfo.name)+'</span>'
+			strProjects += '<a href="/project/profile?id='+String(projectInfo.id)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Details</span></a>';
+			strProjects += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtConv.latestMessage.id))+'</span></a>';
+			strProjects += '<div class="hidden-conversation-trigger" data-target="'+String(projectInfo.id)+'"></div>';
+			strProjects += '</li>';
+		}
+	}
+
+	$('#message-users-ul').html(strSingles);
+	$('#message-groups-ul').html(strProjects);
+}
+
+function addNewMessage(res){
+	
+}
+
+function convertTimestampToDate(unix_ts){
+	var date = new Date(unix_ts*1000);
+
+	// Month and day
+	var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var month = months[a.getMonth()];
+	var date = a.getDate();
+
+	// Hour and minutes
+	var hours = date.getHours();
+	var minutes = "0" + date.getMinutes();
+
+	var formattedDate = date + '/' + month +' '+ hours + ':' + minutes.substr(-2);
+	return formattedDate;
 }

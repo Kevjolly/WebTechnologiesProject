@@ -235,8 +235,10 @@ function sendSingleMessage(message, successCallback, failureCallback) {
         success: function (data) {
             console.log("call /msg/single successfully", data);
 
-            var res = JSON.parse(data);
-            message.id = res.data.msgId;
+            // var res = JSON.parse(data);
+            message.id = data.data.msgId;
+
+            var suffix = userPool.getCurrentUser().username.split('-').join('');
 
             alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
                 var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data) values (?, ?, ?)');
@@ -267,8 +269,10 @@ function sendProjectMessage(message, successCallback, failureCallback) {
         success: function (data) {
             console.log("call /msg/project successfully", data);
 
-            var res = JSON.parse(data);
-            message.id = res.data.msgId;
+            //var res = JSON.parse(data);
+            message.id = data.data.msgId;
+
+            var suffix = userPool.getCurrentUser().username.split('-').join('');
 
             alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
                 var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data) values (?, ?, ?, ?)');

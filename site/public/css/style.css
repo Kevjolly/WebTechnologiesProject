@@ -595,3 +595,7 @@ nav .select-dropdown{
 .texto-invitation-values{
 	display: none;
 }
+
+.hidden-conversation-trigger{
+	display: none;
+}
