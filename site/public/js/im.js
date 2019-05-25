@@ -76,6 +76,27 @@ function handleMessage(data, callback) {
         });
     }
 
+    // send ack to server
+    $.ajax({
+        contentType: 'application/json',
+        headers: {
+            Authorization: authToken
+        },
+        data: JSON.stringify({
+            messageId: msg.id
+        }),
+        dataType: 'json',
+        success: function (data) {
+            console.log("call /msg/ack successfully", data);
+        },
+        error: function (err) {
+            console.log("call /msg/ack failed", err);
+        },
+        processData: false,
+        type: 'POST',
+        url: '/msg/ack'
+    });
+
     callback(msg);
 }
 
@@ -156,7 +177,6 @@ function loadConversations(callback) {
 
     alasql('ATTACH INDEXEDDB DATABASE teamup', async function () {
         // project conversations
-        // TODO get all project info from server
         var projectMaxIds = await alasql.promise('select max(id) as maxId from teamup.project_messages_' + suffix + ' group by project');
 
         console.log('projectMaxIds', projectMaxIds);
@@ -179,7 +199,7 @@ function loadConversations(callback) {
                 var message = JSON.parse(row.data);
 
                 conversation.latestMessage = message;
-                
+
                 if (message.id > projectMaxId) {
                     conversation.unread = true;
                 }
@@ -209,11 +229,11 @@ function loadConversations(callback) {
                 var message = JSON.parse(row.data);
 
                 conversation.latestMessage = message;
-                
+
                 if (message.id > singleMaxId) {
                     conversation.unread = true;
                 }
-                
+
                 conversations.single.push(conversation);
             });
         }
@@ -247,7 +267,7 @@ function sendSingleMessage(message, successCallback, failureCallback) {
             });
         },
         error: function (err) {
-            console.log("call /msg/single failed", data);
+            console.log("call /msg/single failed", err);
             failureCallback(err);
         },
         processData: false,
@@ -279,7 +299,7 @@ function sendProjectMessage(message, successCallback, failureCallback) {
             });
         },
         error: function (err) {
-            console.log("call /msg/project failed", data);
+            console.log("call /msg/project failed", err);
             failureCallback(err);
         },
         processData: false,
@@ -287,6 +307,62 @@ function sendProjectMessage(message, successCallback, failureCallback) {
         url: '/msg/project'
     });
 }
+
+// load offline messages whenever a page is reloaded
+$.ajax({
+    contentType: 'application/json',
+    headers: {
+        Authorization: authToken
+    },
+    data: JSON.stringify({}),
+    dataType: 'json',
+    success: function (data) {
+        console.log("call /msg/offline successfully", data);
+
+        if (data.data.single.length > 0 || data.data.project.length > 0) {
+            var maxId = 0;
+
+            if (data.data.single.length > 0) {
+                if (data.data.single[0].id > maxId) {
+                    maxId = data.data.single[0].id;
+                }
+            }
+
+            if (data.data.project.length > 0) {
+                if (data.data.project[0].id > maxId) {
+                    maxId = data.data.project[0].id;
+                }
+            }
+
+            // send ack to server
+            $.ajax({
+                contentType: 'application/json',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    messageId: maxId
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    console.log("call /msg/ack successfully", data);
+                },
+                error: function (err) {
+                    console.log("call /msg/ack failed", err);
+                },
+                processData: false,
+                type: 'POST',
+                url: '/msg/ack'
+            });
+        }
+    },
+    error: function (err) {
+        console.log("call /msg/offline failed", err);
+    },
+    processData: false,
+    type: 'POST',
+    url: '/msg/offline'
+});
 
 // TODO set max Ids
 function resetSingleUnread(peerEmail) {

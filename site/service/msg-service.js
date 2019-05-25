@@ -1,5 +1,6 @@
 const userDao = require('../dao/user-dao')
 const projectDao = require('../dao/project-dao')
+const messageDao = require('../dao/msg-dao')
 const fetch = require('node-fetch');
 var config = require('../config/config')
 
@@ -43,6 +44,8 @@ class MsgService {
                 })
             })
 
+            await messageDao.saveSingle(body)
+
             console.log('call fcm res', res)
         } catch (e) {
             console.log('failed to send message', e)
@@ -51,7 +54,7 @@ class MsgService {
 
     async sendProject(body) {
         const projectId = body.project
-        const users = await userDao.getProjectUsers(projectId, ['token'])
+        const users = await userDao.getProjectUsers(projectId, ['email', 'token'])
 
         var tokens = [];
         users.forEach(function (user) {
@@ -86,10 +89,20 @@ class MsgService {
                 })
             })
 
+            await messageDao.saveProject(users, body)
+
             console.log('send group message fcm response', res)
         } catch (e) {
             console.log('send group message failed', e)
         }
+    }
+
+    async getOffline(user) {
+        return await messageDao.getOffline(user)
+    }
+
+    async ack(user, messageId) {
+        await messageDao.ack(user, messageId)
     }
 }
 
