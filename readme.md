@@ -183,6 +183,26 @@ function sendProjectMessage(message, successCallback, failureCallback)
     "message": "I want to join the project"
 }
 
+// invitation message
+{
+    "id": 1231435234, // server inserts
+    "fromInfo": { // server inserts
+
+    },
+    "toInfo": { // server inserts
+
+    },
+    "from":"brucejeaung@gmail.com", // server inserts
+    "projectInfo": { // server inserts
+
+    },
+
+    "project": 12345,
+    "type":"invitation",
+    "to": "brucejeaung@gmail.com",
+    "message": "Please join us"
+}
+
 // application message
 {
     "id": 1231435234, // server inserts
@@ -193,6 +213,9 @@ function sendProjectMessage(message, successCallback, failureCallback)
 
     },
     "from":"brucejeaung@gmail.com", // server inserts
+    "projectInfo": { // server inserts
+
+    },
 
     "project": 12345,
     "type":"application",

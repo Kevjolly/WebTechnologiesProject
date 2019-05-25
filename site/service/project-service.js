@@ -58,6 +58,7 @@ class ProjectService {
     }
 
     async join(email, projectId) {
+        // TODO add to project members
         return await userDao.joinProject(email, projectId)
     }
 
