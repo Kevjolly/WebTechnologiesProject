@@ -794,7 +794,7 @@ $(document).ready(function () {
 			var message = $("#new-message-description").val();
 			if (message !== null && message !== "") {
 				var data_target = String($("#hidden-box-messages").attr("data-target"));
-				if (dataTarget.indexOf(".") >= 0){
+				if (data_target.indexOf(".") >= 0){
 					var userTo = data_target;
 					var dataForMessage = {type: "normal", to: userTo, message: message};
 					sendSingleMessage(dataForMessage, function(){

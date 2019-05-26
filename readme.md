@@ -42,7 +42,7 @@ See site/public/views/example.html
 should include following scripts in every web page: 
 
 ```
-<script src="//cdn.jsdelivr.net/alasql/0.2/alasql.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alasql@0.4"></script>
 <script type="text/javascript" src="../js/vendor/aws-sdk.min.js"></script>
 <script type="text/javascript" src="../js/vendor/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="../js/vendor/aws-cognito-sdk.min.js"></script>

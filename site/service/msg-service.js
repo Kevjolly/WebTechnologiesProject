@@ -10,16 +10,14 @@ class MsgService {
     async sendSingle(body) {
         const toUser = await userDao.getUser(body.to)
 
-        if (toUser.token == '' || !toUser || !(toUser.token)) {
-            return
-        }
-
         body.toInfo = toUser
         body.fromInfo = await userDao.getUser(body.from)
 
         if (body.type == 'invitation' || body.type == 'application') {
             body.projectInfo = await projectDao.getProject(body.project)
         }
+
+        await messageDao.saveSingle(body)
 
         var content;
         if (body.type == 'invitation') {
@@ -28,6 +26,10 @@ class MsgService {
             content = body.fromInfo.nickname + ' applies to join project ' + body.projectInfo.name;
         } else {
             content = body.fromInfo.nickname + ' sent you a message';
+        }
+
+        if (toUser.token == '' || !toUser || !(toUser.token)) {
+            return
         }
 
         try {
@@ -53,11 +55,7 @@ class MsgService {
                 })
             })
 
-            await messageDao.saveSingle(body)
-
             console.log('call fcm res', res)
-
-            return body
         } catch (e) {
             console.log('failed to send message', e)
         }
@@ -113,8 +111,6 @@ class MsgService {
             await messageDao.saveProject(users, body)
 
             console.log('send group message fcm response', res)
-
-            return body
         } catch (e) {
             console.log('send group message failed', e)
         }

@@ -12,13 +12,13 @@ router.postAsync('/single', async function (req, res, next) {
         req.body.from = req.email
         req.body.id = new Date().getTime();
 
-        var message = await msgService.sendSingle(req.body)
+        await msgService.sendSingle(req.body)
 
         console.log('single msg response', req.body)
 
         res.send({
             code: 0,
-            data: message
+            data: req.body
         })
     } catch (err) {
         next(err)
@@ -32,11 +32,11 @@ router.postAsync('/project', async function (req, res, next) {
         req.body.from = req.email
         req.body.id = new Date().getTime();
 
-        var message = await msgService.sendProject(req.body)
+        await msgService.sendProject(req.body)
 
         res.send({
             code: 0,
-            data: message
+            data: req.body
         })
     } catch (err) {
         next(err)
