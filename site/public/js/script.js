@@ -801,6 +801,7 @@ $(document).ready(function () {
 					sendSingleMessage(dataForMessage, function(){
 						// M.toast({ html: 'Message sent' });
 						console.log("message sent");
+						$("#new-message-description").empty();
 					}, function (err){
 						console.log("Send message failed");
 						console.log(err);
@@ -813,6 +814,7 @@ $(document).ready(function () {
 					sendProjectMessage(dataForMessage2, function(){
 						// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
 						console.log("message sent");
+						$("#new-message-description").empty();
 					}, function (err){
 						console.log("project message sent failed");
 						console.log(err);
@@ -853,10 +855,9 @@ function navigation(page) {
 }
 
 function scrollToTheBottom(id){
-	console.log(scrollToTheBottom);
 	/* Call it to scroll to the bottom of messages */
-    var el = document.getElementById("#"+id);
-    // el.scrollTop = el.scrollHeight;
+	var el = document.getElementById(id);
+    el.scrollTop = el.scrollHeight;
 }
 
 function getProjects(){
@@ -1129,13 +1130,19 @@ function addConvHead(data){
 
 	if ('type' in data){
 		peerInfos = data.fromInfo;
+		var userInfo;
+		if (peerInfos.email === userEmail){
+			userInfo = data.toInfo;
+		} else {
+			userInfo = data.fromInfo;
+		}
 		$(".hidden-conversation-trigger").each(function( index ) {
-			if ($(this).attr("data-target") === peerInfos.email){
+			if ($(this).attr("data-target") === userInfo.email){;
 				notPresent = false;
 				$(this).closest('.collection-item-message').find('.last-message-time').html(String(convertTimestampToDate(data.id)));
 			}
 		});
-		if (peerInfos.email === $("#hidden-box-messages").attr("data-target")){
+		if (userInfo.email === $("#hidden-box-messages").attr("data-target")){
 			notCurrentConv = false;
 		}
 	} else {
@@ -1153,12 +1160,18 @@ function addConvHead(data){
 
 	if (notPresent){
 		if ('type' in data) {
+			// var userInfo;
+			// if (peerInfos.email === userEmail){
+			// 	userInfo = data.toInfo;
+			// } else {
+			// 	userInfo = data.fromInfo;
+			// }
 			strToAdd += '<li class="collection-item collection-item-message avatar grey lighten-5">';
-			strToAdd += '<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png\';" alt="Image is missing">';
-			strToAdd += '<span class="title title-user-bis title-user-size">'+String(peerInfos.nickname)+'</span>'
-			strToAdd += '<a href="/user/profile?id='+String(peerInfos.email)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>';
+			strToAdd += '<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(userInfo.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png\';" alt="Image is missing">';
+			strToAdd += '<span class="title title-user-bis title-user-size">'+String(userInfo.nickname)+'</span>'
+			strToAdd += '<a href="/user/profile?id='+String(userInfo.email)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>';
 			strToAdd += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user last-message-time">'+String(convertTimestampToDate(data.id))+'</span></a>';
-			strToAdd += '<div class="hidden-conversation-trigger" data-target="'+String(peerInfos.email)+'"></div>';
+			strToAdd += '<div class="hidden-conversation-trigger" data-target="'+String(userInfo.email)+'"></div>';
 			strToAdd += '</li>';
 			$( "#message-users-ul" ).prepend( strToAdd );
 		} else {
@@ -1180,14 +1193,14 @@ function addConvHead(data){
 				strToReturn += '<p class="texto-title"><span>'+peerInfos.nickname+'</span>';
 				strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a></p>';
 				strToReturn += '<p class="texto-text">'+data.message+'</p>';
-				if (crtData.type === "application"){
+				if (data.type === "application"){
 					strToReturn += '<p class="texto-application-values">';
 					strToReturn += '<div id="hidden-appli-user-email" data-value="'+peerInfos.email+'"></div>'
 					strToReturn += '<div id="hidden-appli-project-id" data-value="'+data.project+'"></div></p>';
 					strToReturn += '<p class="texto-application">';
 					strToReturn += '<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>';
 					strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
-				} else if (crtData.type === "invitation"){
+				} else if (data.type === "invitation"){
 					strToReturn += '<p class="texto-invitation-values">';
 					strToReturn += '<div id="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
 					strToReturn += '<div id="hidden-invit-project-id" data-value="'+data.project+'"></div></p>';
