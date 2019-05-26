@@ -932,14 +932,8 @@ loadConversations(function (res) {
 	if (window.location.href.indexOf("message") > -1) {
 		loadConvHeads(res);
 		// Open by default a conv if there is a conv to open
-		var crtElt = $("#message-users-ul").find('.hidden-conversation-trigger')[0];
-		console.log("HEHE");
-		console.log(crtElt);
-		console.log("HEHE");		
+		var crtElt = $("#message-users-ul").find('.hidden-conversation-trigger')[0];		
 		var dataTarget = String($(crtElt).attr("data-target"));
-		console.log("HEHE");
-		console.log(dataTarget);
-		console.log("HEHE");
 		if (dataTarget !== null){
 			$("#hidden-box-messages").attr("data-target", dataTarget);
 			var liElt = $(crtElt).parent();
@@ -986,10 +980,65 @@ loadConversations(function (res) {
 });
 
 window.addEventListener("focus", function (event) {
+	var previousElt = $(".lighten-2").find('.hidden-conversation-trigger')[0];		
+	var previousDataTarget = String($(previousElt).attr("data-target"));
     loadConversations(function (res) {
 		//console.log('conversation load result', res);
 		if (window.location.href.indexOf("message") > -1) {
 			loadConvHeads(res);
+			var crtElts = $("#message-users-ul").find('.hidden-conversation-trigger');
+			var tempDataTarget;
+			var dataTarget;
+			var foundConv = false;
+			var iter;
+			for (var k=0; k<crtElts.length; k++){
+				tempDataTarget = String($(crtElts[k]).attr("data-target"));
+				if (tempDataTarget === previousDataTarget){
+					dataTarget = tempDataTarget;
+					foundConv = true;
+					iter = k;
+					break;
+				}
+			}
+
+			if (!foundConv){
+				crtElts = $("#message-groups-ul").find('.hidden-conversation-trigger');
+				for (var k=0; k<crtElts.length; k++){
+					tempDataTarget = String($(crtElts[k]).attr("data-target"));
+					if (tempDataTarget === previousDataTarget){
+						dataTarget = tempDataTarget;
+						foundConv = true;
+						iter = k;
+						break;
+					}
+				}
+			}
+
+			if (!foundConv){
+				var crtElts = $("#message-users-ul").find('.hidden-conversation-trigger');
+				iter = 0;
+				dataTarget = String($(crtElts[iter]).attr("data-target"));
+			}
+
+			if (dataTarget !== null){
+				$("#hidden-box-messages").attr("data-target", dataTarget);
+				var liElt = $(crtElts[iter]).parent();
+				$(".collection-item-message").removeClass("lighten-2");
+				$(".collection-item-message").addClass("lighten-5");
+				$(liElt).removeClass("lighten-5");
+				$(liElt).addClass("lighten-2");			
+				if (dataTarget.indexOf(".") >= 0){
+					loadSingleHistoryMessages(dataTarget, function(res){
+						console.log(res);
+						displaySingleMessages(res);
+					});
+				} else {
+					loadProjectHistoryMessages(parseInt(dataTarget), function(res){
+						console.log(res);
+						displayProjectMessages(res);
+					});
+				}
+			}			
 			$(".collection-item-message").click(function (e) {
 				$(".collection-item-message").removeClass("lighten-2");
 				$(".collection-item-message").addClass("lighten-5");

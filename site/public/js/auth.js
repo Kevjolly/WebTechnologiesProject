@@ -31,6 +31,20 @@ if (cognitoUser) {
             authToken = session.getIdToken().getJwtToken();
             console.log('auth token', authToken);
 
+            cognitoUser.getUserAttributes(function (err, result) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                for (i = 0; i < result.length; i++) {
+                    if (result[i].getName() == 'email') {
+                        userEmail = result[i].getValue();
+                        // console.log(userEmail);
+                        break;
+                    }
+                }
+            });
+
             // update authToken
             alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
                 var stmt = alasql.compile('update teamup.current_user set auth_token=?');
@@ -135,19 +149,6 @@ if (cognitoUser) {
                 processData: false,
                 type: 'POST',
                 url: '/msg/offline'
-            });
-
-            cognitoUser.getUserAttributes(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                for (i = 0; i < result.length; i++) {
-                    if (result[i].getName() == 'email') {
-                        userEmail = result[i].getValue();
-                        break;
-                    }
-                }
             });
         }
     });
