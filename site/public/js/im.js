@@ -122,7 +122,7 @@ function loadSingleHistoryMessages(peerEmail, callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + '" order by id asc', function (result) {
+        alasql('select distinct id, data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + '" order by id asc', function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -146,7 +146,7 @@ function loadProjectHistoryMessages(projectId, callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' order by id asc', function (result) {
+        alasql('select distinct id, data from teamup.project_messages_' + suffix + ' where project=' + projectId + ' order by id asc', function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
@@ -205,7 +205,7 @@ function loadConversations(callback) {
                 }
             });
 
-            var projectLatestMsgs = await alasql.promise('select project, data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            var projectLatestMsgs = await alasql.promise('select distinct id, project, data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             projectLatestMsgs.forEach(row => {
                 var conversation = new Object();
 
@@ -265,7 +265,7 @@ function loadConversations(callback) {
 
             console.log('user cursors', userCursors, userCursorRows);
 
-            var singleLatestMsgs = await alasql.promise('select user, data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            var singleLatestMsgs = await alasql.promise('select distinct id, user, data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             singleLatestMsgs.forEach(row => {
                 var conversation = new Object();
 
