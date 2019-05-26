@@ -524,7 +524,7 @@ nav .select-dropdown{
 }
 
 #col-conv .box-messages{
-	max-height: 450px;
+	height: 450px;
 	overflow-y: scroll;
 	background: #f9f9f9;
 }
@@ -597,5 +597,9 @@ nav .select-dropdown{
 }
 
 .hidden-conversation-trigger{
+	display: none;
+}
+
+#hidden-box-messages{
 	display: none;
 }

@@ -54,7 +54,7 @@
 					<li class="active navbar-home"><a href="#" class="waves-effect nav-link" onclick="navigation('home')"><i class="material-icons">home</i><span id="nav-home">Home</span></a></li>
 					<li class="signedin"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i><span>Create a project</span></a></li>
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">contacts</i><span>Contacts</span></a></li> -->
-					<li class="signedin"><a href="/message" class="waves-effect nav-link"><i class="material-icons">message</i><small class="notification-count">5</small><span>Messages</span></a></li>
+					<li class="signedin"><a href="/message" class="waves-effect nav-link"><i class="material-icons">message</i><span>Messages</span></a></li>
 					<!-- <li class="signedin"><a href="#" class="waves-effect nav-link"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
 					<li class="signedin"><a href="#" class="my-profile waves-effect nav-link"><i class="material-icons">account_circle</i><span>My Profile</span></a></li>
 					<li class="signedout"><a href="#" class="waves-effect nav-link modal-trigger" data-target="modal-about"><i class="material-icons">info</i><span>About</span></a></li>
@@ -102,7 +102,7 @@
 			</li>
 			<li class="signedin"><a href="#" class="waves-effect modal-trigger" data-target="modal-project"><i class="material-icons">create_new_folder</i>Create a project</a></li>
 			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">contacts</i>Contacts</a></li> -->
-			<li class="signedin"><a href="/message" class="waves-effect"><i class="material-icons">message</i><small class="notification-count-sidenav">5</small><span>Messages</span></a></li>
+			<li class="signedin"><a href="/message" class="waves-effect"><i class="material-icons">message</i><span>Messages</span></a></li>
 			<!-- <li class="signedin"><a href="#" class="waves-effect"><i class="material-icons">notifications</i><span>Notifications</span></a></li> -->
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-about"><i class="material-icons">info</i>About</a></li>
 			<li class="signedout"><a href="#" class="waves-effect modal-trigger" data-target="modal-signup"><i class="material-icons">add_circle</i>Sign Up</a></li>
@@ -133,70 +133,18 @@
 			</div>
 			<div id="col-conv" class="col s7 m8 l8 col-message">
 				<div class="card">
-					<div class="card-content box-messages">
-						<div class="texto">
-							<div class="message-type" data-value="{{{type}}}"></div>
-							<p class="texto-title">
-								<span>{{from}}</span>
-								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">{{date}}</span></a>
-							</p>
-							<p class="texto-text">{{content}}Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-						</div>
-						<div class="texto texto-from-user">
-							<p class="texto-title-user">
-								<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
-								<span>Kevin</span>
-							</p>
-							<p class="texto-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						</div>
-						<div class="texto">
-							<p class="texto-title">
-								<span>Bruce</span>
-								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
-							</p>
-							<p class="texto-text">I would like to apply for this project because blablabla.</p>
-							<p class="texto-application-values">
-								<div class="hidden-appli-user-email" data-value=""></div>
-								<div class="hidden-appli-project-id" data-value=""></div>
-							</p>
-							<p class="texto-application">
-						    	<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>
-			    				<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button>
-							</p>	
-						</div>
-						<div class="texto">
-							<p class="texto-title">
-								<span>Bruce</span>
-								<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">16/05 16:05</span></a>
-							</p>
-							<p class="texto-text">I would like to apply for this project because blablabla.</p>
-							<p class="texto-invitation-values">
-								<div id="hidden-invit-user-email" data-value=""></div>
-								<div id="hidden-invit-project-id" data-value=""></div>
-							</p>
-							<p class="texto-invitation">
-						    	<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>
-			    				<button class="btn waves-effect btn-apply invit-dismiss red modal-trigger" data-target="modal-dismiss"><i class="material-icons left">cancel</i>Dismiss</button>
-							</p>	
-						</div>						
+					<div class="card-content box-messages" id="box-messages-to-fill">					
 					</div>
+					<div id="hidden-box-messages" data-target=""></div>
 					<div class="card-footer">
 						<form>
 							<div class="row input-message-top">
 								<div class="input-field col s8 m9 l10 input-message">
-									<textarea class="materialize-textarea"></textarea> 
+									<textarea class="materialize-textarea" id="new-message-description"></textarea> 
 			          				<label>Message</label>
 								</div>
 								<div class="input-field col s4 m3 l2 input-message">
-									<button class="btn waves-effect waves-light" id="messageSendBtn" type="submit" name="action">SEND
+									<button class="btn waves-effect waves-light" id="messageSendBtn2" type="submit" name="action">SEND
 										<i class="material-icons right">send</i>
 									</button>
 								</div>

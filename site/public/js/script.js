@@ -472,16 +472,17 @@ $(document).ready(function () {
 		$(this).removeClass("lighten-5");
 		$(this).addClass("lighten-2");
 		var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
-		// console.log(dataTarget);
+		$("#hidden-box-messages").attr("data-target", dataTarget);			
 		if (dataTarget.indexOf(".") >= 0){
-			// console.log(typeof dataTarget);
 			loadSingleHistoryMessages(dataTarget, function(res){
 				console.log(res);
-			})
+				displaySingleMessages(res);
+			});
 		} else {
 			loadProjectHistoryMessages(parseInt(dataTarget), function(res){
 				console.log(res);
-			})
+				displayProjectMessages(res);
+			});
 		}
 	});
 	$(".collection-item-message").hover(function(){
@@ -491,7 +492,7 @@ $(document).ready(function () {
 			$(this).removeClass("lighten-3");
 			$(this).addClass("lighten-5");
 		}
-	);	
+	);
 
 	$(".link-to-profile-user").click(function(e){
 		e.stopPropagation();
@@ -535,7 +536,7 @@ $(document).ready(function () {
 			var userTo = $("#hidden-div-values").attr('data-value');
 			var message = $("#apply-description").val();
 			if (message !== null && message !== ""){
-				var dataForApply = {projectId: project_id, type: "application", to: userTo ,message: message};
+				var dataForApply = {project: project_id, type: "application", to: userTo ,message: message};
 				sendSingleMessage(dataForApply, function(){
 					M.toast({ html: 'Application sent' });
 					$('#modal-apply').modal('close');
@@ -604,7 +605,7 @@ $(document).ready(function () {
 						var dataForMessage = {type: "normal", to: userTo, message: message};
 						sendSingleMessage(dataForMessage, function(){
 							M.toast({ html: 'Message sent' });
-							var dataForMessage2 = {projectId: project_id, message: "Hi everyone, welcome our new member."};
+							var dataForMessage2 = {project: project_id, message: "Hi everyone, welcome our new member."};
 							sendProjectMessage(dataForMessage2, function(){
 								M.toast({ html: 'Initiated project conversation in Messages for the new member' });
 								$('#modal-accept').modal('close');
@@ -690,7 +691,7 @@ $(document).ready(function () {
 						var dataForMessage = {type: "normal", to: userFrom, message: message};
 						sendSingleMessage(dataForMessage, function(){
 							M.toast({ html: 'Message sent' });
-							var dataForMessage2 = {projectId: project_id, message: "Hi everyone, I joined this project."};
+							var dataForMessage2 = {project: project_id, message: "Hi everyone, I joined this project."};
 							sendProjectMessage(dataForMessage2, function(){
 								M.toast({ html: 'Initiated project conversation in Messages for the new member' });
 								$('#modal-join').modal('close');
@@ -762,7 +763,7 @@ $(document).ready(function () {
 				var userTo = $("#hidden-div-values").attr('data-value');
 				var message = $("#invite-description").val();
 				if (message !== null && message !== ""){
-					var dataForMessage = {projectId: project_id, type: "invitation", to: userTo ,message: message};
+					var dataForMessage = {project: project_id, type: "invitation", to: userTo ,message: message};
 					sendSingleMessage(dataForMessage, function(){
 						M.toast({ html: 'Invitation sent' });
 						$('#modal-invite').modal('close');
@@ -787,23 +788,44 @@ $(document).ready(function () {
 		}
 	});
 
-	// Calculate notification count
-
-
-	// Get Message count blabla	
-
-
-	// Get messages for side conv bar
-
-
-	// Get message for one conversation
-		// Get for conv between 1 and 1 users
-		// Get for project conv
-		// Scroll to bottom
-
-	// Reload messages when apply/etc
-	// Send message button reload messages
-	// Scroll to bottom
+	$("#messageSendBtn2").click(function () {
+		if (cognitoUser){
+			var message = $("#new-message-description").val();
+			if (message !== null && message !== "") {
+				var data_target = String($("#hidden-box-messages").attr("data-target"));
+				if (dataTarget.indexOf(".") >= 0){
+					var userTo = data_target;
+					var dataForMessage = {type: "normal", to: userTo, message: message};
+					sendSingleMessage(dataForMessage, function(){
+						// M.toast({ html: 'Message sent' });
+						console.log("message sent");
+					}, function (err){
+						console.log("Send message failed");
+						console.log(err);
+						// M.toast({ html: 'Failed!' });
+						// M.toast({ html: err.message });
+					});
+				} else {
+					var project_id = parseInt(dataTarget);
+					var dataForMessage2 = {project: project_id, message: message};
+					sendProjectMessage(dataForMessage2, function(){
+						// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
+						console.log("message sent");
+					}, function (err){
+						console.log("project message sent failed");
+						console.log(err);
+						// M.toast({ html: 'Failed to initiate a project conversation!' });
+						// M.toast({ html: err.message });
+					});
+				}
+			} else {
+				M.toast({ html: 'You need to give a message.' });
+			}
+		} else {
+			M.toast({ html: 'You are not logged in' });
+			$('#modal-login').modal('open');
+		}
+	});
 });
 
 function returnSearchResults(choice, page) {
@@ -829,9 +851,10 @@ function navigation(page) {
 }
 
 function scrollToTheBottom(id){
+	console.log(scrollToTheBottom);
 	/* Call it to scroll to the bottom of messages */
     var el = document.getElementById("#"+id);
-    el.scrollTop = el.scrollHeight;
+    // el.scrollTop = el.scrollHeight;
 }
 
 function getProjects(){
@@ -869,54 +892,83 @@ function getProjects(){
 
 onMessageReceived(function (data) {
 	console.log('received', data);
-	addConvHead(data);
-	$(".collection-item-message").click(function (e) {
-		$(".collection-item-message").removeClass("lighten-2");
-		$(".collection-item-message").addClass("lighten-5");
-		$(this).removeClass("lighten-5");
-		$(this).addClass("lighten-2");
-		var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
-		// console.log(dataTarget);
-		if (dataTarget.indexOf(".") >= 0){
-			// console.log(typeof dataTarget);
-			loadSingleHistoryMessages(dataTarget, function(res){
-				console.log(res);
-			})
-		} else {
-			loadProjectHistoryMessages(parseInt(dataTarget), function(res){
-				console.log(res);
-			})
-		}
-	});
-	$(".collection-item-message").hover(function(){
-			$(this).removeClass("lighten-5");
-			$(this).addClass("lighten-3");
-		}, function(){
-			$(this).removeClass("lighten-3");
-			$(this).addClass("lighten-5");
-		}
-	);		
-});
+	if (window.location.href.indexOf("message") > -1) {	
+		addConvHead(data);
+		// if message is current conversation
 
-loadConversations(function (res) {
-	if (window.location.href.indexOf("message") > -1) {
-		loadConvHeads(res);
 		$(".collection-item-message").click(function (e) {
 			$(".collection-item-message").removeClass("lighten-2");
 			$(".collection-item-message").addClass("lighten-5");
 			$(this).removeClass("lighten-5");
 			$(this).addClass("lighten-2");
 			var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
-			// console.log(dataTarget);
+			$("#hidden-box-messages").attr("data-target", dataTarget);			
 			if (dataTarget.indexOf(".") >= 0){
-				// console.log(typeof dataTarget);
 				loadSingleHistoryMessages(dataTarget, function(res){
 					console.log(res);
-				})
+					displaySingleMessages(res);
+				});
 			} else {
 				loadProjectHistoryMessages(parseInt(dataTarget), function(res){
 					console.log(res);
-				})
+					displayProjectMessages(res);
+				});
+			}
+		});
+		$(".collection-item-message").hover(function(){
+				$(this).removeClass("lighten-5");
+				$(this).addClass("lighten-3");
+			}, function(){
+				$(this).removeClass("lighten-3");
+				$(this).addClass("lighten-5");
+			}
+		);
+	}
+});
+
+loadConversations(function (res) {
+	if (window.location.href.indexOf("message") > -1) {
+		loadConvHeads(res);
+		// Open by default a conv if there is a conv to open
+		var crtElt = $("#message-users-ul").find('.hidden-conversation-trigger')[0];
+		console.log("HEHE");
+		console.log(crtElt);
+		console.log("HEHE");		
+		var dataTarget = String($(crtElt).attr("data-target"));
+		console.log("HEHE");
+		console.log(dataTarget);
+		console.log("HEHE");
+		if (dataTarget !== null){
+			$("#hidden-box-messages").attr("data-target", dataTarget);
+			var liElt = $(crtElt).parent();
+			$(".collection-item-message").removeClass("lighten-2");
+			$(".collection-item-message").addClass("lighten-5");
+			$(liElt).removeClass("lighten-5");
+			$(liElt).addClass("lighten-2");			
+			if (dataTarget.indexOf(".") >= 0){
+				loadSingleHistoryMessages(dataTarget, function(res){
+					console.log(res);
+					displaySingleMessages(res);
+				});
+			}
+		}
+		$(".collection-item-message").click(function (e) {
+			$(".collection-item-message").removeClass("lighten-2");
+			$(".collection-item-message").addClass("lighten-5");
+			$(this).removeClass("lighten-5");
+			$(this).addClass("lighten-2");
+			var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
+			$("#hidden-box-messages").attr("data-target", dataTarget);			
+			if (dataTarget.indexOf(".") >= 0){
+				loadSingleHistoryMessages(dataTarget, function(res){
+					console.log(res);
+					displaySingleMessages(res);
+				});
+			} else {
+				loadProjectHistoryMessages(parseInt(dataTarget), function(res){
+					console.log(res);
+					displayProjectMessages(res);
+				});
 			}
 		});
 		$(".collection-item-message").hover(function(){
@@ -942,16 +994,17 @@ window.addEventListener("focus", function (event) {
 				$(this).removeClass("lighten-5");
 				$(this).addClass("lighten-2");
 				var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
-				// console.log(dataTarget);				
+				$("#hidden-box-messages").attr("data-target", dataTarget);			
 				if (dataTarget.indexOf(".") >= 0){
-					// console.log(typeof dataTarget);
 					loadSingleHistoryMessages(dataTarget, function(res){
 						console.log(res);
-					})
+						displaySingleMessages(res);
+					});
 				} else {
 					loadProjectHistoryMessages(parseInt(dataTarget), function(res){
 						console.log(res);
-					})
+						displayProjectMessages(res);
+					});
 				}
 			});
 			$(".collection-item-message").hover(function(){
@@ -1013,9 +1066,11 @@ function loadConvHeads(res){
 
 function addConvHead(data){
 	var strToAdd = '';
+	var strToReturn = '';
 	var peerInfos;
 	var projectInfos;
 	var notPresent = true;
+	var notCurrentConv = true;
 	var inter;
 
 	if ('type' in data){
@@ -1026,6 +1081,9 @@ function addConvHead(data){
 				$(this).closest('.collection-item-message').find('.last-message-time').html(String(convertTimestampToDate(data.id)));
 			}
 		});
+		if (peerInfos.email === $("#hidden-box-messages").attr("data-target")){
+			notCurrentConv = false;
+		}
 	} else {
 		projectInfos = data.projectInfo;
 		$(".hidden-conversation-trigger").each(function( index ) {
@@ -1034,6 +1092,9 @@ function addConvHead(data){
 				$(this).closest('.collection-item-message').find('.last-message-time').html(String(convertTimestampToDate(data.id)));
 			}
 		});
+		if (String(projectInfos.id) === $("#hidden-box-messages").attr("data-target")){
+			notCurrentConv = false;
+		}	
 	}
 
 	if (notPresent){
@@ -1057,6 +1118,55 @@ function addConvHead(data){
 			$( "#message-groups-ul" ).prepend( strToAdd );
 		}
 	}
+
+	if (!notCurrentConv){
+		if ("type" in data){
+			if (peerInfos.email !== userEmail){
+				strToReturn += '<div class="texto">';
+				strToReturn += '<p class="texto-title"><span>'+peerInfos.nickname+'</span>';
+				strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a></p>';
+				strToReturn += '<p class="texto-text">'+data.message+'</p>';
+				if (crtData.type === "application"){
+					strToReturn += '<p class="texto-application-values">';
+					strToReturn += '<div class="hidden-appli-user-email" data-value="'+peerInfos.email+'"></div>'
+					strToReturn += '<div class="hidden-appli-project-id" data-value="'+data.project+'"></div></p>';
+					strToReturn += '<p class="texto-application">';
+					strToReturn += '<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>';
+					strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
+				} else if (crtData.type === "invitation"){
+					strToReturn += '<p class="texto-invitation-values">';
+					strToReturn += '<div class="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
+					strToReturn += '<div class="hidden-invit-project-id" data-value="'+data.project+'"></div></p>';
+					strToReturn += '<p class="texto-invitation">';
+					strToReturn += '<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>';
+					strToReturn += '<button class="btn waves-effect btn-apply invit-dismiss red modal-trigger" data-target="modal-dismiss"><i class="material-icons left">cancel</i>Dismiss</button></p>';
+				}
+				strToReturn += '</div>';
+			} else {
+				strToReturn += '<div class="texto texto-from-user"><p class="texto-title-user">';
+				strToReturn += '<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a>';
+				strToReturn += '<span>'+peerInfos.nickname+'</span></p>';
+				strToReturn += '<p class="texto-text">'+data.message+'</p></div>';
+			}
+		} else {
+			if (peerInfos.from !== userEmail){
+				strToReturn += '<div class="texto">';
+				strToReturn += '<p class="texto-title"><span>'+peerInfos.nickname+'</span>';
+				strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a></p>';
+				strToReturn += '<p class="texto-text">'+data.message+'</p>';
+				strToReturn += '</div>';
+			} else {
+				strToReturn += '<div class="texto texto-from-user"><p class="texto-title-user">';
+				strToReturn += '<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a>';
+				strToReturn += '<span>'+peerInfos.nickname+'</span></p>';
+				strToReturn += '<p class="texto-text">'+data.message+'</p></div>';
+			}
+		}
+		if (strToReturn !== ''){
+			$("#box-messages-to-fill").append(strToReturn);
+			scrollToTheBottom("box-messages-to-fill");	
+		}	
+	}
 }
 
 function convertTimestampToDate(unix_ts){
@@ -1075,3 +1185,69 @@ function convertTimestampToDate(unix_ts){
 	return formattedDate;
 }
 
+function displaySingleMessages(data){
+	var strToReturn = '';
+	var crtFromUser;
+	var crtToUser;
+	var crtData;
+	for (k = 0; k<data.length; k++){
+		crtData = data[k];
+		crtFromUser = crtData.fromInfo;
+		crtToUser = crtData.toInfo;
+		if (crtData.from !== userEmail){
+			strToReturn += '<div class="texto">';
+			strToReturn += '<p class="texto-title"><span>'+crtFromUser.nickname+'</span>';
+			strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtData.id))+'</span></a></p>';
+			strToReturn += '<p class="texto-text">'+crtData.message+'</p>';
+			if (crtData.type === "application"){
+				strToReturn += '<p class="texto-application-values">';
+				strToReturn += '<div class="hidden-appli-user-email" data-value="'+crtFromUser.email+'"></div>'
+				strToReturn += '<div class="hidden-appli-project-id" data-value="'+crtData.project+'"></div></p>';
+				strToReturn += '<p class="texto-application">';
+				strToReturn += '<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>';
+				strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
+			} else if (crtData.type === "invitation"){
+				strToReturn += '<p class="texto-invitation-values">';
+				strToReturn += '<div class="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
+				strToReturn += '<div class="hidden-invit-project-id" data-value="'+crtData.project+'"></div></p>';
+				strToReturn += '<p class="texto-invitation">';
+				strToReturn += '<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>';
+				strToReturn += '<button class="btn waves-effect btn-apply invit-dismiss red modal-trigger" data-target="modal-dismiss"><i class="material-icons left">cancel</i>Dismiss</button></p>';
+			}
+			strToReturn += '</div>';
+		} else {
+			strToReturn += '<div class="texto texto-from-user"><p class="texto-title-user">';
+			strToReturn += '<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtData.id))+'</span></a>';
+			strToReturn += '<span>'+crtFromUser.nickname+'</span></p>';
+			strToReturn += '<p class="texto-text">'+crtData.message+'</p></div>';
+		}
+	}
+	$("#box-messages-to-fill").html(strToReturn);
+	scrollToTheBottom("box-messages-to-fill");
+}
+
+function displayProjectMessages(data){
+	var strToReturn = '';
+	var crtFromUser;
+	var crtProject;
+	var crtData;
+	for (k = 0; k<data.length; k++){
+		crtData = data[k];
+		crtFromUser = crtData.fromInfo;
+		crtProject = crtData.projectInfo;
+		if (crtData.from !== userEmail){
+			strToReturn += 'div class="texto">';
+			strToReturn += '<p class="texto-title"><span>'+crtFromUser.nickname+'</span>';
+			strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtData.id))+'</span></a></p>';
+			strToReturn += '<p class="texto-text">'+crtData.message+'</p>';
+			strToReturn += '</div>';
+		} else {
+			strToReturn += '<div class="texto texto-from-user"><p class="texto-title-user">';
+			strToReturn += '<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtData.id))+'</span></a>';
+			strToReturn += '<span>'+crtFromUser.nickname+'</span></p>';
+			strToReturn += '<p class="texto-text">'+crtData.message+'</p></div>';
+		}
+	}
+	$("#box-messages-to-fill").html(strToReturn);
+	scrollToTheBottom("box-messages-to-fill");
+}
