@@ -797,6 +797,7 @@ $(document).ready(function () {
 				if (data_target.indexOf(".") >= 0){
 					var userTo = data_target;
 					var dataForMessage = {type: "normal", to: userTo, message: message};
+					console.log(dataForMessage);
 					sendSingleMessage(dataForMessage, function(){
 						// M.toast({ html: 'Message sent' });
 						console.log("message sent");
