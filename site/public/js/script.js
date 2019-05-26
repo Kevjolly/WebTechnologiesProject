@@ -228,11 +228,7 @@ $(document).ready(function () {
 
 	$(".my-profile").click(function (e) {
 		e.preventDefault();
-		var host = window.location.host;
-		if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
-			host = "http://" + host;
-		}
-		var url = host + '/user/profile?id=' + userEmail;
+		var url = '/user/profile?id=' + userEmail;
 		window.open(url, "_self");
 	});
 
@@ -808,49 +804,14 @@ $(document).ready(function () {
 		}
 	});
 
-	window.addEventListener('keyup', function (e) {
-		if (e.keyCode === 13) {
-			if (cognitoUser) {
-				var message = $("#new-message-description").val();
-				if (message !== null && message !== "") {
-					var data_target = String($("#hidden-box-messages").attr("data-target"));
-					if (data_target.indexOf(".") >= 0) {
-						var userTo = data_target;
-						var dataForMessage = { type: "normal", to: userTo, message: message };
-						console.log(dataForMessage);
-						sendSingleMessage(dataForMessage, function () {
-							// M.toast({ html: 'Message sent' });
-							console.log("message sent");
-							$("#new-message-description").val("");
-						}, function (err) {
-							console.log("Send message failed");
-							console.log(err);
-							// M.toast({ html: 'Failed!' });
-							// M.toast({ html: err.message });
-						});
-					} else {
-						var project_id = parseInt(data_target);
-						var dataForMessage2 = { project: project_id, message: message };
-						sendProjectMessage(dataForMessage2, function () {
-							// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
-							console.log("message sent");
-							$("#new-message-description").val("");
-						}, function (err) {
-							console.log("project message sent failed");
-							console.log(err);
-							// M.toast({ html: 'Failed to initiate a project conversation!' });
-							// M.toast({ html: err.message });
-						});
-					}
-				} else {
-					M.toast({ html: 'You need to give a message.' });
-				}
-			} else {
-				M.toast({ html: 'You are not logged in' });
-				$('#modal-login').modal('open');
-			}
+	$('#new-message-description').keypress(function (e) {
+		// Prevent default action on keypress enter
+		if (e.which == 13) {
+			e.preventDefault();
+
+			$("#messageSendBtn2").click();
 		}
-	}, false);
+	});
 
 	$("#messageSendBtn2").click(function () {
 		if (cognitoUser) {
@@ -898,22 +859,13 @@ $(document).ready(function () {
 function returnSearchResults(choice, page) {
 	/* Returns page results - choice: user or project, page: page to give */
 	var resultsPerPage = 12;
-	var host = window.location.host;
-	if ((host !== "localhost:8081") || (host !== "127.0.0.1:8081")) {
-		host = "http://" + host;
-	}
-	var url = host + '/' + choice + '/search?keyword=' + $(".search-input").val() + '&page=' + page + '&count=' + resultsPerPage;
+	var url = '/' + choice + '/search?keyword=' + $(".search-input").val() + '&page=' + page + '&count=' + resultsPerPage;
 	window.open(url, "_self");
 }
 
 function navigation(page) {
-	var host = window.location.host;
-	if ((host !== "localhost:8080") || (host !== "127.0.0.1:8080")) {
-		host = "http://" + host;
-	}
-
 	if (page === "home") {
-		window.open(host, "_self");
+		window.open('/', "_self");
 	}
 }
 
