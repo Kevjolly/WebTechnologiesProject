@@ -119,7 +119,7 @@ function loadSingleHistoryMessages(peerEmail, callback) {
 
     var suffix = userPool.getCurrentUser().username.split('-').join('');
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        alasql('select data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + ' order by id asc', function (result) {
+        alasql('select data from teamup.single_messages_' + suffix + ' where user="' + peerEmail + '" order by id asc', function (result) {
             var messages = new Array();
             result.forEach(row => {
                 messages.push(JSON.parse(row.data));
