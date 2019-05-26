@@ -14,7 +14,7 @@ class MessageDao {
     async saveProject(users, message) {
         for (var i = 0; i < users.length; i++) {
             var user = users[i]
-            if (user == message.from) { // exclude sender
+            if (user.email == message.from) { // exclude sender
                 continue
             }
 
@@ -23,7 +23,6 @@ class MessageDao {
             await client.index({
                 index: 'project-message',
                 type: 'project',
-                id: message.id.toString(),
                 body: message
             })
         }
