@@ -603,6 +603,7 @@ $(document).ready(function () {
 						M.toast({ html: 'Application accepted' });
 
 						var dataForMessage = {type: "normal", to: userTo, message: message};
+						console.log('tttttttttt', dataForMessage, userTo);
 						sendSingleMessage(dataForMessage, function(){
 							M.toast({ html: 'Message sent' });
 							var dataForMessage2 = {project: project_id, message: "Hi everyone, welcome our new member."};
@@ -1036,6 +1037,9 @@ function loadConvHeads(res){
 			} else {
 				peerInfos = crtConv.latestMessage.fromInfo;
 			}
+
+			// console.log('peerInfos', peerInfos, 'crtConv', crtConv, 'latest', crtConv.latestMessage);
+
 			strSingles += '<li class="collection-item collection-item-message avatar grey lighten-5">';
 			strSingles += '<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png\';" alt="Image is missing">';
 			strSingles += '<span class="title title-user-bis title-user-size">'+String(peerInfos.nickname)+'</span>'
@@ -1128,15 +1132,15 @@ function addConvHead(data){
 				strToReturn += '<p class="texto-text">'+data.message+'</p>';
 				if (crtData.type === "application"){
 					strToReturn += '<p class="texto-application-values">';
-					strToReturn += '<div class="hidden-appli-user-email" data-value="'+peerInfos.email+'"></div>'
-					strToReturn += '<div class="hidden-appli-project-id" data-value="'+data.project+'"></div></p>';
+					strToReturn += '<div id="hidden-appli-user-email" data-value="'+peerInfos.email+'"></div>'
+					strToReturn += '<div id="hidden-appli-project-id" data-value="'+data.project+'"></div></p>';
 					strToReturn += '<p class="texto-application">';
 					strToReturn += '<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>';
 					strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
 				} else if (crtData.type === "invitation"){
 					strToReturn += '<p class="texto-invitation-values">';
-					strToReturn += '<div class="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
-					strToReturn += '<div class="hidden-invit-project-id" data-value="'+data.project+'"></div></p>';
+					strToReturn += '<div id="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
+					strToReturn += '<div id="hidden-invit-project-id" data-value="'+data.project+'"></div></p>';
 					strToReturn += '<p class="texto-invitation">';
 					strToReturn += '<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>';
 					strToReturn += '<button class="btn waves-effect btn-apply invit-dismiss red modal-trigger" data-target="modal-dismiss"><i class="material-icons left">cancel</i>Dismiss</button></p>';
@@ -1201,15 +1205,15 @@ function displaySingleMessages(data){
 			strToReturn += '<p class="texto-text">'+crtData.message+'</p>';
 			if (crtData.type === "application"){
 				strToReturn += '<p class="texto-application-values">';
-				strToReturn += '<div class="hidden-appli-user-email" data-value="'+crtFromUser.email+'"></div>'
-				strToReturn += '<div class="hidden-appli-project-id" data-value="'+crtData.project+'"></div></p>';
+				strToReturn += '<div id="hidden-appli-user-email" data-value="'+crtFromUser.email+'"></div>'
+				strToReturn += '<div id="hidden-appli-project-id" data-value="'+crtData.project+'"></div></p>';
 				strToReturn += '<p class="texto-application">';
 				strToReturn += '<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>';
 				strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
 			} else if (crtData.type === "invitation"){
 				strToReturn += '<p class="texto-invitation-values">';
-				strToReturn += '<div class="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
-				strToReturn += '<div class="hidden-invit-project-id" data-value="'+crtData.project+'"></div></p>';
+				strToReturn += '<div id="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
+				strToReturn += '<div id="hidden-invit-project-id" data-value="'+crtData.project+'"></div></p>';
 				strToReturn += '<p class="texto-invitation">';
 				strToReturn += '<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>';
 				strToReturn += '<button class="btn waves-effect btn-apply invit-dismiss red modal-trigger" data-target="modal-dismiss"><i class="material-icons left">cancel</i>Dismiss</button></p>';

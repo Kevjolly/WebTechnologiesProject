@@ -96,12 +96,15 @@ function handleMessage(data, callback) {
     callback(msg);
 }
 
+var msgRecvCallback;
+
 /**
  * client should call this function to set an event listener
  * @param {function} callback take one parameter, msg which is an object
  */
 function onMessageReceived(callback) {
     messaging.onMessage(function (payload) {
+        msgRecvCallback = callback;
         handleMessage(payload.data, callback);
     });
 }
@@ -311,13 +314,22 @@ function sendSingleMessage(message, successCallback, failureCallback) {
                 var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values (?, ?, ?, ?)');
                 stmt([message.id, message.to, JSON.stringify(message), 0], function () {
                     console.log('insert single message successfully');
-                    successCallback();
+
+                    if (msgRecvCallback) {
+                        msgRecvCallback(message);
+                    }
+
+                    if (successCallback) {
+                        successCallback();
+                    }
                 });
             });
         },
         error: function (err) {
             console.log("call /msg/single failed", err);
-            failureCallback(err);
+            if (failureCallback) {
+                failureCallback(err);
+            }
         },
         processData: false,
         type: 'POST',
@@ -343,13 +355,22 @@ function sendProjectMessage(message, successCallback, failureCallback) {
                 var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values (?, ?, ?, ?, ?)');
                 stmt([message.id, message.from, message.project, JSON.stringify(message), 0], function () {
                     console.log('insert project message successfully');
-                    successCallback();
+
+                    if (msgRecvCallback) {
+                        msgRecvCallback(message);
+                    }
+
+                    if (successCallback) {
+                        successCallback();
+                    }
                 });
             });
         },
         error: function (err) {
             console.log("call /msg/project failed", err);
-            failureCallback(err);
+            if (failureCallback) {
+                failureCallback(err);
+            }
         },
         processData: false,
         type: 'POST',

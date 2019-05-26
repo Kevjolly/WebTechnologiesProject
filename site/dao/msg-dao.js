@@ -13,6 +13,10 @@ class MessageDao {
 
     async saveProject(users, message) {
         for (user in users) {
+            if (user == message.from) { // exclude sender
+                continue
+            }
+
             message.user = user.email
 
             await client.index({

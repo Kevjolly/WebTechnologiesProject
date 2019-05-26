@@ -21,10 +21,19 @@ class MsgService {
             body.projectInfo = await projectDao.getProject(body.project)
         }
 
+        var content;
+        if (body.type == 'invitation') {
+            content = body.fromInfo.nickname + ' invites you to join project ' + body.projectInfo.name;
+        } else if (body.type == 'application') {
+            content = body.fromInfo.nickname + ' applies to join project ' + body.projectInfo.name;
+        } else {
+            content = body.fromInfo.nickname + ' sent you a message';
+        }
+
         try {
             var notification = {
                 'title': 'TeamUP',
-                'body': body.fromInfo.nickname + ' sent you a message',
+                'body': content,
                 'click_action': config['host'],
                 'icon': config['host'] + '/img/favicon.png'
             };
@@ -52,15 +61,24 @@ class MsgService {
         }
     }
 
-    // TODO check if the sender is a member of the project
     async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['email', 'token'])
 
         var tokens = [];
+        var isMember = false;
         users.forEach(function (user) {
-            tokens.push(user.token);
+            if (user.email != body.from) { // exclude sender
+                tokens.push(user.token);
+            } else {
+                isMember = true;
+            }
         });
+
+        if (!isMember) {
+            console.log('sender not project member', body.from, projectId)
+            return
+        }
 
         const project = await projectDao.getProject(projectId)
 

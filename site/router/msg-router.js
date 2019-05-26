@@ -14,6 +14,8 @@ router.postAsync('/single', async function (req, res, next) {
 
         await msgService.sendSingle(req.body)
 
+        console.log('single msg response', req.body)
+
         res.send({
             code: 0,
             data: req.body
