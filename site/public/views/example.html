@@ -69,6 +69,7 @@
     <button id="loadBtn">load message</button>
     <br>
     <button id="offlineBtn">offline message</button>
+    <button id="cursorBtn">reset cursor</button>
 
     <footer>
     </footer>
@@ -84,6 +85,10 @@
             nCounter = nCounter + 1;
         }, false);
 
+        $('#cursorBtn').click(function() {
+            console.log('reset cursor');
+            markSingleConversationRead('brucejeaung@gmail.com', 1558830367599);
+        });
 
         $('#regBtn').click(function () {
             signup($('#email').val(), $('#pass').val(), $('#nickname').val());

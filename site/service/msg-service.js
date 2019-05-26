@@ -52,6 +52,7 @@ class MsgService {
         }
     }
 
+    // TODO check if the sender is a member of the project
     async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['email', 'token'])
