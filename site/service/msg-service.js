@@ -56,6 +56,8 @@ class MsgService {
             await messageDao.saveSingle(body)
 
             console.log('call fcm res', res)
+
+            return body
         } catch (e) {
             console.log('failed to send message', e)
         }
@@ -111,6 +113,8 @@ class MsgService {
             await messageDao.saveProject(users, body)
 
             console.log('send group message fcm response', res)
+
+            return body
         } catch (e) {
             console.log('send group message failed', e)
         }
