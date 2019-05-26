@@ -807,7 +807,7 @@ $(document).ready(function () {
 						// M.toast({ html: err.message });
 					});
 				} else {
-					var project_id = parseInt(dataTarget);
+					var project_id = parseInt(data_target);
 					var dataForMessage2 = {project: project_id, message: message};
 					sendProjectMessage(dataForMessage2, function(){
 						// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
