@@ -177,7 +177,9 @@ class UserDao {
                 }
             }
         });
-
+        await client.indices.refresh({
+            index: 'user'
+        });
         console.log('join project response', response)
     }
 

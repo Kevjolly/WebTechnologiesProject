@@ -12,7 +12,8 @@ class MessageDao {
     }
 
     async saveProject(users, message) {
-        for (user in users) {
+        for (var i = 0; i<users.length; i++) {
+            var user = users[i]
             if (user == message.from) { // exclude sender
                 continue
             }

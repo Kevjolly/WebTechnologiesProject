@@ -64,16 +64,21 @@ class MsgService {
     async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['email', 'token'])
+        console.log("HEHE");
+        console.log(users);
+        console.log("HEHE");
 
         var tokens = [];
         var isMember = false;
         users.forEach(function (user) {
-            if (user.email != body.from) { // exclude sender
+            console.log(user);
+            if (user.email !== body.from) { // exclude sender
                 tokens.push(user.token);
             } else {
                 isMember = true;
             }
         });
+
 
         if (!isMember) {
             console.log('sender not project member', body.from, projectId)

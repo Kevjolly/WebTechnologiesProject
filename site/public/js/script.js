@@ -500,28 +500,42 @@ $(document).ready(function () {
 
 	// Quit a project
 	$('#quitProjectBtn').click(function () {
-		var project_id = parseInt($("#hidden-div").attr('data-value'));
-		var dataForQuit = {projectId: project_id};
-		if (cognitoUser){		
-			$.ajax({
-				contentType: 'application/json',
-				headers: {
-					Authorization: authToken
-				},
-				data: JSON.stringify(dataForQuit),
-				dataType: 'json',
-				success: function (data) {
-					console.log("project successfully left", data);
-					M.toast({ html: 'You left this project!' });
-				},
-				error: function (err) {
-					console.log("failed to quit the project", err);
-					M.toast({ html: 'Error when quiting the project!' });
-				},
-				processData: false,
-				type: 'POST',
-				url: '/project/quit'
+		if (cognitoUser){
+			var project_id = parseInt($("#hidden-div").attr('data-value'));
+			var dataForQuit = {projectId: project_id};
+			var dataForMessage2 = {project: project_id, message: "I left the project. I can no longer see new messages or send messages to the participants."};
+			sendProjectMessage(dataForMessage2, function(){
+				M.toast({ html: 'Ended project conversation' });
+				$.ajax({
+					contentType: 'application/json',
+					headers: {
+						Authorization: authToken
+					},
+					data: JSON.stringify(dataForQuit),
+					dataType: 'json',
+					success: function (data) {
+						console.log("project successfully left", data);
+						$(".quitBtn").hide();
+						$('#modal-quit').modal('close');
+						M.toast({ html: 'You left this project!' });
+					},
+					error: function (err) {
+						console.log("failed to quit the project", err);
+						M.toast({ html: 'Error when quiting the project!' });
+					},
+					processData: false,
+					type: 'POST',
+					url: '/project/quit'
+				});				
+			}, function (err){
+				console.log("Initiation of project conversation failure");
+				console.log(err);
+				M.toast({ html: 'Failed to end project conversation!' });
+				M.toast({ html: err.message });
 			});
+
+		
+
 		} else {
 			$('#modal-quit').modal('close');
 			M.toast({ html: 'You are not logged in' });
@@ -1195,14 +1209,14 @@ function addConvHead(data){
 				strToReturn += '<p class="texto-text">'+data.message+'</p>';
 				if (data.type === "application"){
 					strToReturn += '<p class="texto-application-values">';
-					strToReturn += '<div id="hidden-appli-user-email" data-value="'+peerInfos.email+'"></div>'
+					strToReturn += '<div id="hidden-appli-user-email" data-value="'+userInfo.email+'"></div>'
 					strToReturn += '<div id="hidden-appli-project-id" data-value="'+data.project+'"></div></p>';
 					strToReturn += '<p class="texto-application">';
 					strToReturn += '<button class="btn waves-effect btn-apply appli-accept modal-trigger" data-target="modal-accept"><i class="material-icons left">check_circle</i>Accept</button>';
 					strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
 				} else if (data.type === "invitation"){
 					strToReturn += '<p class="texto-invitation-values">';
-					strToReturn += '<div id="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
+					strToReturn += '<div id="hidden-invit-user-email" data-value="'+userInfo.email+'"></div>'
 					strToReturn += '<div id="hidden-invit-project-id" data-value="'+data.project+'"></div></p>';
 					strToReturn += '<p class="texto-invitation">';
 					strToReturn += '<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>';
@@ -1216,16 +1230,16 @@ function addConvHead(data){
 				strToReturn += '<p class="texto-text">'+data.message+'</p></div>';
 			}
 		} else {
-			if (peerInfos.from !== userEmail){
+			if (data.from !== userEmail){
 				strToReturn += '<div class="texto">';
-				strToReturn += '<p class="texto-title"><span>'+peerInfos.nickname+'</span>';
+				strToReturn += '<p class="texto-title"><span>'+data.fromInfo.nickname+'</span>';
 				strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a></p>';
 				strToReturn += '<p class="texto-text">'+data.message+'</p>';
 				strToReturn += '</div>';
 			} else {
 				strToReturn += '<div class="texto texto-from-user"><p class="texto-title-user">';
 				strToReturn += '<a href="" class="inactive-link secondary-content date-conv-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(data.id))+'</span></a>';
-				strToReturn += '<span>'+peerInfos.nickname+'</span></p>';
+				strToReturn += '<span>'+data.fromInfo.nickname+'</span></p>';
 				strToReturn += '<p class="texto-text">'+data.message+'</p></div>';
 			}
 		}
@@ -1275,7 +1289,7 @@ function displaySingleMessages(data){
 				strToReturn += '<button class="btn waves-effect btn-apply appli-refuse red modal-trigger" data-target="modal-refuse"><i class="material-icons left">cancel</i>Refuse</button></p>';
 			} else if (crtData.type === "invitation"){
 				strToReturn += '<p class="texto-invitation-values">';
-				strToReturn += '<div id="hidden-invit-user-email" data-value="'+userEmail+'"></div>'
+				strToReturn += '<div id="hidden-invit-user-email" data-value="'+crtFromUser.email+'"></div>'
 				strToReturn += '<div id="hidden-invit-project-id" data-value="'+crtData.project+'"></div></p>';
 				strToReturn += '<p class="texto-invitation">';
 				strToReturn += '<button class="btn waves-effect btn-apply invit-join modal-trigger" data-target="modal-join"><i class="material-icons left">check_circle</i>Join</button>';
@@ -1303,7 +1317,7 @@ function displayProjectMessages(data){
 		crtFromUser = crtData.fromInfo;
 		crtProject = crtData.projectInfo;
 		if (crtData.from !== userEmail){
-			strToReturn += 'div class="texto">';
+			strToReturn += '<div class="texto">';
 			strToReturn += '<p class="texto-title"><span>'+crtFromUser.nickname+'</span>';
 			strToReturn += '<a href="" class="inactive-link secondary-content date-conv"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtData.id))+'</span></a></p>';
 			strToReturn += '<p class="texto-text">'+crtData.message+'</p>';

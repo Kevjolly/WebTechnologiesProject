@@ -189,7 +189,7 @@ function loadConversations(callback) {
             var projectClause = "";
             for (var i = 0; i < projectMaxIds.length; i++) {
                 if (i != 0) {
-                    idClause += ',';
+                    projectClause += ',';
                 }
                 projectClause += projectMaxIds[i].project;
             }
