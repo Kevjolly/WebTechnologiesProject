@@ -808,6 +808,50 @@ $(document).ready(function () {
 		}
 	});
 
+	window.addEventListener('keyup', function (e) {
+		if (e.keyCode === 13) {
+			if (cognitoUser) {
+				var message = $("#new-message-description").val();
+				if (message !== null && message !== "") {
+					var data_target = String($("#hidden-box-messages").attr("data-target"));
+					if (data_target.indexOf(".") >= 0) {
+						var userTo = data_target;
+						var dataForMessage = { type: "normal", to: userTo, message: message };
+						console.log(dataForMessage);
+						sendSingleMessage(dataForMessage, function () {
+							// M.toast({ html: 'Message sent' });
+							console.log("message sent");
+							$("#new-message-description").val("");
+						}, function (err) {
+							console.log("Send message failed");
+							console.log(err);
+							// M.toast({ html: 'Failed!' });
+							// M.toast({ html: err.message });
+						});
+					} else {
+						var project_id = parseInt(data_target);
+						var dataForMessage2 = { project: project_id, message: message };
+						sendProjectMessage(dataForMessage2, function () {
+							// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
+							console.log("message sent");
+							$("#new-message-description").val("");
+						}, function (err) {
+							console.log("project message sent failed");
+							console.log(err);
+							// M.toast({ html: 'Failed to initiate a project conversation!' });
+							// M.toast({ html: err.message });
+						});
+					}
+				} else {
+					M.toast({ html: 'You need to give a message.' });
+				}
+			} else {
+				M.toast({ html: 'You are not logged in' });
+				$('#modal-login').modal('open');
+			}
+		}
+	}, false);
+
 	$("#messageSendBtn2").click(function () {
 		if (cognitoUser) {
 			var message = $("#new-message-description").val();
@@ -833,7 +877,7 @@ $(document).ready(function () {
 					sendProjectMessage(dataForMessage2, function () {
 						// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
 						console.log("message sent");
-						$("#new-message-description").empty();
+						$("#new-message-description").val("");
 					}, function (err) {
 						console.log("project message sent failed");
 						console.log(err);
