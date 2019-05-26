@@ -39,9 +39,13 @@ if (cognitoUser) {
                 },
                 data: JSON.stringify({}),
                 dataType: 'json',
-                success: function (data) {
+                success: async function (data) {
                     console.log("call /msg/offline successfully", data);
 
+                    var suffix = cognitoUser.username.split('-').join('');
+
+                    await alasql.promise('ATTACH INDEXEDDB DATABASE teamup');
+                    
                     if (data.data.single.length > 0 || data.data.project.length > 0) {
                         var maxId = 0;
 
@@ -49,12 +53,51 @@ if (cognitoUser) {
                             if (data.data.single[0].id > maxId) {
                                 maxId = data.data.single[0].id;
                             }
+
+                            var valuesClause = "";
+                            var args = new Array();
+                            for (i in data.data.single) {
+                                if (valuesClause.length != 0) {
+                                    valuesClause += ',';
+                                }
+                                valuesClause += "(?,?,?,?)";
+
+                                var msg = data.data.single[i];
+
+                                console.log('single mssssg', msg);
+                                args.push(msg.id, msg.from, JSON.stringify(msg), 1);
+                            }
+
+                            console.log('insert single args', args);
+
+                            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values ' + valuesClause);
+                            stmt(args, function () {
+                                console.log('insert offline single messages successfully');
+                            });
                         }
 
                         if (data.data.project.length > 0) {
                             if (data.data.project[0].id > maxId) {
                                 maxId = data.data.project[0].id;
                             }
+
+                            var valuesClause = "";
+                            var args = new Array();
+                            for (i in data.data.project) {
+                                if (valuesClause.length != 0) {
+                                    valuesClause += ',';
+                                }
+                                valuesClause += "(?,?,?,?,?)";
+
+                                var msg = data.data.project[i];
+
+                                args.push(msg.id, msg.from, msg.project, JSON.stringify(msg), 1);
+                            }
+
+                            var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values ' + valuesClause);
+                            stmt(args, function () {
+                                console.log('insert offline project messages successfully');
+                            });
                         }
 
                         // send ack to server

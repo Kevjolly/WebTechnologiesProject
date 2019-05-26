@@ -194,7 +194,7 @@ function loadConversations(callback) {
             console.log('project id clause', idClause, ' project clause', projectClause);
 
             var projectCursors = {};
-            var projectCursorRows = await alasql.promise('select project, max_id from teamup.project_conversation_cursor_' + suffix + ' where project in (' + projectClause + ') order by id desc');
+            var projectCursorRows = await alasql.promise('select project, max_id from teamup.project_conversation_cursor_' + suffix + ' where project in (' + projectClause + ')');
 
             projectCursorRows.forEach(row => {
                 if (row.project) {
@@ -202,7 +202,7 @@ function loadConversations(callback) {
                 }
             });
 
-            var projectLatestMsgs = await alasql.promise('select recv, data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            var projectLatestMsgs = await alasql.promise('select project, data from teamup.project_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             projectLatestMsgs.forEach(row => {
                 var conversation = new Object();
 
@@ -211,8 +211,8 @@ function loadConversations(callback) {
                 conversation.latestMessage = message;
 
                 var projectMaxId = 0;
-                if (message.project.toString() in projectCursors) {
-                    projectMaxId = projectCursors[message.project.toString()];
+                if (row.project.toString() in projectCursors) {
+                    projectMaxId = projectCursors[row.project.toString()];
                 }
 
                 if (message.id > projectMaxId) {
@@ -228,7 +228,7 @@ function loadConversations(callback) {
         // single conversations
         var singleMaxIds = await alasql.promise('select user, max(id) as maxId from teamup.single_messages_' + suffix + ' group by user');
 
-        console.log('singleMaxIds', projectMaxIds);
+        console.log('singleMaxIds', singleMaxIds);
 
         if (singleMaxIds[0].maxId) {
             var idClause = "";
@@ -240,17 +240,19 @@ function loadConversations(callback) {
             }
 
             var userClause = "";
-            for (var i = 0; i < projectMaxIds.length; i++) {
+            for (var i = 0; i < singleMaxIds.length; i++) {
                 if (i != 0) {
                     userClause += ',';
                 }
-                userClause += projectMaxIds[i].project;
+                userClause += '"';
+                userClause += singleMaxIds[i].user;
+                userClause += '"';
             }
 
-            console.log('single id clause', userClause, ' user clause', userClause);
+            console.log('single id clause', idClause, 'user clause', userClause);
 
             var userCursors = {};
-            var userCursorRows = await alasql.promise('select user, max_id from teamup.single_conversation_cursor_' + suffix + ' where user in (' + userClause + ') order by id desc');
+            var userCursorRows = await alasql.promise('select user, max_id from teamup.single_conversation_cursor_' + suffix + ' where user in (' + userClause + ')');
 
             userCursorRows.forEach(row => {
                 if (row.user) {
@@ -258,17 +260,21 @@ function loadConversations(callback) {
                 }
             });
 
-            var singleLatestMsgs = await alasql.promise('select recv, data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
+            console.log('user cursors', userCursors, userCursorRows);
+
+            var singleLatestMsgs = await alasql.promise('select user, data from teamup.single_messages_' + suffix + ' where id in (' + idClause + ') order by id desc');
             singleLatestMsgs.forEach(row => {
                 var conversation = new Object();
 
                 var message = JSON.parse(row.data);
 
+                console.log('singleLatestMsgs message', message);
+
                 conversation.latestMessage = message;
 
                 var singleMaxId = 0;
-                if (message.user.toString() in userCursors) {
-                    singleMaxId = userCursors[message.user.toString()];
+                if (row.user in userCursors) {
+                    singleMaxId = userCursors[row.user];
                 }
 
                 if (message.id > singleMaxId) {
@@ -351,20 +357,32 @@ function sendProjectMessage(message, successCallback, failureCallback) {
     });
 }
 
-function resetSingleConversationCursor(peerEmail, maxId) {
+function markSingleConversationRead(peerEmail, maxId) {
+    var suffix = userPool.getCurrentUser().username.split('-').join('');
+
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        var stmt = alasql.compile('update teamup.single_conversation_cursor_' + suffix + ' set max_id=? where user=?');
-        stmt([maxId, peerEmail], function () {
-            console.log('single cursor reset', peerEmail, maxId);
+        var delStmt = alasql.compile('delete from teamup.single_conversation_cursor_' + suffix + ' where user=?');
+        delStmt([peerEmail], function () {
+            console.log('old single cursor deleted', peerEmail);
+            var stmt = alasql.compile('insert into teamup.single_conversation_cursor_' + suffix + ' (user, max_id) values (?,?)');
+            stmt([peerEmail, maxId], function () {
+                console.log('single cursor reset', peerEmail, maxId);
+            });
         });
     });
 }
 
-function resetProjectConversationCursor(projectId, maxId) {
+function markProjectConversationRead(projectId, maxId) {
+    var suffix = userPool.getCurrentUser().username.split('-').join('');
+
     alasql('ATTACH INDEXEDDB DATABASE teamup', function () {
-        var stmt = alasql.compile('update teamup.project_conversation_cursor_' + suffix + ' set max_id=? where project=?');
-        stmt([maxId, projectId], function () {
-            console.log('project cursor reset', projectId, maxId);
+        var delStmt = alasql.compile('delete from teamup.project_conversation_cursor_' + suffix + ' where project=?');
+        delStmt([projectId], function () {
+            console.log('old project cursor deleted', projectId);
+            var stmt = alasql.compile('insert into teamup.project_conversation_cursor_' + suffix + ' (project, max_id) values (?,?)');
+            stmt([projectId, maxId], function () {
+                console.log('project cursor reset', projectId, maxId);
+            });
         });
     });
 }
