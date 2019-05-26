@@ -36,7 +36,7 @@ class MsgService {
             var notification = {
                 'title': 'TeamUP',
                 'body': content,
-                'click_action': config['host'],
+                'click_action': config['host'] + "/message",
                 'icon': config['host'] + '/img/favicon.png'
             };
 
@@ -64,21 +64,19 @@ class MsgService {
     async sendProject(body) {
         const projectId = body.project
         const users = await userDao.getProjectUsers(projectId, ['email', 'token'])
-        console.log("HEHE");
-        console.log(users);
-        console.log("HEHE");
+        console.log('project users', users);
 
         var tokens = [];
         var isMember = false;
         users.forEach(function (user) {
-            console.log(user);
-            if (user.email !== body.from) { // exclude sender
+            if (user.email != body.from) { // exclude sender
                 tokens.push(user.token);
             } else {
                 isMember = true;
             }
         });
 
+        console.log(body.from, 'is a member of the project', isMember)
 
         if (!isMember) {
             console.log('sender not project member', body.from, projectId)
@@ -93,7 +91,7 @@ class MsgService {
         var notification = {
             'title': 'TeamUP',
             'body': 'new message from project ' + project.name,
-            'click_action': config['host'],
+            'click_action': config['host'] + "/message",
             'icon': config['host'] + '/img/favicon.png'
         };
 
