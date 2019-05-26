@@ -56,10 +56,21 @@ class MessageDao {
             index: 'single-message',
             body: {
                 query: {
-                    range: {
-                        id: {
-                            gt: messageId
-                        }
+                    bool: {
+                        must: [
+                            {
+                                range: {
+                                    id: {
+                                        gt: messageId
+                                    }
+                                }
+                            },
+                            {
+                                term: {
+                                    to: user
+                                }
+                            }
+                        ],
                     }
                 },
                 sort: [
@@ -72,10 +83,21 @@ class MessageDao {
             index: 'project-message',
             body: {
                 query: {
-                    range: {
-                        id: {
-                            gt: messageId
-                        }
+                    bool: {
+                        must: [
+                            {
+                                range: {
+                                    id: {
+                                        gt: messageId
+                                    }
+                                }
+                            },
+                            {
+                                term: {
+                                    user: user
+                                }
+                            }
+                        ],
                     }
                 },
                 sort: [
