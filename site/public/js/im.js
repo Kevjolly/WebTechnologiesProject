@@ -103,8 +103,8 @@ var msgRecvCallback;
  * @param {function} callback take one parameter, msg which is an object
  */
 function onMessageReceived(callback) {
+    msgRecvCallback = callback;
     messaging.onMessage(function (payload) {
-        msgRecvCallback = callback;
         handleMessage(payload.data, callback);
     });
 }
