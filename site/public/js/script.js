@@ -324,11 +324,14 @@ $(document).ready(function () {
 										});
 									}
 
-									var dataForMessage = {projectId: projectID, message: "You've created a project. Here you can talk with other participants of this project."};
+									var dataForMessage = {project: projectID, message: "You created a project. Here you can talk with other participants of this project."};
+									console.log(dataForMessage)
 									sendProjectMessage(dataForMessage, function(){
 										M.toast({ html: 'Initiated project conversation in Messages' });
 										$('#modal-project').modal('close');
 									}, function (err){
+										console.log(err);
+										var errorGiven = err;
 										console.log("Initiation of project conversation failure");
 										console.log(err);
 										M.toast({ html: 'Failed to initiate a conversation!' });
@@ -468,8 +471,19 @@ $(document).ready(function () {
 		$(".collection-item-message").addClass("lighten-5");
 		$(this).removeClass("lighten-5");
 		$(this).addClass("lighten-2");
+		var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
+		// console.log(dataTarget);
+		if (dataTarget.indexOf(".") >= 0){
+			// console.log(typeof dataTarget);
+			loadSingleHistoryMessages(dataTarget, function(res){
+				console.log(res);
+			})
+		} else {
+			loadProjectHistoryMessages(parseInt(dataTarget), function(res){
+				console.log(res);
+			})
+		}
 	});
-
 	$(".collection-item-message").hover(function(){
 			$(this).removeClass("lighten-5");
 			$(this).addClass("lighten-3");
@@ -477,7 +491,7 @@ $(document).ready(function () {
 			$(this).removeClass("lighten-3");
 			$(this).addClass("lighten-5");
 		}
-	);
+	);	
 
 	$(".link-to-profile-user").click(function(e){
 		e.stopPropagation();
@@ -590,7 +604,16 @@ $(document).ready(function () {
 						var dataForMessage = {type: "normal", to: userTo, message: message};
 						sendSingleMessage(dataForMessage, function(){
 							M.toast({ html: 'Message sent' });
-							$('#modal-accept').modal('close');
+							var dataForMessage2 = {projectId: project_id, message: "Hi everyone, welcome our new member."};
+							sendProjectMessage(dataForMessage2, function(){
+								M.toast({ html: 'Initiated project conversation in Messages for the new member' });
+								$('#modal-accept').modal('close');
+							}, function (err){
+								console.log("Initiation of project conversation failure");
+								console.log(err);
+								M.toast({ html: 'Failed to initiate a project conversation!' });
+								M.toast({ html: err.message });
+							});							
 						}, function (err){
 							console.log("Send message failure");
 							console.log(err);
@@ -667,7 +690,16 @@ $(document).ready(function () {
 						var dataForMessage = {type: "normal", to: userFrom, message: message};
 						sendSingleMessage(dataForMessage, function(){
 							M.toast({ html: 'Message sent' });
-							$('#modal-join').modal('close');
+							var dataForMessage2 = {projectId: project_id, message: "Hi everyone, I joined this project."};
+							sendProjectMessage(dataForMessage2, function(){
+								M.toast({ html: 'Initiated project conversation in Messages for the new member' });
+								$('#modal-join').modal('close');
+							}, function (err){
+								console.log("Initiation of project conversation failure");
+								console.log(err);
+								M.toast({ html: 'Failed to initiate a project conversation!' });
+								M.toast({ html: err.message });
+							});
 						}, function (err){
 							console.log("Send message failure");
 							console.log(err);
@@ -836,12 +868,65 @@ function getProjects(){
 }
 
 onMessageReceived(function (data) {
-    console.log('received', data);
+	console.log('received', data);
+	addConvHead(data);
+	$(".collection-item-message").click(function (e) {
+		$(".collection-item-message").removeClass("lighten-2");
+		$(".collection-item-message").addClass("lighten-5");
+		$(this).removeClass("lighten-5");
+		$(this).addClass("lighten-2");
+		var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
+		// console.log(dataTarget);
+		if (dataTarget.indexOf(".") >= 0){
+			// console.log(typeof dataTarget);
+			loadSingleHistoryMessages(dataTarget, function(res){
+				console.log(res);
+			})
+		} else {
+			loadProjectHistoryMessages(parseInt(dataTarget), function(res){
+				console.log(res);
+			})
+		}
+	});
+	$(".collection-item-message").hover(function(){
+			$(this).removeClass("lighten-5");
+			$(this).addClass("lighten-3");
+		}, function(){
+			$(this).removeClass("lighten-3");
+			$(this).addClass("lighten-5");
+		}
+	);		
 });
 
 loadConversations(function (res) {
-	if (window.location.href.indexOf("search") > -1) {
+	if (window.location.href.indexOf("message") > -1) {
 		loadConvHeads(res);
+		$(".collection-item-message").click(function (e) {
+			$(".collection-item-message").removeClass("lighten-2");
+			$(".collection-item-message").addClass("lighten-5");
+			$(this).removeClass("lighten-5");
+			$(this).addClass("lighten-2");
+			var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
+			// console.log(dataTarget);
+			if (dataTarget.indexOf(".") >= 0){
+				// console.log(typeof dataTarget);
+				loadSingleHistoryMessages(dataTarget, function(res){
+					console.log(res);
+				})
+			} else {
+				loadProjectHistoryMessages(parseInt(dataTarget), function(res){
+					console.log(res);
+				})
+			}
+		});
+		$(".collection-item-message").hover(function(){
+				$(this).removeClass("lighten-5");
+				$(this).addClass("lighten-3");
+			}, function(){
+				$(this).removeClass("lighten-3");
+				$(this).addClass("lighten-5");
+			}
+		);			
 	}
 	//console.log('conversation load result', res);
 });
@@ -849,8 +934,34 @@ loadConversations(function (res) {
 window.addEventListener("focus", function (event) {
     loadConversations(function (res) {
 		//console.log('conversation load result', res);
-		if (window.location.href.indexOf("search") > -1) {
+		if (window.location.href.indexOf("message") > -1) {
 			loadConvHeads(res);
+			$(".collection-item-message").click(function (e) {
+				$(".collection-item-message").removeClass("lighten-2");
+				$(".collection-item-message").addClass("lighten-5");
+				$(this).removeClass("lighten-5");
+				$(this).addClass("lighten-2");
+				var dataTarget = String($(this).find('.hidden-conversation-trigger').attr("data-target"));
+				// console.log(dataTarget);				
+				if (dataTarget.indexOf(".") >= 0){
+					// console.log(typeof dataTarget);
+					loadSingleHistoryMessages(dataTarget, function(res){
+						console.log(res);
+					})
+				} else {
+					loadProjectHistoryMessages(parseInt(dataTarget), function(res){
+						console.log(res);
+					})
+				}
+			});
+			$(".collection-item-message").hover(function(){
+					$(this).removeClass("lighten-5");
+					$(this).addClass("lighten-3");
+				}, function(){
+					$(this).removeClass("lighten-3");
+					$(this).addClass("lighten-5");
+				}
+			);				
 		}
     });
 }, false);
@@ -864,7 +975,7 @@ function loadConvHeads(res){
 	var peerInfos;
 	var projectInfo;
 
-	if (singles.length === 0){
+	if (singles.length !== 0){
 		for (k = 0; k<singles.length; k++){
 			crtConv = singles[k];
 			if (crtConv.latestMessage.from === userEmail){
@@ -876,21 +987,21 @@ function loadConvHeads(res){
 			strSingles += '<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png\';" alt="Image is missing">';
 			strSingles += '<span class="title title-user-bis title-user-size">'+String(peerInfos.nickname)+'</span>'
 			strSingles += '<a href="/user/profile?id='+String(peerInfos.email)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>';
-			strSingles += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtConv.latestMessage.id))+'</span></a>';
+			strSingles += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user last-message-time">'+String(convertTimestampToDate(crtConv.latestMessage.id))+'</span></a>';
 			strSingles += '<div class="hidden-conversation-trigger" data-target="'+String(peerInfos.email)+'"></div>';
 			strSingles += '</li>';
 		}
 	}
 
-	if (projects.length === 0){
+	if (projects.length !== 0){
 		for (k = 0; k<projects.length; k++){
 			crtConv = projects[k];
 			projectInfo = crtConv.latestMessage.projectInfo;
 			strProjects += '<li class="collection-item avatar collection-item-message avatar grey lighten-5">';
-			strProjects += '<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg\';" alt="Image is missing">';
+			strProjects += '<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(projectInfo.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg\';" alt="Image is missing">';
 			strProjects += '<span class="title title-user-bis title-user-size">'+String(projectInfo.name)+'</span>'
 			strProjects += '<a href="/project/profile?id='+String(projectInfo.id)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Details</span></a>';
-			strProjects += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user">'+String(convertTimestampToDate(crtConv.latestMessage.id))+'</span></a>';
+			strProjects += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user last-message-time">'+String(convertTimestampToDate(crtConv.latestMessage.id))+'</span></a>';
 			strProjects += '<div class="hidden-conversation-trigger" data-target="'+String(projectInfo.id)+'"></div>';
 			strProjects += '</li>';
 		}
@@ -900,22 +1011,67 @@ function loadConvHeads(res){
 	$('#message-groups-ul').html(strProjects);
 }
 
-function addNewMessage(res){
-	
+function addConvHead(data){
+	var strToAdd = '';
+	var peerInfos;
+	var projectInfos;
+	var notPresent = true;
+	var inter;
+
+	if ('type' in data){
+		peerInfos = data.fromInfo;
+		$(".hidden-conversation-trigger").each(function( index ) {
+			if ($(this).attr("data-target") === peerInfos.email){
+				notPresent = false;
+				$(this).closest('.collection-item-message').find('.last-message-time').html(String(convertTimestampToDate(data.id)));
+			}
+		});
+	} else {
+		projectInfos = data.projectInfo;
+		$(".hidden-conversation-trigger").each(function( index ) {
+			if ($(this).attr("data-target") === String(projectInfos.id)){
+				notPresent = false;
+				$(this).closest('.collection-item-message').find('.last-message-time').html(String(convertTimestampToDate(data.id)));
+			}
+		});
+	}
+
+	if (notPresent){
+		if ('type' in data) {
+			strToAdd += '<li class="collection-item collection-item-message avatar grey lighten-5">';
+			strToAdd += '<img class="circle small-circle" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(peerInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_user_image.png\';" alt="Image is missing">';
+			strToAdd += '<span class="title title-user-bis title-user-size">'+String(peerInfos.nickname)+'</span>'
+			strToAdd += '<a href="/user/profile?id='+String(peerInfos.email)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Profile</span></a>';
+			strToAdd += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user last-message-time">'+String(convertTimestampToDate(data.id))+'</span></a>';
+			strToAdd += '<div class="hidden-conversation-trigger" data-target="'+String(peerInfos.email)+'"></div>';
+			strToAdd += '</li>';
+			$( "#message-users-ul" ).prepend( strToAdd );
+		} else {
+			strToAdd += '<li class="collection-item avatar collection-item-message avatar grey lighten-5">';
+			strToAdd += '<img class="circle small-circle project-mini-image" src="https://s3.eu-west-2.amazonaws.com/teamup-images/'+ String(projectInfos.image) +'" onerror="this.src=\'https://s3.eu-west-2.amazonaws.com/teamup-images/_default_project_image.jpg\';" alt="Image is missing">';
+			strToAdd += '<span class="title title-user-bis title-user-size">'+String(projectInfos.name)+'</span>'
+			strToAdd += '<a href="/project/profile?id='+String(projectInfos.id)+'" class="secondary-content link-to-profile-user"><i class="material-icons">link</i><span class="link-text-user">Details</span></a>';
+			strToAdd += '<a href="" class="inactive-link secondary-content time-user"><i class="material-icons">date_range</i><span class="link-text-user last-message-time">'+String(convertTimestampToDate(data.id))+'</span></a>';
+			strToAdd += '<div class="hidden-conversation-trigger" data-target="'+String(projectInfos.id)+'"></div>';
+			strToAdd += '</li>';
+			$( "#message-groups-ul" ).prepend( strToAdd );
+		}
+	}
 }
 
 function convertTimestampToDate(unix_ts){
-	var date = new Date(unix_ts*1000);
+	var dateTime = new Date(unix_ts);
 
 	// Month and day
 	var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-	var month = months[a.getMonth()];
-	var date = a.getDate();
+	var month = months[dateTime.getMonth()];
+	var date = dateTime.getDate();
 
 	// Hour and minutes
-	var hours = date.getHours();
-	var minutes = "0" + date.getMinutes();
+	var hours = dateTime.getHours();
+	var minutes = "0" + dateTime.getMinutes();
 
-	var formattedDate = date + '/' + month +' '+ hours + ':' + minutes.substr(-2);
+	var formattedDate = month + ' ' + date +', '+ hours + ':' + minutes.substr(-2);
 	return formattedDate;
 }
+
