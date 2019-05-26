@@ -815,7 +815,7 @@ $(document).ready(function () {
 					sendSingleMessage(dataForMessage, function(){
 						// M.toast({ html: 'Message sent' });
 						console.log("message sent");
-						$("#new-message-description").empty();
+						$("#new-message-description").val("");
 					}, function (err){
 						console.log("Send message failed");
 						console.log(err);
