@@ -794,7 +794,7 @@ $(document).ready(function () {
 			var message = $("#new-message-description").val();
 			if (message !== null && message !== "") {
 				var data_target = String($("#hidden-box-messages").attr("data-target"));
-				if (dataTarget.indexOf(".") >= 0){
+				if (data_target.indexOf(".") >= 0){
 					var userTo = data_target;
 					var dataForMessage = {type: "normal", to: userTo, message: message};
 					sendSingleMessage(dataForMessage, function(){
@@ -807,7 +807,7 @@ $(document).ready(function () {
 						// M.toast({ html: err.message });
 					});
 				} else {
-					var project_id = parseInt(dataTarget);
+					var project_id = parseInt(data_target);
 					var dataForMessage2 = {project: project_id, message: message};
 					sendProjectMessage(dataForMessage2, function(){
 						// M.toast({ html: 'Initiated project conversation in Messages for the new member' });
