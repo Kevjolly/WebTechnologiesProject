@@ -4,7 +4,7 @@
         "host": "http://localhost:8081"
     },
     "production": {
-        "es-endpoint": "https://vpc-teamup-ynxh5rbjfehckd5iph4uwznmaa.eu-west-2.es.amazonaws.com",
-        "host": "https://teamup-env.qck29pusvr.eu-west-2.elasticbeanstalk.com"
+        "es-endpoint": "https://search-team-up-r3x7f5ld6pxpccmxh7mjq7asty.eu-west-2.es.amazonaws.com",
+        "host": "https://teamup-env-1.7cvu2yxmjg.eu-west-2.elasticbeanstalk.com"
     }
 }
