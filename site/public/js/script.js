@@ -449,8 +449,8 @@ $(document).ready(function () {
 				$(".applicationBtn").hide();
 				$(".quitBtn").hide();			
 			} else {
-				$('.hidden-div').each(function(){
-	    			if ($(this).attr('data-value') === userEmail){
+				$('.hidden-div').each(function(idx){
+	    			if (String($(this).attr('data-value')) === userEmail){
 	    				$(".quitBtn").css("display", "inline-block");
 	    				$(".applicationBtn").hide();
 	    			}

@@ -603,3 +603,11 @@ nav .select-dropdown{
 #hidden-box-messages{
 	display: none;
 }
+
+#hidden-user-value{
+	display: none;
+}
+
+#hidden-project-value{
+	display: none;
+}
