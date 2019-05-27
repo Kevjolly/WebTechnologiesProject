@@ -12,7 +12,7 @@
 5. For messaging functionalities to work, notification permission should be granted
    
 ## Cloud hosted site
-[//]: # (TODO)
+The site is hosted on AWS Elastic Beanstalk and is available at <https://www.teamupbriuni.me/>. For messaging functionalities to work, notification permission should be granted when asked and https should always be used.
 
 ## Project Overview
 TeamUP is a website where people can form teams to work on different projects. Users can create projects which people can join . A search functionality helps them find people with desired skills and projects of interest. Users can also communicate each other using the provided instant messaging functionalities.
@@ -47,7 +47,7 @@ TeamUP is a website where people can form teams to work on different projects. U
 * XSS protection middleware. 
 * Using [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging) to implement instant messaging and notification. 
 * Messages are stored and maintained in server side so that users can still get messages sent to them while they are offline.
-* Cloud hosting using [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/).
+* Cloud hosting using [AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) with https support.
 * Configuration is handled in such a way that values are chosen automatically in different environments (local and cloud).
   
 ### A for Database
