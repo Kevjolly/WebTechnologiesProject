@@ -45,7 +45,7 @@ router.postAsync('/project', async function (req, res, next) {
 
 router.postAsync('/offline', async function (req, res, next) {
     try {
-        const result = await msgService.getOffline(req.email)
+        const result = await msgService.getOffline(req.email, req.body.maxId)
         res.send({
             code: 0,
             data: result

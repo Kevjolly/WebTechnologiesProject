@@ -36,26 +36,29 @@ class MessageDao {
         });
     }
 
-    async getOffline(user) {
-        var messageId
-        var response
+    async getOffline(user, messageId) {
+        if (messageId == 0) {
+            var response
 
-        try {
-            response = await client.get({
-                index: 'ack',
-                type: 'ack',
-                id: user
-            })
-        } catch (e) {
-            if (e instanceof elasticsearch.errors.NotFound) {
-                messageId = 0
-            } else {
-                throw e
+            try {
+                response = await client.get({
+                    index: 'ack',
+                    type: 'ack',
+                    id: user
+                })
+            } catch (e) {
+                if (e instanceof elasticsearch.errors.NotFound) {
+                    messageId = 0
+                } else {
+                    throw e
+                }
             }
-        }
 
-        if (response) {
-            messageId = response._source.messageId
+            if (response) {
+                messageId = response._source.messageId
+            }
+        } else {
+            await this.ack(user, messageId)
         }
 
         console.log('get offline user ack', user, messageId)
@@ -82,7 +85,7 @@ class MessageDao {
                     }
                 },
                 sort: [
-                    { id: { order: "desc" } },
+                    { id: { order: "asc" } },
                 ],
             }
         })
@@ -109,7 +112,7 @@ class MessageDao {
                     }
                 },
                 sort: [
-                    { id: { order: "desc" } },
+                    { id: { order: "asc" } },
                 ],
             }
         })

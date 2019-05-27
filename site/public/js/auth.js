@@ -22,7 +22,7 @@ var s3 = new AWS.S3({
 var cognitoUser = userPool.getCurrentUser();
 
 if (cognitoUser) {
-    cognitoUser.getSession(function sessionCallback(err, session) {
+    cognitoUser.getSession(async function sessionCallback(err, session) {
         if (err) {
             console.log(err);
         } else if (!session.isValid()) {
@@ -64,102 +64,100 @@ if (cognitoUser) {
             });
 
             // load offline messages whenever a page is reloaded
-            $.ajax({
-                contentType: 'application/json',
-                headers: {
-                    Authorization: authToken
-                },
-                data: JSON.stringify({}),
-                dataType: 'json',
-                success: async function (data) {
-                    console.log("call /msg/offline successfully", data);
+            var maxId = 0;
 
-                    var suffix = cognitoUser.username.split('-').join('');
+            while (true) {
+                var response = await fetch('/msg/offline', {
+                    body: JSON.stringify({
+                        maxId: maxId
+                    }),
+                    headers: {
+                        'Authorization': authToken,
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                });
 
-                    await alasql.promise('ATTACH INDEXEDDB DATABASE teamup');
+                var data = await response.json()
 
-                    if (data.data.single.length > 0 || data.data.project.length > 0) {
-                        var maxId = 0;
+                console.log('get offline message res', data);
 
-                        if (data.data.single.length > 0) {
-                            if (data.data.single[0].id > maxId) {
-                                maxId = data.data.single[0].id;
-                            }
+                var suffix = cognitoUser.username.split('-').join('');
 
-                            var valuesClause = "";
-                            var args = new Array();
-                            for (i in data.data.single) {
-                                if (valuesClause.length != 0) {
-                                    valuesClause += ',';
-                                }
-                                valuesClause += "(?,?,?,?)";
+                await alasql.promise('ATTACH INDEXEDDB DATABASE teamup');
 
-                                var msg = data.data.single[i];
-
-                                args.push(msg.id, msg.from, JSON.stringify(msg), 1);
-                            }
-
-                            console.log('insert single args', args);
-
-                            var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values ' + valuesClause);
-                            stmt(args, function () {
-                                console.log('insert offline single messages successfully');
-                            });
+                if (data.data.single.length > 0 || data.data.project.length > 0) {
+                    if (data.data.single.length > 0) {
+                        if (data.data.single[data.data.single.length - 1].id > maxId) {
+                            maxId = data.data.single[data.data.single.length - 1].id;
                         }
 
-                        if (data.data.project.length > 0) {
-                            if (data.data.project[0].id > maxId) {
-                                maxId = data.data.project[0].id;
+                        var valuesClause = "";
+                        var args = new Array();
+                        for (i in data.data.single) {
+                            if (valuesClause.length != 0) {
+                                valuesClause += ',';
                             }
+                            valuesClause += "(?,?,?,?)";
 
-                            var valuesClause = "";
-                            var args = new Array();
-                            for (i in data.data.project) {
-                                if (valuesClause.length != 0) {
-                                    valuesClause += ',';
-                                }
-                                valuesClause += "(?,?,?,?,?)";
+                            var msg = data.data.single[i];
 
-                                var msg = data.data.project[i];
-
-                                args.push(msg.id, msg.from, msg.project, JSON.stringify(msg), 1);
-                            }
-
-                            var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values ' + valuesClause);
-                            stmt(args, function () {
-                                console.log('insert offline project messages successfully');
-                            });
+                            args.push(msg.id, msg.from, JSON.stringify(msg), 1);
                         }
 
-                        // send ack to server
-                        $.ajax({
-                            contentType: 'application/json',
-                            headers: {
-                                Authorization: authToken
-                            },
-                            data: JSON.stringify({
-                                messageId: maxId
-                            }),
-                            dataType: 'json',
-                            success: function (data) {
-                                console.log("call /msg/ack successfully", data);
-                            },
-                            error: function (err) {
-                                console.log("call /msg/ack failed", err);
-                            },
-                            processData: false,
-                            type: 'POST',
-                            url: '/msg/ack'
+                        console.log('insert single args', args);
+
+                        var stmt = alasql.compile('insert into teamup.single_messages_' + suffix + ' (id, user, data, recv) values ' + valuesClause);
+                        stmt(args, function () {
+                            console.log('insert offline single messages successfully');
                         });
                     }
-                },
-                error: function (err) {
-                    console.log("call /msg/offline failed", err);
-                },
-                processData: false,
-                type: 'POST',
-                url: '/msg/offline'
-            });
+
+                    if (data.data.project.length > 0) {
+                        if (data.data.project[data.data.project.length - 1].id > maxId) {
+                            maxId = data.data.project[data.data.project.length - 1].id;
+                        }
+
+                        var valuesClause = "";
+                        var args = new Array();
+                        for (i in data.data.project) {
+                            if (valuesClause.length != 0) {
+                                valuesClause += ',';
+                            }
+                            valuesClause += "(?,?,?,?,?)";
+
+                            var msg = data.data.project[i];
+
+                            args.push(msg.id, msg.from, msg.project, JSON.stringify(msg), 1);
+                        }
+
+                        var stmt = alasql.compile('insert into teamup.project_messages_' + suffix + ' (id, from_user, project, data, recv) values ' + valuesClause);
+                        stmt(args, function () {
+                            console.log('insert offline project messages successfully');
+                        });
+                    }
+                }
+
+                if (data.data.single.length < 10 && data.data.project.length < 10) {
+                    break;
+                }
+            }
+
+            if (maxId > 0) {
+                // send ack to server
+                await fetch('/msg/ack', {
+                    body: JSON.stringify({
+                        messageId: maxId
+                    }),
+                    headers: {
+                        'Authorization': authToken,
+                        'content-type': 'application/json'
+                    },
+                    method: 'POST',
+                });
+
+                console.log("call /msg/ack successfully", maxId, data);
+            }
         }
     });
 }

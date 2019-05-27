@@ -119,8 +119,8 @@ class MsgService {
         }
     }
 
-    async getOffline(user) {
-        return await messageDao.getOffline(user)
+    async getOffline(user, maxId) {
+        return await messageDao.getOffline(user, maxId)
     }
 
     async ack(user, messageId) {
