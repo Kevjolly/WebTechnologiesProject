@@ -140,7 +140,7 @@ $(document).ready(function () {
 		}
 
 		if (proceed) {
-			if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test($("#signup-confirm-password").val())) {
+			if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&~`#^()-_+=\[\],./<>])[A-Za-z\d@$!%*?&~`#^()-_+=\[\],./<>]{8,}$/.test($("#signup-confirm-password").val())) {
 				$("#helper-text-password1").hide();
 				if (/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test($("#signup-email").val())) {
 					if ($("#signup-confirm-password").val() === $("#signup-password").val()) {
@@ -173,7 +173,7 @@ $(document).ready(function () {
 	});
 
 	$('.signup-passwords').change(function () {
-		if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(this.value)) {
+		if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&~`#^()-_+=\[\],./<>])[A-Za-z\d@$!%*?&~`#^()-_+=\[\],./<>]{8,}$/.test(this.value)) {
 			$("#helper-text-password1").hide();
 			$(this).removeClass("invalid").addClass("valid");
 		} else {
