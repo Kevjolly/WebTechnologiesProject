@@ -12,6 +12,10 @@ class UserDao {
             body: user
         })
 
+        await client.indices.refresh({
+            index: 'user'
+        });
+
         console.log('user dao save response', response)
     }
 
@@ -23,6 +27,10 @@ class UserDao {
             body: {
                 doc: profile
             }
+        });
+
+        await client.indices.refresh({
+            index: 'user'
         });
 
         console.log('edit user profile response', response)
@@ -104,6 +112,10 @@ class UserDao {
             }
         })
 
+        await client.indices.refresh({
+            index: 'user'
+        });
+
         console.log('token update result', response)
     }
 
@@ -119,6 +131,10 @@ class UserDao {
             }
         })
 
+        await client.indices.refresh({
+            index: 'user'
+        });
+
         console.log('unbind token result', response)
     }
 
@@ -133,6 +149,10 @@ class UserDao {
                 }
             }
         })
+
+        await client.indices.refresh({
+            index: 'user'
+        });
 
         console.log('set verified result', response)
     }
@@ -197,6 +217,10 @@ class UserDao {
                     }
                 }
             }
+        });
+
+        await client.indices.refresh({
+            index: 'user'
         });
 
         console.log('quit project response', response)

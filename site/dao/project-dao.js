@@ -9,6 +9,10 @@ class ProjectDao {
             body: project
         })
 
+        await client.indices.refresh({
+            index: 'project'
+        });
+
         console.log('project dao save response', response)
     }
 
@@ -20,6 +24,10 @@ class ProjectDao {
             body: {
                 doc: project
             }
+        });
+
+        await client.indices.refresh({
+            index: 'project'
         });
 
         console.log('edit project response', response)

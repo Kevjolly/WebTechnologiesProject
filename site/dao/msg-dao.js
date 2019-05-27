@@ -9,6 +9,10 @@ class MessageDao {
             id: message.id.toString(),
             body: message
         })
+
+        await client.indices.refresh({
+            index: 'single-message'
+        });
     }
 
     async saveProject(users, message) {
@@ -26,6 +30,10 @@ class MessageDao {
                 body: message
             })
         }
+
+        await client.indices.refresh({
+            index: 'project-message'
+        });
     }
 
     async getOffline(user) {
@@ -133,6 +141,10 @@ class MessageDao {
                 messageId: messageId
             }
         })
+
+        await client.indices.refresh({
+            index: 'ack'
+        });
     }
 }
 
