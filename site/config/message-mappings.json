@@ -1,0 +1,17 @@
+{
+    "settings": {
+        "number_of_shards": 1
+    },
+    "mappings": {
+        "message": {
+            "properties": {
+                "id": {
+                    "type": "long"
+                },
+                "to": {
+                    "type": "keyword"
+                }
+            }
+        }
+    }
+}
