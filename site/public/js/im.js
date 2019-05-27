@@ -28,7 +28,7 @@ function getToken() {
             window.localStorage.setItem('teamupToken', token);
 
             if (!isTokenSentToServer() && authToken) {
-                console.log('sending token to server');
+                console.log('sending token to server', token);
                 sendTokenToServer(token)
             }
         } else {

@@ -31,6 +31,16 @@ if (cognitoUser) {
             authToken = session.getIdToken().getJwtToken();
             console.log('auth token', authToken);
 
+            if (!isTokenSentToServer()) {
+                console.log('token not sent to server');
+
+                var token = window.localStorage.getItem('teamupToken');
+                if (token) {
+                    console.log('sending token to server', token);
+                    sendTokenToServer(token);
+                }
+            }
+
             cognitoUser.getUserAttributes(function (err, result) {
                 if (err) {
                     console.log(err);
@@ -340,7 +350,11 @@ function signin(email, password, successCallback, failureCallback) {
 
             // bind token
             var token = window.localStorage.getItem('teamupToken');
-            sendTokenToServer(token);
+
+            if (token) {
+                console.log('sending token to server', token);
+                sendTokenToServer(token);
+            }
 
             var suffix = user.username.split('-').join('');
 
@@ -408,6 +422,7 @@ function signout() {
 }
 
 function isTokenSentToServer() {
+    console.log('isTokenSentToServer', window.localStorage.getItem('sentToServer') === '1');
     return window.localStorage.getItem('sentToServer') === '1';
 }
 
