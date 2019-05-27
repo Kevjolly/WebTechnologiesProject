@@ -7,8 +7,8 @@
 ## Starting the website locally
 1. Unzip the Elasticsearch bundle
 2. Run bin/elasticsearch (or bin\elasticsearch.bat on Windows)
-3. Run *npm install* to install dependencies
-4. Run *node site* and the website should be available at <localhost:8081>
+3. Inside site directory, run *npm install* to install dependencies
+4. Run *node .* and the website should be available at <localhost:8081>
 5. For messaging functionalities to work, notification permission should be granted
    
 ## Cloud hosted site
