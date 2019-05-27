@@ -7,9 +7,18 @@
 ## Cloud hosted site
 The site is hosted on AWS Elastic Beanstalk and is available at <https://www.teamupbriuni.me/>. For messaging functionalities to work, notification permission should be granted when asked and https should always be used.
 
+We mainly developed the website on ***Chrome and Firefox***. It is known that messaging functionality ***does not work on Safari*** because of lack of web notification API support. To test messaging functionalities, two browsers (e.g. Chrome and Firefox) with different accounts signed in can be used. Test accounts are provided in case of need.
+
+email | password
+---- | ---
+pgg25710@cndps.com | !Qa12345
+batul.mischa@99cows.com |  !Qa12345
+
 ## Starting the website locally
 
-***We've only tested our site on Linux and MacOS, not Windows.*** We use the following software versions.
+***We've only tested our site on Linux and MacOS, not Windows.*** 
+
+We use the following software versions.
 * Node: v11.4.0
 * npm: 6.4.1
 
