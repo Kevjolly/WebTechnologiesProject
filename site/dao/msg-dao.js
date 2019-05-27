@@ -4,14 +4,14 @@ var elasticsearch = require('elasticsearch');
 class MessageDao {
     async saveSingle(message) {
         const response = await client.index({
-            index: 'single-message',
-            type: 'single',
+            index: 'message',
+            type: 'message',
             id: message.id.toString(),
             body: message
         })
 
         await client.indices.refresh({
-            index: 'single-message'
+            index: 'message'
         });
     }
 
@@ -22,17 +22,17 @@ class MessageDao {
                 continue
             }
 
-            message.user = user.email
+            message.to = user.email
 
             await client.index({
-                index: 'project-message',
-                type: 'project',
+                index: 'message',
+                type: 'message',
                 body: message
             })
         }
 
         await client.indices.refresh({
-            index: 'project-message'
+            index: 'message'
         });
     }
 
@@ -63,8 +63,8 @@ class MessageDao {
 
         console.log('get offline user ack', user, messageId)
 
-        const singlePromise = client.search({
-            index: 'single-message',
+        const msgResponse = await client.search({
+            index: 'message',
             body: {
                 query: {
                     bool: {
@@ -90,43 +90,15 @@ class MessageDao {
             }
         })
 
-        const projectPromise = client.search({
-            index: 'project-message',
-            body: {
-                query: {
-                    bool: {
-                        must: [
-                            {
-                                range: {
-                                    id: {
-                                        gt: messageId
-                                    }
-                                }
-                            },
-                            {
-                                term: {
-                                    user: user
-                                }
-                            }
-                        ],
-                    }
-                },
-                sort: [
-                    { id: { order: "asc" } },
-                ],
-            }
-        })
-
-        const [single, project] = await Promise.all([singlePromise, projectPromise])
-
         var singleMessages = new Array();
-        single.hits.hits.forEach(message => {
-            singleMessages.push(message._source)
-        })
-
         var projectMessages = new Array();
-        project.hits.hits.forEach(message => {
-            projectMessages.push(message._source)
+
+        msgResponse.hits.hits.forEach(message => {
+            if ('type' in message._source) {
+                singleMessages.push(message._source)
+            } else {
+                projectMessages.push(message._source)
+            }
         })
 
         return {

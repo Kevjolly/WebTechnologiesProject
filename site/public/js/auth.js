@@ -138,7 +138,7 @@ if (cognitoUser) {
                     }
                 }
 
-                if (data.data.single.length < 10 && data.data.project.length < 10) {
+                if (data.data.single.length + data.data.project.length < 10) {
                     break;
                 }
             }

@@ -34,26 +34,14 @@ async function init() {
             })
         }
 
-        var singleMsgIndexExists = await client.indices.exists({
-            index: 'single-message'
+        var msgIndexExists = await client.indices.exists({
+            index: 'message'
         })
 
-        if (!singleMsgIndexExists) {
-            var messageMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/single-message-mappings.json'), 'utf8'));
+        if (!msgIndexExists) {
+            var messageMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/message-mappings.json'), 'utf8'));
             client.indices.create({
-                index: 'single-message',
-                body: messageMapping
-            })
-        }
-
-        var projectMsgIndexExists = await client.indices.exists({
-            index: 'project-message'
-        })
-
-        if (!projectMsgIndexExists) {
-            var messageMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/project-message-mappings.json'), 'utf8'));
-            client.indices.create({
-                index: 'project-message',
+                index: 'message',
                 body: messageMapping
             })
         }
