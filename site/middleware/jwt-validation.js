@@ -7,8 +7,7 @@ const jwks = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/jwks.jso
 
 var whiteList = {
     '/user/signup': true,
-    '/user/verify': true,
-    '/adduserimage': true
+    '/user/verify': true
 }
 
 var appClientId = '7mjqob9h58ic27tn5kf23uhe1n'
