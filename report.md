@@ -15,7 +15,7 @@ The site is hosted on AWS Elastic Beanstalk and is available at <https://www.tea
 5. For messaging functionalities to work, notification permission should be granted
 
 ## Project Overview
-TeamUP is a website where people can form teams to work on different projects. Users can create projects which people can request to join or be invited. A search functionality helps them find people with desired skills and projects of interest. Users can also communicate with other users indivually or with the other participants of a project they are involved in using the provided instant messaging functionalities. Acceptations of application requests or invitations for projects are handled in the messaging section.
+TeamUP is a website where people can form teams to work on different projects. Users can create projects which people can request to join or be invited. A search functionality helps them find people with desired skills and projects of interest. Users can also communicate with other users individually or with the other participants of a project they are involved in using the provided instant messaging functionalities. Acceptance of application requests or invitations for projects are handled in the messaging section.
 
 ## Estimations with description
 
@@ -38,9 +38,9 @@ TeamUP is a website where people can form teams to work on different projects. U
 * Client-side Javascript code is well encapsulated as SDKs such as instance messaging and user authentication. Also, advanced features like IndexedDB and service workers are used in the implementation of instant messaging.
 * [jQuery](https://jquery.com/) was used to simplify JS coding;
 * Work has been done to ensure that information is coherent on different places. For e.g. the choices, search content or options in the navbar are the same in the side navbar when the window is resized;
-* We tried to ensure that any error message is given back to the user through a toast appearing in the top right corner of the page after doing an action. Furthermore, functionalities are hidden when the user already used them or can not use them (without being logged in for instance). Verification on user inputs (for instance by using regexs) or/and if the user is logged in before doing get or post requests to the server are made so that requests which will send back error messages are not sent when they can be prevented in the front-end;
+* We tried to ensure that any error message is given back to the user through a toast appearing in the top right corner of the page after doing an action. Furthermore, functionalities are hidden when the user already used them or can not use them (without being logged in for instance). Verification on user inputs (for instance by using regex) or/and if the user is logged in before doing get or post requests to the server are made so that requests which will send back error messages are not sent when they can be prevented in the front-end;
 * Search results are displayed in cards and limited to 12 by page. Pagination is adjusted to the number of results.
-* [Ajax](https://www.w3schools.com/js/js_ajax_intro.asp) is used in order to do asynchronous requests to the server in the background: sending messages, joining a project, quiting a project to name but a few.
+* [Ajax](https://www.w3schools.com/js/js_ajax_intro.asp) is used in order to do asynchronous requests to the server in the background: sending messages, joining a project, quitting a project to name but a few.
 * As with materialize.css html classes and other css, the JavaScript also makes sure content does not extend too much. For e.g. if a username or a project name is too long, either overflow is added or the text is cut down and we add '...';
 * [Alasql](http://alasql.org/) was used for the front-end storing of chat messages and user identity housekeeping;
 * [Firebase messaging sdk](https://firebase.google.com/docs/reference/js/) is used to implement instant messaging and notification;
@@ -76,5 +76,5 @@ TeamUP is a website where people can form teams to work on different projects. U
 * [Mustache](https://www.npmjs.com/package/mustache-express) and [jQuery](https://jquery.com/) are used for server-side and client-side dynamic page rendering respectively.
 
 ### Depth
-All the functionalities that we wanted to do were done. Only a few bugs are missing, which some are identified but would require more time to be solved. As said in the preliminary report, we had already worked on projects with traditionnal SQL databases or frameworks like Bootstrap. Therefore, we decided to try to use new tools like for instance Materialize.css for the front-end and Elasticsearch for the database. Thus, a non-negligible part of the time was spent learning about those frameworks. We are particularly proud of the
+All the functionalities that we wanted to do were done. Only a few bugs are missing, which some are identified but would require more time to be solved. As said in the preliminary report, we had already worked on projects with traditional SQL databases or frameworks like Bootstrap. Therefore, we decided to try to use new tools like for instance Materialize.css for the front-end and Elasticsearch for the database. Thus, a non-negligible part of the time was spent learning about those frameworks. We are particularly proud of the
 instant messaging with notifications system and the search engine on the server side and the design of the message and search results pages on the front-end.
