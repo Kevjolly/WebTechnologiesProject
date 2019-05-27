@@ -23,7 +23,7 @@ We use the following software versions.
 * npm: 6.4.1
 
 1. Download our Elasticsearch bundle from [Google Drive](https://drive.google.com/file/d/1T0pKt31EHrQKyf-4EPELZ_0NneCTkKnH/view?usp=sharing) and unzip it. The reason for this is that we did some configuration to the original bundle to make it support https and user authentication.
-2. Run *bin/elasticsearch*
+2. Run *bin/elasticsearch* (Java required)
 3. Inside site directory, run *npm install* to install dependencies
 4. Run *node .* and the website should be available at <http://localhost:8081>
 5. For messaging functionalities to work, notification permission should be granted
